@@ -42,6 +42,7 @@ for f in "${OWN_FILES[@]}"; do
 	[ -e "$DST/$f" ] && cp "$DST/$f" "$TMP/own/"
 done
 [ -d "$DST/internal" ] && cp -R "$DST/internal" "$TMP/own/internal"
+[ -d "$DST/testdata/fuzz" ] && cp -R "$DST/testdata/fuzz" "$TMP/own/fuzz" # our fuzz corpus
 rm -rf "$DST"
 mkdir -p "$DST"
 cp -R "$SRC/tls/." "$DST/"
@@ -52,6 +53,7 @@ rm -rf "$DST/internal"
 for f in "${OWN_FILES[@]}"; do
 	[ -e "$TMP/own/$f" ] && cp "$TMP/own/$f" "$DST/"
 done
+[ -d "$TMP/own/fuzz" ] && cp -R "$TMP/own/fuzz" "$DST/testdata/fuzz"
 
 # The key schedule packages are copied verbatim next to their shims.
 for p in tls12 tls13; do

@@ -1,0 +1,14 @@
+Port drill, 2026-10-31, run in a scratch worktree (.src/drill) of commit "tools/tlssync: check...".
+For each tag: tools/tlssync/sync.sh <tag>; set go.mod "go" line to the tag; GOTOOLCHAIN=<tag> go build ./...;
+GOTOOLCHAIN=<tag> go test ./crypto/tls/.
+
+== go1.27.0 sync rc=0 (6s)
+build: ok
+ok  	github.com/lesismal/nbio/crypto/tls	10.215s
+
+== go1.26.10 sync rc=0 (15s)
+build: ok (non-test code compiles unchanged on the previous minor release)
+package github.com/lesismal/nbio/crypto/tls (test)
+	crypto/tls/fips140_test.go:19:2: use of internal package internal/obscuretestdata not allowed
+FAIL	github.com/lesismal/nbio/crypto/tls [setup failed]
+-> a test-only Go-internal import that go1.27 dropped; would need one more shim (about 20 lines).
