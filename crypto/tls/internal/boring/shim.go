@@ -18,7 +18,7 @@ const Enabled = false
 
 var RandReader = rand.Reader
 
-func Unreachable()              {}
-func UnreachableExceptTests()   {}
+func Unreachable()                                  {}
+func UnreachableExceptTests()                       {}
 func NewGCMTLS(cipher.Block) (cipher.AEAD, error)   { panic("boringcrypto: not available") }
 func NewGCMTLS13(cipher.Block) (cipher.AEAD, error) { panic("boringcrypto: not available") }

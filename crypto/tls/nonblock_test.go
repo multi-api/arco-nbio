@@ -1,0 +1,419 @@
+// Copyright 2026 The arco-nbio Authors. BSD-style license (same as Go).
+
+package tls
+
+import (
+	"bytes"
+	stdtls "crypto/tls"
+	"crypto/x509"
+	"errors"
+	"fmt"
+	"io"
+	"net"
+	"runtime"
+	"sync"
+	"testing"
+	"time"
+)
+
+// pollerLoop plays nbio's poller for one server connection: it reads the raw
+// transport into a reused buffer of size chunk and hands each read to
+// AppendAndRead, like nbhttp's TLSDataHandler. Plaintext goes to onData.
+// When the transport fails it closes the TLS connection.
+func pollerLoop(raw net.Conn, srv *Conn, chunk int, onData func([]byte)) error {
+	buf := make([]byte, chunk)
+	out := make([]byte, 2048)
+	defer srv.Close()
+	for {
+		n, err := raw.Read(buf)
+		if err != nil {
+			return err
+		}
+		in := buf[:n]
+		for {
+			_, m, err := srv.AppendAndRead(in, out)
+			in = nil
+			if err != nil {
+				return err
+			}
+			if m == 0 {
+				break
+			}
+			onData(out[:m])
+		}
+		srv.ResetOrFreeBuffer()
+		// Scribble over the poller buffer: nothing may keep pointing into it.
+		for i := range buf {
+			buf[i] = 0xAA
+		}
+	}
+}
+
+// newNonBlockServer accepts one TCP connection on a loopback listener and
+// serves it with a non-blocking Conn driven by pollerLoop.
+type nbServer struct {
+	ln     net.Listener
+	conn   *Conn
+	raw    net.Conn
+	ready  chan struct{}
+	done   chan error
+	mu     sync.Mutex
+	got    bytes.Buffer
+	onData func(*nbServer, []byte)
+}
+
+func startNonBlockServer(t testing.TB, cfg *Config, chunk int, onData func(*nbServer, []byte)) *nbServer {
+	t.Helper()
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := &nbServer{ln: ln, ready: make(chan struct{}), done: make(chan error, 1), onData: onData}
+	go func() {
+		raw, err := ln.Accept()
+		if err != nil {
+			s.done <- err
+			close(s.ready)
+			return
+		}
+		s.raw = raw
+		s.conn = NewConn(raw, cfg, false, true)
+		close(s.ready)
+		s.done <- pollerLoop(raw, s.conn, chunk, func(b []byte) {
+			s.mu.Lock()
+			s.got.Write(b)
+			s.mu.Unlock()
+			if s.onData != nil {
+				s.onData(s, b)
+			}
+		})
+	}()
+	t.Cleanup(func() { ln.Close() })
+	return s
+}
+
+func stdClientConfig() *stdtls.Config {
+	pool := x509.NewCertPool()
+	pool.AddCert(testConfigServer.Certificates[0].Leaf)
+	return &stdtls.Config{RootCAs: pool, ServerName: "example.golang", InsecureSkipVerify: true}
+}
+
+func nbServerConfig(vers uint16) *Config {
+	cfg := testConfigServer.Clone()
+	cfg.MinVersion, cfg.MaxVersion = vers, vers
+	return cfg
+}
+
+// TestNonBlockEchoStdClient runs the non-blocking server against Go's
+// standard library client (an independent copy of the code) for each
+// protocol version and several poller read sizes, including 1 byte.
+func TestNonBlockEchoStdClient(t *testing.T) {
+	for _, vers := range []uint16{VersionTLS12, VersionTLS13} {
+		for _, chunk := range []int{1, 7, 100, 512, 4096, 65536} {
+			t.Run(fmt.Sprintf("%s/chunk=%d", VersionName(vers), chunk), func(t *testing.T) {
+				echo := func(s *nbServer, b []byte) {
+					if _, err := s.conn.Write(b); err != nil {
+						t.Errorf("server write: %v", err)
+					}
+				}
+				s := startNonBlockServer(t, nbServerConfig(vers), chunk, echo)
+				c, err := stdtls.Dial("tcp", s.ln.Addr().String(), stdClientConfig())
+				if err != nil {
+					t.Fatal(err)
+				}
+				defer c.Close()
+				if got := c.ConnectionState().Version; got != vers {
+					t.Fatalf("negotiated %x, want %x", got, vers)
+				}
+				msg := bytes.Repeat([]byte("0123456789abcdef"), 3000) // 48 KB: several records
+				go func() {
+					if _, err := c.Write(msg); err != nil {
+						t.Errorf("client write: %v", err)
+					}
+				}()
+				back := make([]byte, len(msg))
+				if _, err := io.ReadFull(c, back); err != nil {
+					t.Fatal(err)
+				}
+				if !bytes.Equal(back, msg) {
+					t.Fatal("echo mismatch")
+				}
+			})
+		}
+	}
+}
+
+// TestNonBlockFirstDataWithFinished checks the common TLS 1.3 case where the
+// client's first application data arrives in the same read as its Finished,
+// so the poller must read it after the handshake goroutine has exited.
+func TestNonBlockFirstDataWithFinished(t *testing.T) {
+	s := startNonBlockServer(t, nbServerConfig(VersionTLS13), 65536, nil)
+	rawClient, err := net.Dial("tcp", s.ln.Addr().String())
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Buffer the client's writes so Finished and the request go out together.
+	bw := &batchConn{Conn: rawClient}
+	c := stdtls.Client(bw, stdClientConfig())
+	bw.hold = true
+	go func() {
+		// The client handshake writes ClientHello, then waits for the
+		// server flight, then writes Finished; we flush only after the
+		// request is written too.
+		if err := c.Handshake(); err != nil {
+			t.Error(err)
+			return
+		}
+		c.Write([]byte("GET / HTTP/1.1\r\n\r\n"))
+		bw.flush()
+	}()
+	deadline := time.Now().Add(5 * time.Second)
+	for {
+		s.mu.Lock()
+		n := s.got.Len()
+		s.mu.Unlock()
+		if n == len("GET / HTTP/1.1\r\n\r\n") {
+			break
+		}
+		if time.Now().After(deadline) {
+			t.Fatalf("server got %d bytes", n)
+		}
+		time.Sleep(5 * time.Millisecond)
+	}
+	c.Close()
+}
+
+// batchConn holds writes after the first one (ClientHello) until flush.
+type batchConn struct {
+	net.Conn
+	mu     sync.Mutex
+	hold   bool
+	writes int
+	buf    bytes.Buffer
+}
+
+func (b *batchConn) Write(p []byte) (int, error) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	b.writes++
+	if b.hold && b.writes > 1 {
+		return b.buf.Write(p)
+	}
+	return b.Conn.Write(p)
+}
+
+func (b *batchConn) flush() {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	b.Conn.Write(b.buf.Bytes())
+	b.buf.Reset()
+	b.hold = false
+}
+
+// TestNonBlockOwnClient runs this package's client against the non-blocking
+// server, including session resumption with tickets.
+func TestNonBlockOwnClient(t *testing.T) {
+	for _, vers := range []uint16{VersionTLS12, VersionTLS13} {
+		t.Run(VersionName(vers), func(t *testing.T) {
+			cfg := nbServerConfig(vers)
+			clientCfg := testConfigClient.Clone()
+			clientCfg.ClientSessionCache = NewLRUClientSessionCache(4)
+			for i := 0; i < 2; i++ {
+				s := startNonBlockServer(t, cfg, 333, func(s *nbServer, b []byte) { s.conn.Write(b) })
+				c, err := Dial("tcp", s.ln.Addr().String(), clientCfg)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if _, err := c.Write([]byte("ping")); err != nil {
+					t.Fatal(err)
+				}
+				b := make([]byte, 4)
+				if _, err := io.ReadFull(c, b); err != nil || string(b) != "ping" {
+					t.Fatalf("got %q, %v", b, err)
+				}
+				if resumed := c.ConnectionState().DidResume; resumed != (i == 1) {
+					t.Fatalf("round %d: DidResume = %v", i, resumed)
+				}
+				c.Close()
+			}
+		})
+	}
+}
+
+// TestNonBlockBadClientHello: garbage instead of a ClientHello fails the
+// handshake with an error, without hanging.
+func TestNonBlockBadClientHello(t *testing.T) {
+	s := startNonBlockServer(t, nbServerConfig(VersionTLS13), 512, nil)
+	c, err := net.Dial("tcp", s.ln.Addr().String())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer c.Close()
+	c.Write([]byte("GET / HTTP/1.1\r\nHost: x\r\n\r\n"))
+	select {
+	case err := <-s.done:
+		if err == nil || errors.Is(err, io.EOF) {
+			t.Fatalf("got %v, want a handshake error", err)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("server did not fail the handshake")
+	}
+	waitHandshakesInFlight(t, 0)
+}
+
+func waitHandshakesInFlight(t testing.TB, want int64) {
+	t.Helper()
+	deadline := time.Now().Add(5 * time.Second)
+	for HandshakesInFlight() != want {
+		if time.Now().After(deadline) {
+			t.Fatalf("HandshakesInFlight = %d, want %d", HandshakesInFlight(), want)
+		}
+		time.Sleep(5 * time.Millisecond)
+	}
+}
+
+// TestNonBlockAbandonedHandshakeNoLeak: clients that send part of a
+// ClientHello and disconnect must not leave handshake goroutines behind.
+func TestNonBlockAbandonedHandshakeNoLeak(t *testing.T) {
+	hello := clientHelloBytes(t)
+	before := runtime.NumGoroutine()
+	for i := 0; i < 50; i++ {
+		s := startNonBlockServer(t, nbServerConfig(VersionTLS13), 64, nil)
+		c, err := net.Dial("tcp", s.ln.Addr().String())
+		if err != nil {
+			t.Fatal(err)
+		}
+		c.Write(hello[:len(hello)/2])
+		time.Sleep(time.Millisecond)
+		c.Close()
+		<-s.done
+		s.ln.Close()
+	}
+	waitHandshakesInFlight(t, 0)
+	time.Sleep(50 * time.Millisecond)
+	if after := runtime.NumGoroutine(); after > before+5 {
+		t.Fatalf("goroutines: %d before, %d after", before, after)
+	}
+}
+
+// TestNonBlockHandshakeTimeout: a client that stops mid-handshake and keeps
+// the TCP connection open is cut off by NonBlockingHandshakeTimeout.
+func TestNonBlockHandshakeTimeout(t *testing.T) {
+	defer func(d time.Duration) { NonBlockingHandshakeTimeout = d }(NonBlockingHandshakeTimeout)
+	NonBlockingHandshakeTimeout = 200 * time.Millisecond
+	hello := clientHelloBytes(t)
+	s := startNonBlockServer(t, nbServerConfig(VersionTLS13), 64, nil)
+	c, err := net.Dial("tcp", s.ln.Addr().String())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer c.Close()
+	c.Write(hello[:len(hello)-1])
+	select {
+	case <-s.done:
+	case <-time.After(5 * time.Second):
+		t.Fatal("handshake did not time out")
+	}
+	waitHandshakesInFlight(t, 0)
+}
+
+// clientHelloBytes captures a real ClientHello from this package's client.
+func clientHelloBytes(t testing.TB) []byte {
+	a, b := net.Pipe()
+	defer a.Close()
+	go func() {
+		Client(a, testConfigClient.Clone()).Handshake()
+	}()
+	hdr := make([]byte, 5)
+	if _, err := io.ReadFull(b, hdr); err != nil {
+		t.Fatal(err)
+	}
+	body := make([]byte, int(hdr[3])<<8|int(hdr[4]))
+	if _, err := io.ReadFull(b, body); err != nil {
+		t.Fatal(err)
+	}
+	b.Close()
+	return append(hdr, body...)
+}
+
+// TestNonBlockDirectHandshakeFails: calling Handshake (or Read/Write) on a
+// non-blocking connection before AppendAndRead fails instead of blocking.
+func TestNonBlockDirectHandshakeFails(t *testing.T) {
+	a, b := net.Pipe()
+	defer a.Close()
+	defer b.Close()
+	srv := NewConn(a, testConfigServer.Clone(), false, true)
+	errc := make(chan error, 1)
+	go func() { errc <- srv.Handshake() }()
+	select {
+	case err := <-errc:
+		if !errors.Is(err, errHandshakeNotDriven) {
+			t.Fatalf("got %v", err)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("Handshake blocked")
+	}
+}
+
+// TestNonBlockReleaseBuffers: after the poller has consumed everything, an
+// idle connection keeps no read buffers.
+func TestNonBlockReleaseBuffers(t *testing.T) {
+	s := startNonBlockServer(t, nbServerConfig(VersionTLS13), 4096, nil)
+	c, err := stdtls.Dial("tcp", s.ln.Addr().String(), stdClientConfig())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer c.Close()
+	c.Write(bytes.Repeat([]byte{'x'}, 20000))
+	deadline := time.Now().Add(5 * time.Second)
+	for {
+		s.mu.Lock()
+		n := s.got.Len()
+		s.mu.Unlock()
+		if n == 20000 {
+			break
+		}
+		if time.Now().After(deadline) {
+			t.Fatalf("got %d", n)
+		}
+		time.Sleep(5 * time.Millisecond)
+	}
+	time.Sleep(20 * time.Millisecond) // let the poller return from ResetOrFreeBuffer
+	srv := s.conn
+	srv.in.Lock()
+	defer srv.in.Unlock()
+	if srv.rawInput.Cap() != 0 || srv.hand.Cap() != 0 || srv.input.Size() != 0 {
+		t.Fatalf("buffers kept: rawInput cap %d, hand cap %d, input size %d",
+			srv.rawInput.Cap(), srv.hand.Cap(), srv.input.Size())
+	}
+	if f := srv.conn.(*nbConn); f.pending != nil {
+		t.Fatalf("pending kept: %d bytes", len(f.pending))
+	}
+}
+
+// TestNonBlockLlibAPI covers the rest of the llib-compatible surface.
+func TestNonBlockLlibAPI(t *testing.T) {
+	a, b := net.Pipe()
+	defer a.Close()
+	defer b.Close()
+	c := NewConn(a, testConfigServer.Clone(), false, true, nil)
+	if !c.IsNonBlock() || c.Conn() != a {
+		t.Fatal("IsNonBlock/Conn")
+	}
+	c.SetSession(42)
+	if c.Session() != 42 {
+		t.Fatal("Session")
+	}
+	c.ResetConn(b, false)
+	if c.IsNonBlock() || c.Conn() != b {
+		t.Fatal("ResetConn")
+	}
+	plain := Server(a, testConfigServer.Clone())
+	if plain.Session() != nil {
+		t.Fatal("Session on plain conn")
+	}
+	plain.SetSession("x")
+	if plain.Session() != "x" || plain.Conn() != a {
+		t.Fatal("SetSession on plain conn")
+	}
+}
