@@ -104,7 +104,23 @@ func TestAuditKeyUpdateWriteRace(t *testing.T) {
 }
 
 func testKeyUpdateWriteRace(t *testing.T, suite uint16) {
-	s := startNonBlockServer(t, nbServerConfig(VersionTLS13), 4096, nil)
+	const writers, perWriter, keyUpdates = 4, 300, 300
+	// The poller answers each attacker byte with a 64-byte "pong" frame
+	// (writer id = writers). Without data between them, the server's own
+	// KeyUpdate replies would trip the client's limit of consecutive
+	// non-advancing records, as in real Go.
+	var pongs atomic.Int64
+	pong := func(s *nbServer, b []byte) {
+		for range b {
+			f := make([]byte, 64)
+			binary.BigEndian.PutUint32(f, writers)
+			binary.BigEndian.PutUint32(f[4:], uint32(pongs.Add(1)-1))
+			if _, err := s.conn.Write(f); err != nil {
+				t.Errorf("pong: %v", err)
+			}
+		}
+	}
+	s := startNonBlockServer(t, nbServerConfig(VersionTLS13), 4096, pong)
 	c, err := Dial("tcp", s.ln.Addr().String(), testConfigClient.Clone())
 	if err != nil {
 		t.Fatal(err)
@@ -115,7 +131,6 @@ func testKeyUpdateWriteRace(t *testing.T, suite uint16) {
 		t.Fatalf("negotiated %s", CipherSuiteName(c.cipherSuite))
 	}
 
-	const writers, perWriter = 4, 300
 	msg := func(w, i int) []byte {
 		b := make([]byte, 64)
 		binary.BigEndian.PutUint32(b, uint32(w))
@@ -140,21 +155,21 @@ func testKeyUpdateWriteRace(t *testing.T, suite uint16) {
 	kuDone := make(chan error, 1)
 	go func() { // the attacker: KeyUpdate(update_requested) + data, repeatedly
 		<-start
-		kuDone <- sendKeyUpdates(c, 300, true, []byte("k"))
+		kuDone <- sendKeyUpdates(c, keyUpdates, true, []byte("k"))
 	}()
 
 	// The client reads all broadcasts; each 64-byte message must arrive intact.
 	readErr := make(chan error, 1)
 	go func() {
-		next := make([]int, writers)
+		next := make([]int, writers+1)
 		buf := make([]byte, 64)
-		for n := 0; n < writers*perWriter; n++ {
+		for n := 0; n < writers*perWriter+keyUpdates; n++ {
 			if _, err := io.ReadFull(c, buf); err != nil {
 				readErr <- err
 				return
 			}
 			w, i := int(binary.BigEndian.Uint32(buf)), int(binary.BigEndian.Uint32(buf[4:]))
-			if w >= writers || i != next[w] || !bytes.Equal(buf[8:], make([]byte, 56)) {
+			if w > writers || i != next[w] || !bytes.Equal(buf[8:], make([]byte, 56)) {
 				readErr <- errors.New("corrupted or reordered broadcast")
 				return
 			}

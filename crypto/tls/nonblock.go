@@ -361,7 +361,7 @@ func (c *Conn) ResetRawInput() { c.ReleaseBuffers() }
 // connection keeps no input buffer. It is safe to call at any time; the
 // buffers are reallocated on demand. It waits for a handshake in progress.
 func (c *Conn) ReleaseBuffers() {
-	if !c.isHandshakeComplete.Load() {
+	if DisableBufferRelease || !c.isHandshakeComplete.Load() {
 		return // the handshake goroutine owns c.in; buffers are freed afterwards
 	}
 	c.in.Lock()
@@ -378,3 +378,13 @@ func (c *Conn) ReleaseBuffers() {
 		c.hand = bytes.Buffer{}
 	}
 }
+
+// HandshakeComplete reports whether the handshake has finished, without
+// taking the handshake lock (ConnectionState waits for a handshake in
+// progress, which would block a poller).
+func (c *Conn) HandshakeComplete() bool { return c.isHandshakeComplete.Load() }
+
+// DisableBufferRelease turns ReleaseBuffers into a no-op. It exists only to
+// measure what releasing idle buffers saves (it approximates running the
+// same adapter over the standard library's crypto/tls, which keeps them).
+var DisableBufferRelease bool

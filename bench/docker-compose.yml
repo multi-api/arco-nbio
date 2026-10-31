@@ -1,0 +1,64 @@
+# arco-nbio benchmark, adapted from arco-ws bench/ (same loadgen, same limits). One server at a time:
+# ./run.sh <service> <label>. Container names start with "arco-nbio-bench-".
+name: arco-nbio-bench
+
+x-limits: &limits
+  mem_limit: ${MEM:-512m}
+  memswap_limit: ${MEM:-512m}
+  cpus: ${CPUS:-1}
+  ulimits:
+    nofile: { soft: 1048576, hard: 1048576 }
+  networks: [bench]
+
+x-app: &app
+  APP_ID: bench
+  APP_KEY: bench-key
+  APP_SECRET: bench-secret
+  APP_MAX_MESSAGE_SIZE: 10000
+  GOMEMLIMIT: ${GOMEMLIMIT:-}
+
+services:
+  # This fork: nbio + Go 1.27.3 crypto/tls with the non-blocking layer.
+  fork-tls:
+    <<: *limits
+    build: { context: server, dockerfile: Dockerfile.prebuilt, args: { BIN: server } }
+    image: arco-nbio-bench/fork
+    environment: { <<: *app, TLS: "1" }
+
+  # Same binary with idle-buffer release off: approximates the adapter over stock crypto/tls.
+  fork-tls-norelease:
+    <<: *limits
+    image: arco-nbio-bench/fork
+    environment: { <<: *app, TLS: "1", ARCO_TLS_NO_RELEASE: "1" }
+
+  # Same binary, plaintext.
+  fork-plain:
+    <<: *limits
+    image: arco-nbio-bench/fork
+    environment: { <<: *app }
+
+  # Baseline: the arco-ws spike-b binary (upstream nbio v1.7.1 + llib v1.2.4 TLS).
+  llib-tls:
+    <<: *limits
+    build: { context: server, dockerfile: Dockerfile.prebuilt, args: { BIN: spike-b-llib } }
+    image: arco-nbio-bench/llib
+    environment: { <<: *app, TLS: "1" }
+
+  loadgen:
+    build: .
+    image: arco-ws-bench/loadgen
+    profiles: [tools]
+    networks: [bench]
+    ulimits:
+      nofile: { soft: 1048576, hard: 1048576 }
+    sysctls:
+      net.ipv4.ip_local_port_range: "1024 65535"
+    environment:
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./results:/results
+      - .:/bench:ro
+
+networks:
+  bench: {}

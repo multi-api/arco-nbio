@@ -16,7 +16,7 @@ import (
 	"unicode/utf8"
 	"unsafe"
 
-	"github.com/lesismal/llib/std/crypto/tls"
+	"github.com/lesismal/nbio/crypto/tls"
 	"github.com/lesismal/nbio"
 	"github.com/lesismal/nbio/lmux"
 	"github.com/lesismal/nbio/logging"
@@ -1182,6 +1182,14 @@ func NewEngine(conf Config) *Engine {
 		c.MustExecute(func() {
 			switch vt := c.Session().(type) {
 			case ParserCloser:
+				// arco-nbio: a TLS connection closed before its handshake
+				// finished has a handshake goroutine waiting for input;
+				// closing the TLS conn releases it.
+				if hc, ok := vt.UnderlayerConn().(*Conn); ok {
+					if tc, ok := hc.Conn.(*tls.Conn); ok && !tc.HandshakeComplete() {
+						_ = tc.Close()
+					}
+				}
 				vt.CloseAndClean(err)
 			default:
 			}

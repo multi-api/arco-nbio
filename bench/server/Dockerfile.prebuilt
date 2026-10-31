@@ -1,0 +1,6 @@
+# Runtime image for host-built binaries (bench/build.sh): CGO off, linux/arm64, official alpine.
+FROM alpine:3.22
+ARG BIN=server
+COPY bin/${BIN} /usr/local/bin/server
+EXPOSE 6001
+CMD ["server"]

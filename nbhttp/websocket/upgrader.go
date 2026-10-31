@@ -16,7 +16,7 @@ import (
 	"unicode/utf8"
 	"unsafe"
 
-	"github.com/lesismal/llib/std/crypto/tls"
+	"github.com/lesismal/nbio/crypto/tls"
 	"github.com/lesismal/nbio"
 	"github.com/lesismal/nbio/logging"
 	"github.com/lesismal/nbio/nbhttp"

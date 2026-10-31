@@ -3,7 +3,7 @@ package tls
 // deprecated.
 
 import (
-	"github.com/lesismal/llib/std/crypto/tls"
+	"github.com/lesismal/nbio/crypto/tls"
 	"github.com/lesismal/nbio"
 	"github.com/lesismal/nbio/mempool"
 )
@@ -18,7 +18,7 @@ type Config = tls.Config
 //
 //go:norace
 func Dial(network, addr string, config *Config) (*tls.Conn, error) {
-	tlsConn, err := tls.Dial(network, addr, config, mempool.DefaultMemPool)
+	tlsConn, err := tls.Dial(network, addr, config)
 	if err != nil {
 		return nil, err
 	}
@@ -76,10 +76,11 @@ func WrapData(h func(c *nbio.Conn, tlsConn *Conn, data []byte), args ...interfac
 	return func(c *nbio.Conn, data []byte) {
 		if session := c.Session(); session != nil {
 			if tlsConn, ok := session.(*Conn); ok {
-				_, _ = tlsConn.Append(data)
+				defer tlsConn.ResetOrFreeBuffer()
 				buffer := getBuffer()
 				for {
-					n, err := tlsConn.Read(buffer)
+					_, n, err := tlsConn.AppendAndRead(data, buffer)
+					data = nil
 					if err != nil {
 						_ = c.Close()
 						return

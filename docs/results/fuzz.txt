@@ -1,0 +1,14 @@
+== FuzzNonBlockRecordStream
+fuzz: elapsed: 2m54s, execs: 4317 (3/sec), new interesting: 71 (total: 76)
+fuzz: elapsed: 2m57s, execs: 4317 (0/sec), new interesting: 71 (total: 76)
+fuzz: elapsed: 3m0s, execs: 4443 (42/sec), new interesting: 74 (total: 79)
+fuzz: elapsed: 3m2s, execs: 4443 (0/sec), new interesting: 74 (total: 79)
+PASS
+ok  	github.com/lesismal/nbio/crypto/tls	182.462s
+== FuzzNonBlockGarbage
+fuzz: elapsed: 2m54s, execs: 15183 (0/sec), new interesting: 23 (total: 28)
+fuzz: elapsed: 2m57s, execs: 15183 (0/sec), new interesting: 23 (total: 28)
+fuzz: elapsed: 3m0s, execs: 15183 (0/sec), new interesting: 23 (total: 28)
+fuzz: elapsed: 3m1s, execs: 15183 (0/sec), new interesting: 23 (total: 28)
+PASS
+ok  	github.com/lesismal/nbio/crypto/tls	181.458s

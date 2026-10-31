@@ -5,7 +5,7 @@ import (
 	"net"
 	"testing"
 
-	ltls "github.com/lesismal/llib/std/crypto/tls"
+	ltls "github.com/lesismal/nbio/crypto/tls"
 	"github.com/lesismal/nbio"
 )
 
