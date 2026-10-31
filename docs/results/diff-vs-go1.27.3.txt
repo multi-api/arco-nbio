@@ -1,0 +1,369 @@
+diff -ru -x internal -x UPSTREAM -x nonblock.go -x nonblock_test.go -x arco_* go/go1.27.3/src/crypto/tls/auth_test.go crypto/tls/auth_test.go
+--- go/go1.27.3/src/crypto/tls/auth_test.go	2026-10-19 22:26:06
++++ crypto/tls/auth_test.go	2026-10-31 20:36:48
+@@ -7,10 +7,10 @@
+ import (
+ 	"crypto"
+ 	"crypto/fips140"
+-	"crypto/internal/cryptotest"
++	"github.com/lesismal/nbio/crypto/tls/internal/cryptotest"
+ 	"crypto/mldsa"
+-	"crypto/tls/internal/fips140tls"
+-	"internal/testenv"
++	"github.com/lesismal/nbio/crypto/tls/internal/fips140tls"
++	"github.com/lesismal/nbio/crypto/tls/internal/testenv"
+ 	"strconv"
+ 	"testing"
+ )
+diff -ru -x internal -x UPSTREAM -x nonblock.go -x nonblock_test.go -x arco_* go/go1.27.3/src/crypto/tls/bogo_shim_test.go crypto/tls/bogo_shim_test.go
+--- go/go1.27.3/src/crypto/tls/bogo_shim_test.go	2026-10-19 22:26:06
++++ crypto/tls/bogo_shim_test.go	2026-10-31 20:36:48
+@@ -6,7 +6,7 @@
+ 
+ import (
+ 	"bytes"
+-	"crypto/internal/cryptotest"
++	"github.com/lesismal/nbio/crypto/tls/internal/cryptotest"
+ 	"crypto/x509"
+ 	"encoding/base64"
+ 	"encoding/json"
+@@ -15,8 +15,8 @@
+ 	"flag"
+ 	"fmt"
+ 	"html/template"
+-	"internal/byteorder"
+-	"internal/testenv"
++	"github.com/lesismal/nbio/crypto/tls/internal/byteorder"
++	"github.com/lesismal/nbio/crypto/tls/internal/testenv"
+ 	"io"
+ 	"log"
+ 	"net"
+diff -ru -x internal -x UPSTREAM -x nonblock.go -x nonblock_test.go -x arco_* go/go1.27.3/src/crypto/tls/certificates_generator_test.go crypto/tls/certificates_generator_test.go
+--- go/go1.27.3/src/crypto/tls/certificates_generator_test.go	2026-10-19 22:26:06
++++ crypto/tls/certificates_generator_test.go	2026-10-31 20:36:48
+@@ -11,7 +11,7 @@
+ 	"crypto/ecdsa"
+ 	"crypto/ed25519"
+ 	"crypto/elliptic"
+-	icryptotest "crypto/internal/cryptotest"
++	icryptotest "github.com/lesismal/nbio/crypto/tls/internal/cryptotest"
+ 	"crypto/mldsa"
+ 	"crypto/rand"
+ 	"crypto/rsa"
+@@ -20,7 +20,7 @@
+ 	"encoding/pem"
+ 	"flag"
+ 	"fmt"
+-	"internal/testenv"
++	"github.com/lesismal/nbio/crypto/tls/internal/testenv"
+ 	"math/big"
+ 	"os"
+ 	"strings"
+diff -ru -x internal -x UPSTREAM -x nonblock.go -x nonblock_test.go -x arco_* go/go1.27.3/src/crypto/tls/cipher_suites.go crypto/tls/cipher_suites.go
+--- go/go1.27.3/src/crypto/tls/cipher_suites.go	2026-10-19 22:26:06
++++ crypto/tls/cipher_suites.go	2026-10-31 20:36:48
+@@ -10,16 +10,15 @@
+ 	"crypto/cipher"
+ 	"crypto/des"
+ 	"crypto/hmac"
+-	"crypto/internal/boring"
+-	fipsaes "crypto/internal/fips140/aes"
+-	"crypto/internal/fips140/aes/gcm"
++	"github.com/lesismal/nbio/crypto/tls/internal/boring"
++	"github.com/lesismal/nbio/crypto/tls/internal/fips140/aes/gcm"
+ 	"crypto/rc4"
+ 	"crypto/sha1"
+ 	"crypto/sha256"
+ 	_ "crypto/sha512" // for crypto.SHA384
+ 	"fmt"
+ 	"hash"
+-	"internal/cpu"
++	"github.com/lesismal/nbio/crypto/tls/internal/cpu"
+ 	"runtime"
+ 	_ "unsafe" // for linkname
+ 
+@@ -519,7 +518,7 @@
+ 		aead, err = boring.NewGCMTLS(aes)
+ 	} else {
+ 		boring.Unreachable()
+-		aead, err = gcm.NewGCMForTLS12(aes.(*fipsaes.Block))
++		aead, err = gcm.NewGCMForTLS12(aes)
+ 	}
+ 	if err != nil {
+ 		panic(err)
+@@ -553,7 +552,7 @@
+ 		aead, err = boring.NewGCMTLS13(aes)
+ 	} else {
+ 		boring.Unreachable()
+-		aead, err = gcm.NewGCMForTLS13(aes.(*fipsaes.Block))
++		aead, err = gcm.NewGCMForTLS13(aes)
+ 	}
+ 	if err != nil {
+ 		panic(err)
+diff -ru -x internal -x UPSTREAM -x nonblock.go -x nonblock_test.go -x arco_* go/go1.27.3/src/crypto/tls/common.go crypto/tls/common.go
+--- go/go1.27.3/src/crypto/tls/common.go	2026-10-19 22:26:06
++++ crypto/tls/common.go	2026-10-31 20:36:48
+@@ -17,11 +17,11 @@
+ 	"crypto/rand"
+ 	"crypto/rsa"
+ 	"crypto/sha512"
+-	"crypto/tls/internal/fips140tls"
++	"github.com/lesismal/nbio/crypto/tls/internal/fips140tls"
+ 	"crypto/x509"
+ 	"errors"
+ 	"fmt"
+-	"internal/godebug"
++	"github.com/lesismal/nbio/crypto/tls/internal/godebug"
+ 	"io"
+ 	"net"
+ 	"runtime"
+diff -ru -x internal -x UPSTREAM -x nonblock.go -x nonblock_test.go -x arco_* go/go1.27.3/src/crypto/tls/defaults.go crypto/tls/defaults.go
+--- go/go1.27.3/src/crypto/tls/defaults.go	2026-10-19 22:26:06
++++ crypto/tls/defaults.go	2026-10-31 20:36:48
+@@ -5,7 +5,7 @@
+ package tls
+ 
+ import (
+-	"internal/godebug"
++	"github.com/lesismal/nbio/crypto/tls/internal/godebug"
+ 	"slices"
+ 	_ "unsafe" // for linkname
+ )
+diff -ru -x internal -x UPSTREAM -x nonblock.go -x nonblock_test.go -x arco_* go/go1.27.3/src/crypto/tls/defaults_fips140.go crypto/tls/defaults_fips140.go
+--- go/go1.27.3/src/crypto/tls/defaults_fips140.go	2026-10-19 22:26:06
++++ crypto/tls/defaults_fips140.go	2026-10-31 20:36:48
+@@ -10,7 +10,7 @@
+ 	"crypto/ecdsa"
+ 	"crypto/ed25519"
+ 	"crypto/elliptic"
+-	"crypto/internal/boring"
++	"github.com/lesismal/nbio/crypto/tls/internal/boring"
+ 	"crypto/mldsa"
+ 	"crypto/rsa"
+ 	"crypto/x509"
+diff -ru -x internal -x UPSTREAM -x nonblock.go -x nonblock_test.go -x arco_* go/go1.27.3/src/crypto/tls/fips140_test.go crypto/tls/fips140_test.go
+--- go/go1.27.3/src/crypto/tls/fips140_test.go	2026-10-19 22:26:06
++++ crypto/tls/fips140_test.go	2026-10-31 20:36:48
+@@ -8,15 +8,15 @@
+ 	"crypto/ecdsa"
+ 	"crypto/elliptic"
+ 	"crypto/fips140"
+-	"crypto/internal/boring"
+-	"crypto/internal/cryptotest"
++	"github.com/lesismal/nbio/crypto/tls/internal/boring"
++	"github.com/lesismal/nbio/crypto/tls/internal/cryptotest"
+ 	"crypto/mldsa"
+ 	"crypto/rand"
+ 	"crypto/rsa"
+ 	"crypto/x509"
+ 	"crypto/x509/pkix"
+ 	"fmt"
+-	"internal/testenv"
++	"github.com/lesismal/nbio/crypto/tls/internal/testenv"
+ 	"math/big"
+ 	"net"
+ 	"runtime"
+diff -ru -x internal -x UPSTREAM -x nonblock.go -x nonblock_test.go -x arco_* go/go1.27.3/src/crypto/tls/handshake_client.go crypto/tls/handshake_client.go
+--- go/go1.27.3/src/crypto/tls/handshake_client.go	2026-10-19 22:26:06
++++ crypto/tls/handshake_client.go	2026-10-31 20:36:48
+@@ -11,16 +11,16 @@
+ 	"crypto/ecdsa"
+ 	"crypto/ed25519"
+ 	"crypto/hpke"
+-	"crypto/internal/fips140/tls13"
++	"github.com/lesismal/nbio/crypto/tls/internal/fips140/tls13"
+ 	"crypto/mldsa"
+ 	"crypto/rsa"
+ 	"crypto/subtle"
+-	"crypto/tls/internal/fips140tls"
++	"github.com/lesismal/nbio/crypto/tls/internal/fips140tls"
+ 	"crypto/x509"
+ 	"errors"
+ 	"fmt"
+ 	"hash"
+-	"internal/godebug"
++	"github.com/lesismal/nbio/crypto/tls/internal/godebug"
+ 	"io"
+ 	"net"
+ 	"slices"
+diff -ru -x internal -x UPSTREAM -x nonblock.go -x nonblock_test.go -x arco_* go/go1.27.3/src/crypto/tls/handshake_client_test.go crypto/tls/handshake_client_test.go
+--- go/go1.27.3/src/crypto/tls/handshake_client_test.go	2026-10-19 22:26:06
++++ crypto/tls/handshake_client_test.go	2026-10-31 20:36:48
+@@ -11,7 +11,7 @@
+ 	"crypto/elliptic"
+ 	"crypto/rand"
+ 	"crypto/rsa"
+-	"crypto/tls/internal/fips140tls"
++	"github.com/lesismal/nbio/crypto/tls/internal/fips140tls"
+ 	"crypto/x509"
+ 	"crypto/x509/pkix"
+ 	"encoding/base64"
+@@ -19,7 +19,7 @@
+ 	"encoding/pem"
+ 	"errors"
+ 	"fmt"
+-	"internal/byteorder"
++	"github.com/lesismal/nbio/crypto/tls/internal/byteorder"
+ 	"io"
+ 	"math/big"
+ 	"net"
+diff -ru -x internal -x UPSTREAM -x nonblock.go -x nonblock_test.go -x arco_* go/go1.27.3/src/crypto/tls/handshake_client_tls13.go crypto/tls/handshake_client_tls13.go
+--- go/go1.27.3/src/crypto/tls/handshake_client_tls13.go	2026-10-19 22:26:06
++++ crypto/tls/handshake_client_tls13.go	2026-10-31 20:36:48
+@@ -10,7 +10,7 @@
+ 	"crypto"
+ 	"crypto/hkdf"
+ 	"crypto/hmac"
+-	"crypto/internal/fips140/tls13"
++	"github.com/lesismal/nbio/crypto/tls/internal/fips140/tls13"
+ 	"crypto/rsa"
+ 	"crypto/subtle"
+ 	"errors"
+diff -ru -x internal -x UPSTREAM -x nonblock.go -x nonblock_test.go -x arco_* go/go1.27.3/src/crypto/tls/handshake_server.go crypto/tls/handshake_server.go
+--- go/go1.27.3/src/crypto/tls/handshake_server.go	2026-10-19 22:26:06
++++ crypto/tls/handshake_server.go	2026-10-31 20:36:48
+@@ -12,7 +12,7 @@
+ 	"crypto/mldsa"
+ 	"crypto/rsa"
+ 	"crypto/subtle"
+-	"crypto/tls/internal/fips140tls"
++	"github.com/lesismal/nbio/crypto/tls/internal/fips140tls"
+ 	"crypto/x509"
+ 	"errors"
+ 	"fmt"
+diff -ru -x internal -x UPSTREAM -x nonblock.go -x nonblock_test.go -x arco_* go/go1.27.3/src/crypto/tls/handshake_server_test.go crypto/tls/handshake_server_test.go
+--- go/go1.27.3/src/crypto/tls/handshake_server_test.go	2026-10-19 22:26:06
++++ crypto/tls/handshake_server_test.go	2026-10-31 20:36:48
+@@ -10,15 +10,15 @@
+ 	"crypto"
+ 	"crypto/ecdh"
+ 	"crypto/elliptic"
+-	internalrand "crypto/internal/rand"
++	internalrand "github.com/lesismal/nbio/crypto/tls/internal/rand"
+ 	"crypto/rand"
+-	"crypto/tls/internal/fips140tls"
++	"github.com/lesismal/nbio/crypto/tls/internal/fips140tls"
+ 	"crypto/x509"
+ 	"crypto/x509/pkix"
+ 	"encoding/pem"
+ 	"errors"
+ 	"fmt"
+-	"internal/testenv"
++	"github.com/lesismal/nbio/crypto/tls/internal/testenv"
+ 	"io"
+ 	"net"
+ 	"os"
+diff -ru -x internal -x UPSTREAM -x nonblock.go -x nonblock_test.go -x arco_* go/go1.27.3/src/crypto/tls/handshake_server_tls13.go crypto/tls/handshake_server_tls13.go
+--- go/go1.27.3/src/crypto/tls/handshake_server_tls13.go	2026-10-19 22:26:06
++++ crypto/tls/handshake_server_tls13.go	2026-10-31 20:36:48
+@@ -11,14 +11,14 @@
+ 	"crypto/hkdf"
+ 	"crypto/hmac"
+ 	"crypto/hpke"
+-	"crypto/internal/fips140/tls13"
++	"github.com/lesismal/nbio/crypto/tls/internal/fips140/tls13"
+ 	"crypto/rsa"
+-	"crypto/tls/internal/fips140tls"
++	"github.com/lesismal/nbio/crypto/tls/internal/fips140tls"
+ 	"crypto/x509"
+ 	"errors"
+ 	"fmt"
+ 	"hash"
+-	"internal/byteorder"
++	"github.com/lesismal/nbio/crypto/tls/internal/byteorder"
+ 	"io"
+ 	"slices"
+ 	"sort"
+diff -ru -x internal -x UPSTREAM -x nonblock.go -x nonblock_test.go -x arco_* go/go1.27.3/src/crypto/tls/handshake_test.go crypto/tls/handshake_test.go
+--- go/go1.27.3/src/crypto/tls/handshake_test.go	2026-10-19 22:26:06
++++ crypto/tls/handshake_test.go	2026-10-31 20:36:48
+@@ -8,12 +8,12 @@
+ 	"bufio"
+ 	"bytes"
+ 	"context"
+-	"crypto/internal/boring"
++	"github.com/lesismal/nbio/crypto/tls/internal/boring"
+ 	"encoding/hex"
+ 	"errors"
+ 	"flag"
+ 	"fmt"
+-	"internal/testenv"
++	"github.com/lesismal/nbio/crypto/tls/internal/testenv"
+ 	"io"
+ 	"net"
+ 	"os"
+diff -ru -x internal -x UPSTREAM -x nonblock.go -x nonblock_test.go -x arco_* go/go1.27.3/src/crypto/tls/key_schedule.go crypto/tls/key_schedule.go
+--- go/go1.27.3/src/crypto/tls/key_schedule.go	2026-10-19 22:26:06
++++ crypto/tls/key_schedule.go	2026-10-31 20:36:48
+@@ -9,7 +9,7 @@
+ 	"crypto/ecdh"
+ 	"crypto/fips140"
+ 	"crypto/hmac"
+-	"crypto/internal/fips140/tls13"
++	"github.com/lesismal/nbio/crypto/tls/internal/fips140/tls13"
+ 	"crypto/mlkem"
+ 	"errors"
+ 	"hash"
+diff -ru -x internal -x UPSTREAM -x nonblock.go -x nonblock_test.go -x arco_* go/go1.27.3/src/crypto/tls/key_schedule_test.go crypto/tls/key_schedule_test.go
+--- go/go1.27.3/src/crypto/tls/key_schedule_test.go	2026-10-19 22:26:06
++++ crypto/tls/key_schedule_test.go	2026-10-31 20:36:48
+@@ -6,7 +6,7 @@
+ 
+ import (
+ 	"bytes"
+-	"crypto/internal/fips140/tls13"
++	"github.com/lesismal/nbio/crypto/tls/internal/fips140/tls13"
+ 	"crypto/sha256"
+ 	"encoding/hex"
+ 	"strings"
+diff -ru -x internal -x UPSTREAM -x nonblock.go -x nonblock_test.go -x arco_* go/go1.27.3/src/crypto/tls/link_test.go crypto/tls/link_test.go
+--- go/go1.27.3/src/crypto/tls/link_test.go	2026-10-19 22:26:06
++++ crypto/tls/link_test.go	2026-10-31 20:36:48
+@@ -6,7 +6,7 @@
+ 
+ import (
+ 	"bytes"
+-	"internal/testenv"
++	"github.com/lesismal/nbio/crypto/tls/internal/testenv"
+ 	"os"
+ 	"path/filepath"
+ 	"testing"
+diff -ru -x internal -x UPSTREAM -x nonblock.go -x nonblock_test.go -x arco_* go/go1.27.3/src/crypto/tls/prf.go crypto/tls/prf.go
+--- go/go1.27.3/src/crypto/tls/prf.go	2026-10-19 22:26:06
++++ crypto/tls/prf.go	2026-10-31 20:36:48
+@@ -7,7 +7,7 @@
+ import (
+ 	"crypto"
+ 	"crypto/hmac"
+-	"crypto/internal/fips140/tls12"
++	"github.com/lesismal/nbio/crypto/tls/internal/fips140/tls12"
+ 	"crypto/md5"
+ 	"crypto/sha1"
+ 	"crypto/sha256"
+diff -ru -x internal -x UPSTREAM -x nonblock.go -x nonblock_test.go -x arco_* go/go1.27.3/src/crypto/tls/tls_test.go crypto/tls/tls_test.go
+--- go/go1.27.3/src/crypto/tls/tls_test.go	2026-10-19 22:26:06
++++ crypto/tls/tls_test.go	2026-10-31 20:36:48
+@@ -12,11 +12,11 @@
+ 	"crypto/ecdsa"
+ 	"crypto/elliptic"
+ 	"crypto/fips140"
+-	"crypto/internal/boring"
+-	"crypto/internal/cryptotest"
++	"github.com/lesismal/nbio/crypto/tls/internal/boring"
++	"github.com/lesismal/nbio/crypto/tls/internal/cryptotest"
+ 	"crypto/mldsa"
+ 	"crypto/rand"
+-	"crypto/tls/internal/fips140tls"
++	"github.com/lesismal/nbio/crypto/tls/internal/fips140tls"
+ 	"crypto/x509"
+ 	"crypto/x509/pkix"
+ 	"encoding/asn1"
+@@ -24,7 +24,7 @@
+ 	"encoding/pem"
+ 	"errors"
+ 	"fmt"
+-	"internal/testenv"
++	"github.com/lesismal/nbio/crypto/tls/internal/testenv"
+ 	"io"
+ 	"math"
+ 	"math/big"

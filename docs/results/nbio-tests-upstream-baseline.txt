@@ -1,0 +1,8 @@
+ok  	github.com/lesismal/nbio	2.783s
+ok  	github.com/lesismal/nbio/lmux	1.312s
+ok  	github.com/lesismal/nbio/logging	0.414s
+ok  	github.com/lesismal/nbio/mempool	1.114s
+ok  	github.com/lesismal/nbio/nbhttp	122.418s
+ok  	github.com/lesismal/nbio/nbhttp/websocket	1.830s
+ok  	github.com/lesismal/nbio/taskpool	1.244s [no tests to run]
+ok  	github.com/lesismal/nbio/timer	3.556s

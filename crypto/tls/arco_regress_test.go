@@ -363,3 +363,35 @@ func waitFor(t testing.TB, cond func() bool) {
 		time.Sleep(2 * time.Millisecond)
 	}
 }
+
+// TestAuditKeyUpdateWithTrailingHandshakeData: GO-2026-4340 / CVE-2025-61730
+// and its follow-up GO-2026-4870. Handshake bytes that arrive in the same
+// record as a KeyUpdate were encrypted under the old key; the server must
+// reject them instead of reading them at the new key (llib had no check), and
+// must not deadlock on several KeyUpdates in one record.
+func TestAuditKeyUpdateWithTrailingHandshakeData(t *testing.T) {
+	s := startNonBlockServer(t, nbServerConfig(VersionTLS13), 4096, nil)
+	c, err := Dial("tcp", s.ln.Addr().String(), testConfigClient.Clone())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer c.Close()
+	ku, err := (&keyUpdateMsg{updateRequested: true}).marshal()
+	if err != nil {
+		t.Fatal(err)
+	}
+	c.out.Lock()
+	_, err = c.writeRecordLocked(recordTypeHandshake, append(append([]byte{}, ku...), ku...))
+	c.out.Unlock()
+	if err != nil {
+		t.Fatal(err)
+	}
+	select {
+	case err := <-s.done:
+		if err == nil || err.Error() != "tls: handshake buffer not empty before setting read traffic secret" {
+			t.Fatalf("server stopped with %v", err)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("server accepted handshake data spanning a key change (or deadlocked)")
+	}
+}

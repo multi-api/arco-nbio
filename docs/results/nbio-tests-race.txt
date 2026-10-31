@@ -1,0 +1,412 @@
+2026/10/31 20:54:41.971 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:9999"], MaxOpenFiles: 2097152
+2026/10/31 20:54:41.972 [INF] NBIO Engine[NB] start with [2 eventloop, MaxOpenFiles: 2097152]
+2026/10/31 20:54:41 connected, local addr: 127.0.0.1:62479, remote addr: 127.0.0.1:9999
+2026/10/31 20:54:41 connected, local addr: 127.0.0.1:62480, remote addr: 127.0.0.1:9999
+2026/10/31 20:54:41.979 [INF] NBIO[NB] stop
+2026/10/31 20:54:42.047 [INF] NBIO Engine[NB] start with [2 eventloop, MaxOpenFiles: 2097152]
+2026/10/31 20:54:43.050 [INF] NBIO[NB] stop
+2026/10/31 20:54:43.056 [INF] NBIO Engine[NB] start with [1 eventloop, MaxOpenFiles: 2097152]
+2026/10/31 20:54:43 Dial tcp4: 127.0.0.1:62583, 127.0.0.1:9999, <nil>
+2026/10/31 20:54:43.263 [ERR] Timer[NB] async call failed: invalid send size for sendfile: 73648472, 33554432
+goroutine 29 [running]:
+github.com/lesismal/nbio/timer.(*Timer).Async.func1.1.1()
+	/Users/jgamboa/Herd/arco-nbio/timer/timer.go:105 +0x64
+panic({0x100c637f0?, 0xc003212000?})
+	/Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/runtime/panic.go:859 +0x120
+github.com/lesismal/nbio.init.1.func4(0xc0021120d0, {0x100a53994?, 0xc0043a9eb8?})
+	/Users/jgamboa/Herd/arco-nbio/nbio_test.go:88 +0x184
+github.com/lesismal/nbio.(*Engine).OnClose.func1.1()
+	/Users/jgamboa/Herd/arco-nbio/engine.go:339 +0xa0
+github.com/lesismal/nbio/timer.(*Timer).Async.func1.1(0xc0000b6300, 0xc00430a000)
+	/Users/jgamboa/Herd/arco-nbio/timer/timer.go:109 +0x6c
+github.com/lesismal/nbio/timer.(*Timer).Async.func1()
+	/Users/jgamboa/Herd/arco-nbio/timer/timer.go:110 +0x60
+created by github.com/lesismal/nbio/timer.(*Timer).Async in goroutine 7
+	/Users/jgamboa/Herd/arco-nbio/timer/timer.go:83 +0xf4
+
+
+2026/10/31 20:54:43.266 [INF] NBIO Engine[NB] start with [2 eventloop, MaxOpenFiles: 2097152]
+2026/10/31 20:54:43 onOpen: 127.0.0.1:9999, 127.0.0.1:52660
+2026/10/31 20:54:43 onData: 127.0.0.1:9999 127.0.0.1:52660 test timeout
+2026/10/31 20:54:43 onClose: 127.0.0.1:52660 read timeout
+2026/10/31 20:54:43 test udp conn timeout success
+2026/10/31 20:54:43 send msg success: 127.0.0.1:57350, message-2
+2026/10/31 20:54:43 onOpen: 127.0.0.1:9999, 127.0.0.1:57350
+2026/10/31 20:54:43 onData: 127.0.0.1:9999 127.0.0.1:57350 message-2
+2026/10/31 20:54:43 send msg success: 127.0.0.1:51493, message-0
+2026/10/31 20:54:43 onOpen: 127.0.0.1:9999, 127.0.0.1:51493
+2026/10/31 20:54:43 onData: 127.0.0.1:9999 127.0.0.1:51493 message-0
+2026/10/31 20:54:43 recv msg success: 127.0.0.1:51493, message-0
+2026/10/31 20:54:43 send msg success: 127.0.0.1:51493, message-1
+2026/10/31 20:54:43 recv msg success: 127.0.0.1:57350, message-2
+2026/10/31 20:54:43 onData: 127.0.0.1:9999 127.0.0.1:51493 message-1
+2026/10/31 20:54:43 send msg success: 127.0.0.1:57350, message-3
+2026/10/31 20:54:43 recv msg success: 127.0.0.1:51493, message-1
+2026/10/31 20:54:43 onData: 127.0.0.1:9999 127.0.0.1:57350 message-3
+2026/10/31 20:54:43 recv msg success: 127.0.0.1:57350, message-3
+2026/10/31 20:54:43 onOpen: 127.0.0.1:59138 127.0.0.1:9999
+2026/10/31 20:54:43 onOpen: 127.0.0.1:9999 127.0.0.1:59138
+2026/10/31 20:54:43 OnData: 127.0.0.1:9999 127.0.0.1:59138 from client
+2026/10/31 20:54:43 OnData: 127.0.0.1:59138 127.0.0.1:9999 from server
+2026/10/31 20:54:43 OnData: 127.0.0.1:9999 127.0.0.1:59138 from client
+2026/10/31 20:54:43 OnData: 127.0.0.1:59138 127.0.0.1:9999 from server
+2026/10/31 20:54:43 OnData: 127.0.0.1:9999 127.0.0.1:59138 from client
+2026/10/31 20:54:43 OnData: 127.0.0.1:59138 127.0.0.1:9999 from server
+2026/10/31 20:54:43 onClose: 127.0.0.1:59138 127.0.0.1:9999 <nil>
+2026/10/31 20:54:43 onClose: 127.0.0.1:9999 127.0.0.1:57350 <nil>
+2026/10/31 20:54:43 onClose: 127.0.0.1:9999 127.0.0.1:51493 <nil>
+2026/10/31 20:54:43 onClose: 127.0.0.1:9999 127.0.0.1:59138 <nil>
+2026/10/31 20:54:43.890 [INF] NBIO[NB] stop
+2026/10/31 20:54:43.890 [INF] NBIO Engine[udp-testing] start with [1 eventloop], listen on: ["tcp@127.0.0.1:10001"], MaxOpenFiles: 2097152
+2026/10/31 20:54:43 TestTestDialAsync[tcp, 127.0.0.1:10001] OnConnected: 127.0.0.1:62584, 127.0.0.1:10001, <nil>
+2026/10/31 20:54:43 TestDialAsync[tcp, 127.0.0.1:10001] OnOpen: 127.0.0.1:10001, 127.0.0.1:62584
+2026/10/31 20:54:43 TestTestDialAsync[tcp, 127.0.0.1:10001] OnConnected Write n: 5
+2026/10/31 20:54:43 TestDialAsync[tcp, 127.0.0.1:10001] Server OnData: 127.0.0.1:10001, 127.0.0.1:62584, hello
+2026/10/31 20:54:43 TestDialAsync[tcp, 127.0.0.1:10001] Client OnData: 127.0.0.1:62584, 127.0.0.1:10001, hello
+2026/10/31 20:54:43 TestDialAsync[tcp, 127.0.0.1:10001] OnClose: 127.0.0.1:62584, 127.0.0.1:10001
+2026/10/31 20:54:43 TestDialAsync[tcp, 127.0.0.1:10001] OnClose: 127.0.0.1:10001, 127.0.0.1:62584
+2026/10/31 20:54:43.993 [INF] NBIO[udp-testing] stop
+2026/10/31 20:54:43.997 [INF] NBIO Engine[udp-testing] start with [1 eventloop], listen on: ["udp@127.0.0.1:10001"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44 TestTestDialAsync[udp, 127.0.0.1:10001] OnConnected: 127.0.0.1:57588, 127.0.0.1:10001, <nil>
+2026/10/31 20:54:44 TestTestDialAsync[udp, 127.0.0.1:10001] OnConnected Write n: 5
+2026/10/31 20:54:44 TestDialAsync[udp, 127.0.0.1:10001] OnOpen: 127.0.0.1:10001, 127.0.0.1:57588
+2026/10/31 20:54:44 TestDialAsync[udp, 127.0.0.1:10001] Server OnData: 127.0.0.1:10001, 127.0.0.1:57588, hello
+2026/10/31 20:54:44 TestDialAsync[udp, 127.0.0.1:10001] Client OnData: 127.0.0.1:57588, 127.0.0.1:10001, hello
+2026/10/31 20:54:44 TestDialAsync[udp, 127.0.0.1:10001] OnClose: 127.0.0.1:57588, 127.0.0.1:10001
+2026/10/31 20:54:44 TestDialAsync[udp, 127.0.0.1:10001] OnClose: 127.0.0.1:10001, 127.0.0.1:57588
+2026/10/31 20:54:44.098 [INF] NBIO[udp-testing] stop
+2026/10/31 20:54:44.099 [INF] NBIO Engine[udp-testing] start with [1 eventloop], listen on: ["unix@unix.server"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44 TestDialAsync[unix, unix.server] OnOpen: unix.server, 
+2026/10/31 20:54:44 TestTestDialAsync[unix, unix.server] OnConnected: , unix.server, <nil>
+2026/10/31 20:54:44 TestTestDialAsync[unix, unix.server] OnConnected Write n: 5
+2026/10/31 20:54:44 TestDialAsync[unix, unix.server] Server OnData: unix.server, , hello
+2026/10/31 20:54:44 TestDialAsync[unix, unix.server] Client OnData: , unix.server, hello
+2026/10/31 20:54:44 TestDialAsync[unix, unix.server] OnClose: , unix.server
+2026/10/31 20:54:44 TestDialAsync[unix, unix.server] OnClose: unix.server, 
+2026/10/31 20:54:44.201 [INF] NBIO[udp-testing] stop
+2026/10/31 20:54:44.202 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["unix@./test.unix"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44 unix onOpen: ./test.unix, 
+==================
+WARNING: DATA RACE
+Read at 0x00c004282048 by goroutine 164:
+  github.com/lesismal/nbio.TestUnix.func2()
+      /Users/jgamboa/Herd/arco-nbio/nbio_test.go:529 +0x34
+  github.com/lesismal/nbio.(*Engine).OnOpen.func1()
+      /Users/jgamboa/Herd/arco-nbio/engine.go:325 +0x50
+  github.com/lesismal/nbio.(*poller).addConn()
+      /Users/jgamboa/Herd/arco-nbio/poller_kqueue.go:76 +0x74
+  testing.tRunner()
+      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x164
+  testing.(*T).Run.gowrap1()
+      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2260 +0x34
+
+Previous write at 0x00c004282048 by goroutine 167:
+  github.com/lesismal/nbio.TestUnix.func2()
+      /Users/jgamboa/Herd/arco-nbio/nbio_test.go:530 +0x4c
+  github.com/lesismal/nbio.(*Engine).OnOpen.func1()
+      /Users/jgamboa/Herd/arco-nbio/engine.go:325 +0x50
+  github.com/lesismal/nbio.(*poller).addConn()
+      /Users/jgamboa/Herd/arco-nbio/poller_kqueue.go:76 +0x74
+
+Goroutine 164 (running) created at:
+  testing.(*T).Run()
+      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2260 +0x7bc
+  testing.runTests.func1()
+      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2744 +0x74
+  testing.tRunner()
+      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x164
+  testing.runTests()
+      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2742 +0x7a0
+  testing.(*M).Run()
+      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2602 +0xb38
+  main.main()
+      _testmain.go:68 +0x100
+
+Goroutine 167 (running) created at:
+  github.com/lesismal/nbio.(*Engine).Start()
+      /Users/jgamboa/Herd/arco-nbio/engine_unix.go:95 +0x388
+  testing.tRunner()
+      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x164
+  testing.(*T).Run.gowrap1()
+      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2260 +0x34
+==================
+2026/10/31 20:54:44 unix onOpen: , ./test.unix
+2026/10/31 20:54:44 unix onData: ./test.unix  hello
+2026/10/31 20:54:44 unix onData:  ./test.unix world
+2026/10/31 20:54:44 unix onClose:  ./test.unix <nil>
+2026/10/31 20:54:44 unix onClose: ./test.unix  EOF
+2026/10/31 20:54:44.304 [INF] NBIO[NB] stop
+--- FAIL: TestUnix (0.10s)
+    testing.go:1867: race detected during execution of test
+2026/10/31 20:54:44.305 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.310 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62585"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.311 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.311 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62586"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.313 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.313 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62587"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.314 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.319 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62588"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.320 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.320 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62589"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.321 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.321 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62590"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.322 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.326 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62591"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.327 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.328 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62592"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.329 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.329 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62593"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.330 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.331 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62594"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.333 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.335 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62595"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.335 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.336 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62596"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.337 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.339 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62597"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.340 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.343 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62598"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.343 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.344 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62599"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.344 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.347 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62600"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.352 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.353 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62601"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.353 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.354 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62602"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.355 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.357 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62603"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.358 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.359 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62604"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.360 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.360 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62605"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.361 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.363 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62606"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.364 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.365 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62607"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.366 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.367 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62608"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.367 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.369 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62609"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.370 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.372 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62610"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.372 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.373 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62611"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.374 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.375 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62612"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.379 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.380 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62613"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.381 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.381 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62614"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.382 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.385 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62615"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.387 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.392 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62616"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.393 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.393 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62617"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.394 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.397 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62618"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.398 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.399 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62619"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.399 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.400 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62620"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.401 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.403 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62621"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.404 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.405 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62622"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.406 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.406 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62623"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.407 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.408 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62624"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.409 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.410 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62625"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.411 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.411 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62626"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.412 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.415 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62627"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.416 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.416 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62628"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.417 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.417 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62629"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.418 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.420 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62630"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.421 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.422 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62631"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.423 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.423 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62632"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.424 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.426 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62633"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.427 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.428 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62634"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.429 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.429 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62635"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.430 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.433 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62636"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.433 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.434 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62637"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.435 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.435 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62638"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.436 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.438 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62639"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.439 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.439 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62640"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.440 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.441 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62641"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.442 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.444 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62642"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.445 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.445 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62643"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.446 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.446 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62644"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.447 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.450 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62645"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.451 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.452 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62646"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.452 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.453 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62647"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.453 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.456 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62648"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.457 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.457 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62649"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.458 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.458 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62650"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.459 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.462 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62651"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.463 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.463 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62652"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.464 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.464 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62653"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.465 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.468 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62654"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.468 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.469 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62655"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.470 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.470 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62656"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.471 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.473 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62657"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.474 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.474 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62658"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.475 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.475 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62659"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.476 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.479 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62660"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.480 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.480 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62661"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.481 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.481 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62662"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.482 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.484 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62663"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.485 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.486 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62664"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.486 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.487 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62665"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.488 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.490 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62666"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.491 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.492 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62667"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.493 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.493 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62668"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.494 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.496 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62669"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.497 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.497 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62670"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.499 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.499 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62671"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.500 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.500 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62672"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.501 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.502 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62673"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.504 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.504 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62674"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.507 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.507 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62675"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.508 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.508 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62676"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.509 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.510 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62677"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.510 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.512 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62678"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.513 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.513 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62679"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.514 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.515 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62680"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.516 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.517 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62681"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.518 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.519 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62682"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.520 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.520 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62683"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.521 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.522 [INF] NBIO Engine[NB] start with [2 eventloop], listen on: ["tcp@127.0.0.1:62684"], MaxOpenFiles: 2097152
+2026/10/31 20:54:44.522 [INF] NBIO[NB] stop
+2026/10/31 20:54:44.523 [INF] NBIO Engine[NB] start with [2 eventloop, MaxOpenFiles: 2097152]
+2026/10/31 20:54:44.525 [INF] NBIO[NB] stop
+FAIL
+FAIL	github.com/lesismal/nbio	2.904s
+ok  	github.com/lesismal/nbio/crypto/tls	32.912s
+==================
+WARNING: DATA RACE
+Read at 0x00c0000101b0 by goroutine 30:
+  github.com/lesismal/nbio/lmux.TestListenerMux.func3.1()
+      /Users/jgamboa/Herd/arco-nbio/lmux/lmux_test.go:65 +0xf0
+
+Previous write at 0x00c0000101b0 by goroutine 31:
+  github.com/lesismal/nbio/lmux.TestListenerMux.func3.1()
+      /Users/jgamboa/Herd/arco-nbio/lmux/lmux_test.go:65 +0x17c
+
+Goroutine 30 (running) created at:
+  github.com/lesismal/nbio/lmux.TestListenerMux.func3()
+      /Users/jgamboa/Herd/arco-nbio/lmux/lmux_test.go:57 +0x1b0
+  github.com/lesismal/nbio/lmux.TestListenerMux()
+      /Users/jgamboa/Herd/arco-nbio/lmux/lmux_test.go:74 +0x6dc
+  testing.tRunner()
+      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x164
+  testing.(*T).Run.gowrap1()
+      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2260 +0x34
+
+Goroutine 31 (running) created at:
+  github.com/lesismal/nbio/lmux.TestListenerMux.func3()
+      /Users/jgamboa/Herd/arco-nbio/lmux/lmux_test.go:57 +0x1b0
+  github.com/lesismal/nbio/lmux.TestListenerMux()
+      /Users/jgamboa/Herd/arco-nbio/lmux/lmux_test.go:75 +0x6fc
+  testing.tRunner()
+      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x164
+  testing.(*T).Run.gowrap1()
+      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2260 +0x34
+==================
+==================
+WARNING: DATA RACE
+Read at 0x00c000036450 by goroutine 30:
+  runtime.growslice()
+      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/runtime/slice.go:178 +0x0
+  github.com/lesismal/nbio/lmux.TestListenerMux.func3.1()
+      /Users/jgamboa/Herd/arco-nbio/lmux/lmux_test.go:65 +0x120
+
+Previous write at 0x00c000036450 by goroutine 31:
+  github.com/lesismal/nbio/lmux.TestListenerMux.func3.1()
+      /Users/jgamboa/Herd/arco-nbio/lmux/lmux_test.go:65 +0x140
+
+Goroutine 30 (running) created at:
+  github.com/lesismal/nbio/lmux.TestListenerMux.func3()
+      /Users/jgamboa/Herd/arco-nbio/lmux/lmux_test.go:57 +0x1b0
+  github.com/lesismal/nbio/lmux.TestListenerMux()
+      /Users/jgamboa/Herd/arco-nbio/lmux/lmux_test.go:74 +0x6dc
+  testing.tRunner()
+      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x164
+  testing.(*T).Run.gowrap1()
+      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2260 +0x34
+
+Goroutine 31 (running) created at:
+  github.com/lesismal/nbio/lmux.TestListenerMux.func3()
+      /Users/jgamboa/Herd/arco-nbio/lmux/lmux_test.go:57 +0x1b0
+  github.com/lesismal/nbio/lmux.TestListenerMux()
+      /Users/jgamboa/Herd/arco-nbio/lmux/lmux_test.go:75 +0x6fc
+  testing.tRunner()
+      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x164
+  testing.(*T).Run.gowrap1()
+      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2260 +0x34
+==================
+--- FAIL: TestListenerMux (0.65s)
+    testing.go:1867: race detected during execution of test
+FAIL
+FAIL	github.com/lesismal/nbio/lmux	3.311s

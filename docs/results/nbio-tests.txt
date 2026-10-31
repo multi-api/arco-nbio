@@ -1,0 +1,16 @@
+ok  	github.com/lesismal/nbio	2.823s
+--- FAIL: TestAuditKeyUpdateWriteRace (0.02s)
+    --- FAIL: TestAuditKeyUpdateWriteRace/TLS_AES_128_GCM_SHA256 (0.01s)
+        arco_regress_test.go:173: tls: too many non-advancing records
+    --- FAIL: TestAuditKeyUpdateWriteRace/TLS_CHACHA20_POLY1305_SHA256 (0.01s)
+        arco_regress_test.go:173: tls: too many non-advancing records
+FAIL
+FAIL	github.com/lesismal/nbio/crypto/tls	9.673s
+ok  	github.com/lesismal/nbio/lmux	1.557s
+ok  	github.com/lesismal/nbio/logging	1.488s
+ok  	github.com/lesismal/nbio/mempool	1.988s
+ok  	github.com/lesismal/nbio/nbhttp	243.943s
+ok  	github.com/lesismal/nbio/nbhttp/websocket	2.107s
+ok  	github.com/lesismal/nbio/taskpool	0.664s [no tests to run]
+ok  	github.com/lesismal/nbio/timer	3.258s
+FAIL
