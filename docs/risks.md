@@ -181,4 +181,5 @@ that function's four defers (`-gcflags=-d=defer` reports "stack-allocated defer"
 
 Not fixed here: avoiding it means editing Go's `Write`/`Read` (or moving the slow path of `handshakeContext` into its
 own function), which breaks the "Go's code, imports only" rule that keeps porting scripted. The right fix is in Go
-(a small CL splitting `handshakeContext` into a fast check and a slow function). Low priority.
+(a small CL splitting `handshakeContext` into a fast check and a slow function), reported as
+https://github.com/golang/go/issues/82754. Low priority; it arrives here with the Go release that fixes it.
