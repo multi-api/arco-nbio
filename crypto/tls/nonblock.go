@@ -50,10 +50,12 @@ type Allocator interface {
 	Free(buf *[]byte)
 }
 
-// NonBlockingHandshakeTimeout bounds how long a non-blocking handshake waits
-// for the peer's next bytes. When it expires the handshake fails and the
-// transport is closed. It is a backstop: servers should also set a read
-// deadline on the transport.
+// NonBlockingHandshakeTimeout bounds the whole non-blocking handshake, from
+// its first input until it completes: waiting for the peer and running config
+// callbacks both count. When it expires the handshake fails and the transport
+// is closed. It is read once when each handshake starts, on the poller; set it
+// at startup. It is a backstop: servers should also set a read deadline on the
+// transport.
 var NonBlockingHandshakeTimeout = 10 * time.Second
 
 // errWouldBlock is returned by nbConn.Read when a non-blocking connection has
@@ -89,8 +91,10 @@ type nbConn struct {
 	session  any
 
 	// pending is input handed over by the poller and not yet read by Go's
-	// record layer. Only the poller touches it, or the handshake goroutine
-	// while the poller waits for it.
+	// record layer. The poller and the handshake goroutine take turns on it
+	// (the coroutine hand-off); mu also covers the case where the poller
+	// gives up on a handshake goroutine that is still running (abandon).
+	mu      sync.Mutex
 	pending []byte
 	// owned reports whether pending points into memory we allocated (true)
 	// or into the poller's buffer, which is only valid during the call (false).
@@ -112,7 +116,9 @@ func (f *nbConn) Read(p []byte) (int, error) {
 		// block the caller, and before touching pending (the poller's).
 		return 0, errHandshakeNotDriven
 	}
+	f.mu.Lock()
 	for len(f.pending) == 0 {
+		f.mu.Unlock()
 		hs := f.hs.Load()
 		if hs == nil {
 			// Post-handshake read on the poller: nothing more for now.
@@ -121,12 +127,14 @@ func (f *nbConn) Read(p []byte) (int, error) {
 		if err := hs.waitForInput(f); err != nil {
 			return 0, err
 		}
+		f.mu.Lock()
 	}
 	n := copy(p, f.pending)
 	f.pending = f.pending[n:]
 	if len(f.pending) == 0 {
 		f.pending, f.owned = nil, false
 	}
+	f.mu.Unlock()
 	return n, nil
 }
 
@@ -144,6 +152,8 @@ func (f *nbConn) feed(b []byte) {
 	if len(b) == 0 {
 		return
 	}
+	f.mu.Lock()
+	defer f.mu.Unlock()
 	if len(f.pending) == 0 {
 		f.pending, f.owned = b, false
 		return
@@ -156,6 +166,8 @@ func (f *nbConn) feed(b []byte) {
 // keepPending copies borrowed input that was not consumed, so that nothing
 // keeps pointing into the poller's buffer after its callback returns.
 func (f *nbConn) keepPending() {
+	f.mu.Lock()
+	defer f.mu.Unlock()
 	if len(f.pending) > 0 && !f.owned {
 		f.pending, f.owned = bytes.Clone(f.pending), true
 	}
@@ -167,17 +179,20 @@ type handshaker struct {
 	yield  chan struct{} // goroutine → poller: pending is used up, need more
 	done   chan struct{} // closed when the goroutine exits
 	err    error         // handshake result, valid once done is closed
+
+	deadline time.Time // NonBlockingHandshakeTimeout after the handshake started
 }
 
 // waitForInput runs on the handshake goroutine: it hands control back to the
-// poller and waits for the next input, the connection's close, or a timeout.
+// poller and waits for the next input, the connection's close, or the
+// handshake deadline.
 func (hs *handshaker) waitForInput(f *nbConn) error {
 	select {
 	case hs.yield <- struct{}{}:
 	case <-f.closed:
 		return net.ErrClosed
 	}
-	t := time.NewTimer(NonBlockingHandshakeTimeout)
+	t := time.NewTimer(time.Until(hs.deadline))
 	defer t.Stop()
 	select {
 	case <-hs.resume:
@@ -190,16 +205,17 @@ func (hs *handshaker) waitForInput(f *nbConn) error {
 	}
 }
 
-// step runs on the poller. It gives the handshake goroutine the input in
-// f.pending (starting the goroutine on first use) and waits until the
-// goroutine needs more input (done=false) or has finished (done=true).
+// stepHandshake runs on the poller. It gives the handshake goroutine the
+// input in f.pending (starting the goroutine on first use) and waits until
+// the goroutine needs more input (done=false) or has finished (done=true).
 func (c *Conn) stepHandshake(f *nbConn) (done bool, err error) {
 	hs := f.hs.Load()
 	if hs == nil {
 		hs = &handshaker{
-			resume: make(chan struct{}),
-			yield:  make(chan struct{}),
-			done:   make(chan struct{}),
+			resume:   make(chan struct{}),
+			yield:    make(chan struct{}),
+			done:     make(chan struct{}),
+			deadline: time.Now().Add(NonBlockingHandshakeTimeout),
 		}
 		f.hs.Store(hs)
 		handshakesInFlight.Add(1)
@@ -226,14 +242,44 @@ func (c *Conn) stepHandshake(f *nbConn) (done bool, err error) {
 			return true, net.ErrClosed
 		}
 	}
+	// The goroutine normally yields or finishes at once. It keeps the poller
+	// waiting only while the handshake's crypto or a config callback
+	// (GetCertificate, ...) runs, and never past the handshake deadline or
+	// the connection's close. Callbacks must still be fast (cache-only): the
+	// poller's other connections wait meanwhile, as with llib.
+	t := time.NewTimer(time.Until(hs.deadline))
+	defer t.Stop()
 	select {
 	case <-hs.yield:
 		return false, nil
 	case <-hs.done:
-		f.hs.Store(nil)
-		f.hsErr = hs.err
-		return true, hs.err
+		return f.finish(hs)
+	case <-f.closed:
+		return true, f.abandon(net.ErrClosed)
+	case <-t.C:
+		return true, f.abandon(errHandshakeTimeout)
 	}
+}
+
+// finish runs on the poller once the handshake goroutine has exited.
+func (f *nbConn) finish(hs *handshaker) (bool, error) {
+	f.hs.Store(nil)
+	f.hsErr = hs.err
+	return true, hs.err
+}
+
+// abandon runs on the poller when it gives up on a handshake whose goroutine
+// may still be running: the connection fails with err, its input is dropped
+// (the goroutine may still read pending; it then finds none and sees the
+// close), and the transport is closed so that the goroutine ends as soon as
+// its current step returns.
+func (f *nbConn) abandon(err error) error {
+	f.hsErr = err
+	f.mu.Lock()
+	f.pending, f.owned = nil, false
+	f.mu.Unlock()
+	_ = f.Close() // err is what matters
+	return err
 }
 
 // NewConn returns a TLS connection over conn, with the same signature as
@@ -339,20 +385,25 @@ func (c *Conn) appendAndRead(in []byte, out []byte) (int, int, error) {
 	if !f.nonBlock {
 		return 0, 0, errors.New("tls: AppendAndRead on a blocking connection")
 	}
+	if f.hsErr != nil {
+		return len(in), 0, f.hsErr // the handshake failed: keep reporting it, buffer nothing
+	}
 	if overlaps(in, out) {
 		// nbio passes the poller's buffer as both in and out: plaintext
 		// written to out would overwrite ciphertext not yet consumed.
 		in = bytes.Clone(in)
 		f.feed(in)
+		f.mu.Lock()
 		f.owned = true
+		f.mu.Unlock()
 	} else {
 		f.feed(in)
 	}
-	if f.hsErr != nil {
-		return len(in), 0, f.hsErr // the handshake failed: keep reporting it
-	}
 	if !c.isHandshakeComplete.Load() {
-		if len(f.pending) == 0 && f.hs.Load() == nil {
+		f.mu.Lock()
+		idle := len(f.pending) == 0
+		f.mu.Unlock()
+		if idle && f.hs.Load() == nil {
 			return len(in), 0, nil
 		}
 		done, err := c.stepHandshake(f)

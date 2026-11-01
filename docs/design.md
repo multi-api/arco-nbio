@@ -54,9 +54,12 @@ checkpoints. The same result is reached from outside Go's code, in one new file,
    own `c.rawInput`. No change to Go's code. (Pinned by the tests: if Go ever makes temporary errors sticky, every
    `NonBlock*` test fails.)
 2. **Handshake on a coroutine.** The handshake cannot be resumed that way (Go stores the handshake error for
-   good), so it runs on its own goroutine, used strictly as a coroutine: the poller passes it the new bytes and
-   **waits** until it either needs more input or finishes. Only one of the two runs at a time, so the handshake
-   has no concurrency with the poller, like llib's inline handshake. When it finishes the goroutine exits and the
+   good), so it runs on its own goroutine, used as a coroutine: the poller passes it the new bytes and **waits**
+   until it either needs more input or finishes, so only one of the two runs at a time, like llib's inline
+   handshake. Since review 3 the wait is bounded by `NonBlockingHandshakeTimeout` (10 s for the whole handshake,
+   from its first byte) and by the connection's close. (Letting the poller detach from a slow step was tried and
+   dropped: plaintext pipelined behind the client's Finished could then wait for the connection's next input,
+   which the fuzzer hit under CPU load.) When it finishes the goroutine exits and the
    poller reads leftover input itself (in TLS 1.3 the client usually sends its first request together with its
    Finished). Cost: one parked goroutine per connection *in the middle of a handshake* (≈1 RTT), none afterwards.
 3. **Go's locks untouched.** After the handshake, reads run on the poller and writes on any goroutine, both
@@ -99,7 +102,8 @@ Each shim keeps the package name and the exported API that `crypto/tls` uses, so
 
 Consequences, stated plainly:
 - **FIPS 140-3 mode is not supported.** `GODEBUG=fips140=only` makes the public GCM refuse TLS nonces, and only
-  Go's own module can be validated anyway. We don't need it.
+  Go's own module can be validated anyway. We don't need it. (Review 3, R3-3: in that mode every AES-GCM
+  connection fails; a server recovers the panic per connection. `TestReview3FIPSOnlyGCM` shows it on demand.)
 - The copy must be built with a toolchain of the **same minor version** as `UPSTREAM` (it uses 1.27 APIs such as
   `crypto/mldsa`, `crypto/hpke`, `crypto/hkdf`). `go.mod` pins `go 1.27.3`.
 - Everything that `crypto/tls` imports publicly (x509, ecdsa, rsa, ecdh, mlkem, aes, sha*) is the toolchain's, so
@@ -115,16 +119,19 @@ Consequences, stated plainly:
 - `nbhttp/engine.go` and `nbhttp/websocket/upgrader.go`: use `nread` before `err` (plaintext delivered together
   with a close_notify was dropped; the upgrader also closed with the wrong error variable, an upstream bug).
 - `nbhttp/engine.go` (`OnClose`): if a connection drops before its TLS handshake finished, close the TLS conn so
-  its handshake goroutine exits immediately (otherwise it waits for `NonBlockingHandshakeTimeout`, 30 s).
+  its handshake goroutine exits immediately (otherwise it waits for `NonBlockingHandshakeTimeout`, 10 s).
+  `extension/tls`'s `WrapClose` does the same (review 3, R3-5).
 - `go.mod`: `go 1.27.3`; llib removed; `x/crypto` v0.58.0, `x/sys` v0.49.0.
 
 ## 5. Limits and sharp edges
 
-- **A slow `GetCertificate` blocks the poller**, as in llib: the poller waits for the handshake coroutine. With
-  autocert, issue certificates outside the handshake path (cache, pre-issue) — first-time ACME issuance inside a
-  handshake would stall that poller for seconds.
+- **A slow `GetCertificate` blocks the poller**, as in llib: the poller waits for the handshake coroutine, at
+  most `NonBlockingHandshakeTimeout` (10 s) or until the connection closes (review 3; before, as long as the
+  callback ran). Keep callbacks cache-only. With autocert, issue certificates outside the handshake path (cache,
+  pre-issue): first-time ACME issuance inside a handshake would stall that poller.
 - **Parked handshakes cost a goroutine each** (stack ~8–16 KiB) for ≈1 RTT, plus up to
-  `NonBlockingHandshakeTimeout` (30 s) for clients that stall mid-handshake (slowloris). nbio's read deadline
+  `NonBlockingHandshakeTimeout` (10 s for the whole handshake) for clients that stall or drip-feed mid-handshake
+  (slowloris). nbio's read deadline
   closes those sooner. `tls.HandshakesInFlight()` exposes the count for metrics.
 - Calling `Handshake`, `Read` or `Write` on a non-blocking conn **before** the first `AppendAndRead` fails the
   handshake (`errHandshakeNotDriven`) instead of blocking. A `Write` during a handshake waits for it to finish.

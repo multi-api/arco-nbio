@@ -25,7 +25,9 @@ manual step; importing go1.26.10 (previous minor) compiled unchanged and needed 
    - Does it touch the read path (`readRecordOrCCS`, `readFromUntil`, `Read`, `handlePostHandshakeMessage`,
      `handleKeyUpdate`), the error stickiness (`setErrorLocked`, `Temporary()`), the locks (`c.in`, `c.out`,
      `handshakeMutex`, `activeCall`), or the buffers `rawInput` / `hand` / `input`? These are what `nonblock.go`
-     relies on. If yes, re-read `nonblock.go` against the new code.
+     relies on. If yes, re-read `nonblock.go` against the new code. Also check, by reading (no test pins them):
+     `handshakeContext` still holds `c.in` for the whole handshake; `HandshakeContext(context.Background())`
+     starts no extra goroutine; the server sets `isHandshakeComplete` only at the very end of its handshake.
    - Does it add an import of a Go-internal package? Then `sync.sh` leaves it unresolved and the build fails:
      add a shim (same package name and API, under `crypto/tls/internal/`) and a line to `REWRITE` in `sync.sh`.
 6. `tools/tlssync/check.sh` — must print "all checks passed". It runs, in order:

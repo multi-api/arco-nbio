@@ -25,7 +25,7 @@ MOD=github.com/lesismal/nbio/crypto/tls
 DST=$ROOT/crypto/tls
 
 # Our own files inside crypto/tls/. Everything else there comes from Go.
-OWN_FILES=(nonblock.go nonblock_test.go arco_regress_test.go arco_fuzz_test.go arco_assumptions_test.go UPSTREAM)
+OWN_FILES=(nonblock.go nonblock_test.go arco_regress_test.go arco_fuzz_test.go arco_assumptions_test.go arco_review3_test.go UPSTREAM)
 
 git -C "$GODIR" rev-parse -q --verify "refs/tags/$TAG" >/dev/null ||
 	git -C "$GODIR" fetch -q origin "refs/tags/$TAG:refs/tags/$TAG"

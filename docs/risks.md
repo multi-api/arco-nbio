@@ -136,3 +136,35 @@ logs in `docs/results/fuzz-long-*.txt`: **no failure, no crasher written to `tes
 | `FuzzNonBlockGarbage` (arbitrary bytes into a non-blocking server) | 5,827,654 | 361 |
 
 `FuzzNonBlockRecordStream` is slow per execution because each one runs a full TLS handshake.
+
+## 11. Third independent review (2026-11-01, fresh reviewer, most capable model)
+
+Scope: everything in the TLS layer that is not Go's (`nonblock.go`, the shims, the nbio glue), against Go 1.27.3,
+threat model "malicious internet clients against a multi-tenant WebSocket server". The reviewer saw only the code
+and Go's source, not earlier reviews. **No memory-safety bug, no data race in the adapter, nothing that lets one
+client crash the process or corrupt another connection.** Every finding has a test in `arco_review3_test.go`
+(crypto/tls, nbhttp, extension/tls) that failed before its fix.
+
+| id | Finding | Severity | Status |
+|---|---|---|---|
+| R3-2 | The poller waited for the handshake goroutine with no bound: a blocking `GetCertificate` (e.g. a lookup keyed on an attacker-chosen SNI) stalled every connection on that poller for as long as the callback ran, even after the connection closed | Low (Medium if a callback can block) | **Fixed**: the wait ends at `NonBlockingHandshakeTimeout` or when the connection closes; the connection then fails and its input is dropped. Callbacks must still be cache-only (design.md §5) |
+| R3-1 | `NonBlockingHandshakeTimeout` bounded each gap between bytes, not the handshake: a client dripping one byte every 9.9 s kept a handshake (goroutine + ~18 KiB) alive for hours where nbio's read deadline is not set | Low | **Fixed**: 10 s for the whole handshake, from its first byte |
+| R3-5 | `extension/tls` `WrapClose` did not close the TLS conn, so abandoned handshakes waited for the timeout | Low | **Fixed** (as nbhttp's `OnClose`) |
+| R3-4 | After a failed handshake, `AppendAndRead` still buffered input (not reachable through nbio's glue, which closes on error) | Info | **Fixed**: nothing is buffered after a failure |
+| R3-6 | `NonBlockingHandshakeTimeout` was read by handshake goroutines without synchronization | Info | **Fixed**: read once per handshake on the poller; documented as "set at startup" |
+| R3-3 | `GODEBUG=fips140=only` makes every AES-GCM connection fail (the GCM shim uses the public API) | Info | Not fixed: FIPS mode is unsupported (design.md §3); the test runs with `ARCO_FIPS_ONLY_TEST=1` |
+
+Tried and reverted: letting the poller stop waiting after 20 ms of a slow handshake step, so a slow callback would
+not stall other connections at all. The 5-minute fuzz run found that, under CPU load, plaintext pipelined right
+behind the client's Finished could then be left unprocessed until the connection's next input (a client waiting
+for a response would hang). Doing it safely needs a way to wake nbio's poller from the handshake goroutine; not
+worth the complexity while callbacks are cache-only.
+
+After the fixes: `check.sh 5m` passed (`docs/results/check-review3.txt`): diff vs Go, build/vet, Go's suite + all
+ours with `-race`, nbio tests, fuzzing 5 minutes each (`FuzzNonBlockRecordStream` 33,517 executions,
+`FuzzNonBlockGarbage` 2,806,265), govulncheck.
+
+Not covered by tests (reviewer's list; a Go change here would show as a rare race or leak, not a clean failure):
+`handshakeContext` holding `c.in` for the whole handshake (`ReleaseBuffers` relies on it),
+`HandshakeContext(context.Background())` not starting an extra goroutine, `isHandshakeComplete` set only at the
+very end of the server handshake. `docs/porting.md` step 5 lists these among the things to re-read.

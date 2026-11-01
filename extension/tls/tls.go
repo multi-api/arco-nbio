@@ -3,8 +3,8 @@ package tls
 // deprecated.
 
 import (
-	"github.com/lesismal/nbio/crypto/tls"
 	"github.com/lesismal/nbio"
+	"github.com/lesismal/nbio/crypto/tls"
 	"github.com/lesismal/nbio/mempool"
 )
 
@@ -51,9 +51,17 @@ func WrapOpen(tlsConfig *Config, isClient bool, h func(c *nbio.Conn, tlsConn *Co
 //go:norace
 func WrapClose(h func(c *nbio.Conn, tlsConn *Conn, err error)) func(c *nbio.Conn, err error) {
 	return func(c *nbio.Conn, err error) {
-		if h != nil && c != nil {
-			if session := c.Session(); session != nil {
-				if tlsConn, ok := session.(*Conn); ok {
+		if c == nil {
+			return
+		}
+		if session := c.Session(); session != nil {
+			if tlsConn, ok := session.(*Conn); ok {
+				if !tlsConn.HandshakeComplete() {
+					// Wake a handshake goroutine waiting for input, so it
+					// exits now rather than at its timeout (as nbhttp's OnClose).
+					_ = tlsConn.Close()
+				}
+				if h != nil {
 					h(c, tlsConn, err)
 				}
 			}

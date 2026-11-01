@@ -1,0 +1,284 @@
+
+== diff against Go go1.27.3: only import lines and the 2 NewGCMForTLS1x lines expected
+ok
+
+== build and vet
+
+== Go's crypto/tls test suite + non-blocking + audit regression tests, with -race
+ok  	github.com/lesismal/nbio/crypto/tls	25.273s
+?   	github.com/lesismal/nbio/crypto/tls/internal/boring	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/byteorder	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/cpu	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/cryptotest	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/aes/gcm	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/hkdf	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/hmac	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/sha256	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/sha512	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/tls12	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/tls13	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140tls	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/godebug	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/rand	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/testenv	[no test files]
+
+== nbio tests
+ok  	github.com/lesismal/nbio	2.780s
+?   	github.com/lesismal/nbio/autobahn/reporter	[no test files]
+?   	github.com/lesismal/nbio/autobahn/server	[no test files]
+ok  	github.com/lesismal/nbio/crypto/tls	8.968s
+?   	github.com/lesismal/nbio/crypto/tls/internal/boring	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/byteorder	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/cpu	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/cryptotest	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/aes/gcm	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/hkdf	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/hmac	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/sha256	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/sha512	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/tls12	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/tls13	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140tls	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/godebug	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/rand	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/testenv	[no test files]
+ok  	github.com/lesismal/nbio/extension/tls	1.985s
+ok  	github.com/lesismal/nbio/lmux	1.877s
+ok  	github.com/lesismal/nbio/logging	1.846s
+ok  	github.com/lesismal/nbio/mempool	0.719s
+ok  	github.com/lesismal/nbio/nbhttp	4.102s
+ok  	github.com/lesismal/nbio/nbhttp/websocket	1.574s
+ok  	github.com/lesismal/nbio/taskpool	2.109s [no tests to run]
+ok  	github.com/lesismal/nbio/timer	4.732s
+?   	github.com/lesismal/nbio/tools/norace	[no test files]
+
+== fuzz the non-blocking record layer (5m each)
+fuzz: elapsed: 0s, gathering baseline coverage: 0/302 completed
+fuzz: elapsed: 3s, gathering baseline coverage: 92/302 completed
+fuzz: elapsed: 6s, gathering baseline coverage: 144/302 completed
+fuzz: elapsed: 9s, gathering baseline coverage: 228/302 completed
+fuzz: elapsed: 12s, gathering baseline coverage: 289/302 completed
+fuzz: elapsed: 12s, gathering baseline coverage: 302/302 completed, now fuzzing with 10 workers
+fuzz: elapsed: 15s, execs: 535 (82/sec), new interesting: 0 (total: 302)
+fuzz: elapsed: 18s, execs: 778 (81/sec), new interesting: 0 (total: 302)
+fuzz: elapsed: 21s, execs: 1166 (129/sec), new interesting: 0 (total: 302)
+fuzz: elapsed: 24s, execs: 1623 (152/sec), new interesting: 0 (total: 302)
+fuzz: elapsed: 27s, execs: 2127 (168/sec), new interesting: 1 (total: 303)
+fuzz: elapsed: 30s, execs: 2210 (28/sec), new interesting: 1 (total: 303)
+fuzz: elapsed: 33s, execs: 2494 (95/sec), new interesting: 1 (total: 303)
+fuzz: elapsed: 36s, execs: 2595 (34/sec), new interesting: 1 (total: 303)
+fuzz: elapsed: 39s, execs: 3051 (152/sec), new interesting: 2 (total: 304)
+fuzz: elapsed: 42s, execs: 3264 (71/sec), new interesting: 2 (total: 304)
+fuzz: elapsed: 45s, execs: 3607 (114/sec), new interesting: 2 (total: 304)
+fuzz: elapsed: 48s, execs: 3716 (36/sec), new interesting: 2 (total: 304)
+fuzz: elapsed: 51s, execs: 4243 (176/sec), new interesting: 2 (total: 304)
+fuzz: elapsed: 54s, execs: 4465 (74/sec), new interesting: 2 (total: 304)
+fuzz: elapsed: 57s, execs: 4742 (92/sec), new interesting: 2 (total: 304)
+fuzz: elapsed: 1m0s, execs: 5381 (213/sec), new interesting: 2 (total: 304)
+fuzz: elapsed: 1m3s, execs: 5497 (39/sec), new interesting: 2 (total: 304)
+fuzz: elapsed: 1m6s, execs: 5874 (126/sec), new interesting: 2 (total: 304)
+fuzz: elapsed: 1m9s, execs: 6210 (112/sec), new interesting: 2 (total: 304)
+fuzz: elapsed: 1m12s, execs: 6364 (51/sec), new interesting: 2 (total: 304)
+fuzz: elapsed: 1m15s, execs: 6595 (77/sec), new interesting: 2 (total: 304)
+fuzz: elapsed: 1m18s, execs: 6780 (62/sec), new interesting: 2 (total: 304)
+fuzz: elapsed: 1m21s, execs: 7134 (118/sec), new interesting: 2 (total: 304)
+fuzz: elapsed: 1m24s, execs: 7570 (145/sec), new interesting: 2 (total: 304)
+fuzz: elapsed: 1m27s, execs: 7819 (83/sec), new interesting: 2 (total: 304)
+fuzz: elapsed: 1m30s, execs: 8358 (180/sec), new interesting: 2 (total: 304)
+fuzz: elapsed: 1m33s, execs: 8501 (48/sec), new interesting: 2 (total: 304)
+fuzz: elapsed: 1m36s, execs: 8651 (50/sec), new interesting: 2 (total: 304)
+fuzz: elapsed: 1m39s, execs: 8881 (77/sec), new interesting: 2 (total: 304)
+fuzz: elapsed: 1m42s, execs: 9232 (117/sec), new interesting: 2 (total: 304)
+fuzz: elapsed: 1m45s, execs: 9392 (53/sec), new interesting: 2 (total: 304)
+fuzz: elapsed: 1m48s, execs: 9645 (84/sec), new interesting: 3 (total: 305)
+fuzz: elapsed: 1m51s, execs: 9809 (55/sec), new interesting: 3 (total: 305)
+fuzz: elapsed: 1m54s, execs: 10152 (114/sec), new interesting: 3 (total: 305)
+fuzz: elapsed: 1m57s, execs: 10562 (137/sec), new interesting: 3 (total: 305)
+fuzz: elapsed: 2m0s, execs: 10878 (105/sec), new interesting: 3 (total: 305)
+fuzz: elapsed: 2m3s, execs: 11307 (143/sec), new interesting: 3 (total: 305)
+fuzz: elapsed: 2m6s, execs: 11569 (87/sec), new interesting: 3 (total: 305)
+fuzz: elapsed: 2m9s, execs: 11793 (75/sec), new interesting: 4 (total: 306)
+fuzz: elapsed: 2m12s, execs: 12004 (70/sec), new interesting: 4 (total: 306)
+fuzz: elapsed: 2m15s, execs: 12310 (102/sec), new interesting: 4 (total: 306)
+fuzz: elapsed: 2m18s, execs: 12471 (54/sec), new interesting: 4 (total: 306)
+fuzz: elapsed: 2m21s, execs: 13071 (200/sec), new interesting: 4 (total: 306)
+fuzz: elapsed: 2m24s, execs: 13459 (129/sec), new interesting: 4 (total: 306)
+fuzz: elapsed: 2m27s, execs: 13855 (132/sec), new interesting: 4 (total: 306)
+fuzz: elapsed: 2m30s, execs: 14305 (150/sec), new interesting: 4 (total: 306)
+fuzz: elapsed: 2m33s, execs: 14403 (33/sec), new interesting: 4 (total: 306)
+fuzz: elapsed: 2m36s, execs: 14601 (66/sec), new interesting: 4 (total: 306)
+fuzz: elapsed: 2m39s, execs: 14862 (87/sec), new interesting: 4 (total: 306)
+fuzz: elapsed: 2m42s, execs: 14960 (33/sec), new interesting: 4 (total: 306)
+fuzz: elapsed: 2m45s, execs: 15289 (110/sec), new interesting: 4 (total: 306)
+fuzz: elapsed: 2m48s, execs: 15508 (73/sec), new interesting: 4 (total: 306)
+fuzz: elapsed: 2m51s, execs: 16209 (234/sec), new interesting: 4 (total: 306)
+fuzz: elapsed: 2m54s, execs: 16375 (55/sec), new interesting: 4 (total: 306)
+fuzz: elapsed: 2m57s, execs: 16922 (182/sec), new interesting: 4 (total: 306)
+fuzz: elapsed: 3m0s, execs: 17029 (36/sec), new interesting: 4 (total: 306)
+fuzz: elapsed: 3m3s, execs: 17567 (179/sec), new interesting: 4 (total: 306)
+fuzz: elapsed: 3m6s, execs: 18063 (165/sec), new interesting: 4 (total: 306)
+fuzz: elapsed: 3m9s, execs: 18303 (80/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 3m12s, execs: 18788 (162/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 3m15s, execs: 18919 (44/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 3m18s, execs: 19611 (231/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 3m21s, execs: 19922 (104/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 3m24s, execs: 20341 (140/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 3m27s, execs: 20592 (84/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 3m30s, execs: 21046 (151/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 3m33s, execs: 21264 (73/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 3m36s, execs: 21668 (135/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 3m39s, execs: 21913 (82/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 3m42s, execs: 22459 (182/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 3m45s, execs: 22807 (116/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 3m48s, execs: 23587 (260/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 3m51s, execs: 24075 (163/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 3m54s, execs: 24557 (161/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 3m57s, execs: 24920 (121/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 4m0s, execs: 25096 (59/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 4m3s, execs: 25565 (156/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 4m6s, execs: 26303 (246/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 4m9s, execs: 26715 (137/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 4m12s, execs: 27060 (115/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 4m15s, execs: 27527 (156/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 4m18s, execs: 27721 (65/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 4m21s, execs: 28054 (111/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 4m24s, execs: 28372 (106/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 4m27s, execs: 28626 (85/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 4m30s, execs: 29075 (150/sec), new interesting: 5 (total: 307)
+fuzz: elapsed: 4m33s, execs: 29347 (91/sec), new interesting: 6 (total: 308)
+fuzz: elapsed: 4m36s, execs: 30031 (228/sec), new interesting: 6 (total: 308)
+fuzz: elapsed: 4m39s, execs: 30349 (106/sec), new interesting: 6 (total: 308)
+fuzz: elapsed: 4m42s, execs: 30792 (148/sec), new interesting: 6 (total: 308)
+fuzz: elapsed: 4m45s, execs: 31294 (167/sec), new interesting: 6 (total: 308)
+fuzz: elapsed: 4m48s, execs: 31499 (68/sec), new interesting: 6 (total: 308)
+fuzz: elapsed: 4m51s, execs: 31892 (131/sec), new interesting: 6 (total: 308)
+fuzz: elapsed: 4m54s, execs: 32737 (282/sec), new interesting: 6 (total: 308)
+fuzz: elapsed: 4m57s, execs: 33111 (125/sec), new interesting: 6 (total: 308)
+fuzz: elapsed: 5m0s, execs: 33517 (135/sec), new interesting: 6 (total: 308)
+fuzz: elapsed: 5m2s, execs: 33517 (0/sec), new interesting: 6 (total: 308)
+PASS
+ok  	github.com/lesismal/nbio/crypto/tls	302.356s
+fuzz: elapsed: 0s, gathering baseline coverage: 0/470 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 470/470 completed, now fuzzing with 10 workers
+fuzz: elapsed: 3s, execs: 40720 (13571/sec), new interesting: 2 (total: 472)
+fuzz: elapsed: 6s, execs: 53277 (4186/sec), new interesting: 3 (total: 473)
+fuzz: elapsed: 9s, execs: 76131 (7618/sec), new interesting: 3 (total: 473)
+fuzz: elapsed: 12s, execs: 87771 (3880/sec), new interesting: 4 (total: 474)
+fuzz: elapsed: 15s, execs: 89480 (570/sec), new interesting: 4 (total: 474)
+fuzz: elapsed: 18s, execs: 89480 (0/sec), new interesting: 4 (total: 474)
+fuzz: elapsed: 21s, execs: 89480 (0/sec), new interesting: 4 (total: 474)
+fuzz: elapsed: 24s, execs: 89480 (0/sec), new interesting: 4 (total: 474)
+fuzz: elapsed: 27s, execs: 89480 (0/sec), new interesting: 4 (total: 474)
+fuzz: elapsed: 30s, execs: 89480 (0/sec), new interesting: 4 (total: 474)
+fuzz: elapsed: 33s, execs: 89480 (0/sec), new interesting: 4 (total: 474)
+fuzz: elapsed: 36s, execs: 89480 (0/sec), new interesting: 4 (total: 474)
+fuzz: elapsed: 39s, execs: 89480 (0/sec), new interesting: 4 (total: 474)
+fuzz: elapsed: 42s, execs: 89480 (0/sec), new interesting: 4 (total: 474)
+fuzz: elapsed: 45s, execs: 89480 (0/sec), new interesting: 4 (total: 474)
+fuzz: elapsed: 48s, execs: 89480 (0/sec), new interesting: 4 (total: 474)
+fuzz: elapsed: 51s, execs: 89480 (0/sec), new interesting: 4 (total: 474)
+fuzz: elapsed: 54s, execs: 89480 (0/sec), new interesting: 4 (total: 474)
+fuzz: elapsed: 57s, execs: 89480 (0/sec), new interesting: 4 (total: 474)
+fuzz: elapsed: 1m0s, execs: 89480 (0/sec), new interesting: 4 (total: 474)
+fuzz: elapsed: 1m3s, execs: 123828 (11450/sec), new interesting: 6 (total: 476)
+fuzz: elapsed: 1m6s, execs: 169533 (15234/sec), new interesting: 6 (total: 476)
+fuzz: elapsed: 1m9s, execs: 204933 (11795/sec), new interesting: 6 (total: 476)
+fuzz: elapsed: 1m12s, execs: 246581 (13886/sec), new interesting: 8 (total: 478)
+fuzz: elapsed: 1m15s, execs: 304737 (19390/sec), new interesting: 9 (total: 479)
+fuzz: elapsed: 1m18s, execs: 353328 (16197/sec), new interesting: 11 (total: 481)
+fuzz: elapsed: 1m21s, execs: 400813 (15828/sec), new interesting: 11 (total: 481)
+fuzz: elapsed: 1m24s, execs: 448625 (15930/sec), new interesting: 11 (total: 481)
+fuzz: elapsed: 1m27s, execs: 481499 (10963/sec), new interesting: 12 (total: 482)
+fuzz: elapsed: 1m30s, execs: 531710 (16734/sec), new interesting: 12 (total: 482)
+fuzz: elapsed: 1m33s, execs: 571812 (13369/sec), new interesting: 13 (total: 483)
+fuzz: elapsed: 1m36s, execs: 613086 (13757/sec), new interesting: 13 (total: 483)
+fuzz: elapsed: 1m39s, execs: 652323 (13081/sec), new interesting: 13 (total: 483)
+fuzz: elapsed: 1m42s, execs: 699269 (15649/sec), new interesting: 13 (total: 483)
+fuzz: elapsed: 1m45s, execs: 728374 (9701/sec), new interesting: 13 (total: 483)
+fuzz: elapsed: 1m48s, execs: 760372 (10666/sec), new interesting: 13 (total: 483)
+fuzz: elapsed: 1m51s, execs: 787665 (9097/sec), new interesting: 13 (total: 483)
+fuzz: elapsed: 1m54s, execs: 822219 (11518/sec), new interesting: 14 (total: 484)
+fuzz: elapsed: 1m57s, execs: 853205 (10330/sec), new interesting: 14 (total: 484)
+fuzz: elapsed: 2m0s, execs: 882433 (9742/sec), new interesting: 14 (total: 484)
+fuzz: elapsed: 2m3s, execs: 906876 (8146/sec), new interesting: 14 (total: 484)
+fuzz: elapsed: 2m6s, execs: 936651 (9926/sec), new interesting: 16 (total: 486)
+fuzz: elapsed: 2m9s, execs: 969958 (11105/sec), new interesting: 17 (total: 487)
+fuzz: elapsed: 2m12s, execs: 1018511 (16177/sec), new interesting: 17 (total: 487)
+fuzz: elapsed: 2m15s, execs: 1066527 (16013/sec), new interesting: 17 (total: 487)
+fuzz: elapsed: 2m18s, execs: 1122463 (18646/sec), new interesting: 18 (total: 488)
+fuzz: elapsed: 2m21s, execs: 1176670 (18064/sec), new interesting: 18 (total: 488)
+fuzz: elapsed: 2m24s, execs: 1205995 (9771/sec), new interesting: 18 (total: 488)
+fuzz: elapsed: 2m27s, execs: 1236541 (10184/sec), new interesting: 19 (total: 489)
+fuzz: elapsed: 2m30s, execs: 1265199 (9554/sec), new interesting: 19 (total: 489)
+fuzz: elapsed: 2m33s, execs: 1284880 (6559/sec), new interesting: 19 (total: 489)
+fuzz: elapsed: 2m36s, execs: 1307856 (7662/sec), new interesting: 19 (total: 489)
+fuzz: elapsed: 2m39s, execs: 1323356 (5166/sec), new interesting: 19 (total: 489)
+fuzz: elapsed: 2m42s, execs: 1324740 (461/sec), new interesting: 19 (total: 489)
+fuzz: elapsed: 2m45s, execs: 1333261 (2840/sec), new interesting: 20 (total: 490)
+fuzz: elapsed: 2m48s, execs: 1344429 (3721/sec), new interesting: 20 (total: 490)
+fuzz: elapsed: 2m51s, execs: 1355840 (3805/sec), new interesting: 20 (total: 490)
+fuzz: elapsed: 2m54s, execs: 1366729 (3629/sec), new interesting: 20 (total: 490)
+fuzz: elapsed: 2m57s, execs: 1376735 (3335/sec), new interesting: 22 (total: 492)
+fuzz: elapsed: 3m0s, execs: 1387522 (3594/sec), new interesting: 22 (total: 492)
+fuzz: elapsed: 3m3s, execs: 1406489 (6326/sec), new interesting: 23 (total: 493)
+fuzz: elapsed: 3m6s, execs: 1424553 (6020/sec), new interesting: 24 (total: 494)
+fuzz: elapsed: 3m9s, execs: 1449508 (8317/sec), new interesting: 24 (total: 494)
+fuzz: elapsed: 3m12s, execs: 1465734 (5410/sec), new interesting: 24 (total: 494)
+fuzz: elapsed: 3m15s, execs: 1485968 (6745/sec), new interesting: 24 (total: 494)
+fuzz: elapsed: 3m18s, execs: 1511012 (8344/sec), new interesting: 24 (total: 494)
+fuzz: elapsed: 3m21s, execs: 1538405 (9131/sec), new interesting: 25 (total: 495)
+fuzz: elapsed: 3m24s, execs: 1567876 (9828/sec), new interesting: 26 (total: 496)
+fuzz: elapsed: 3m27s, execs: 1589582 (7236/sec), new interesting: 26 (total: 496)
+fuzz: elapsed: 3m30s, execs: 1616629 (9014/sec), new interesting: 28 (total: 498)
+fuzz: elapsed: 3m33s, execs: 1649932 (11100/sec), new interesting: 28 (total: 498)
+fuzz: elapsed: 3m36s, execs: 1682024 (10701/sec), new interesting: 28 (total: 498)
+fuzz: elapsed: 3m39s, execs: 1714300 (10758/sec), new interesting: 30 (total: 500)
+fuzz: elapsed: 3m42s, execs: 1764220 (16641/sec), new interesting: 30 (total: 500)
+fuzz: elapsed: 3m45s, execs: 1797824 (11201/sec), new interesting: 30 (total: 500)
+fuzz: elapsed: 3m48s, execs: 1830408 (10862/sec), new interesting: 30 (total: 500)
+fuzz: elapsed: 3m51s, execs: 1861244 (10278/sec), new interesting: 30 (total: 500)
+fuzz: elapsed: 3m54s, execs: 1890538 (9766/sec), new interesting: 30 (total: 500)
+fuzz: elapsed: 3m57s, execs: 1920734 (10062/sec), new interesting: 30 (total: 500)
+fuzz: elapsed: 4m0s, execs: 1950954 (10076/sec), new interesting: 30 (total: 500)
+fuzz: elapsed: 4m3s, execs: 1985445 (11491/sec), new interesting: 30 (total: 500)
+fuzz: elapsed: 4m6s, execs: 2016982 (10518/sec), new interesting: 30 (total: 500)
+fuzz: elapsed: 4m9s, execs: 2053943 (12317/sec), new interesting: 31 (total: 501)
+fuzz: elapsed: 4m12s, execs: 2088701 (11588/sec), new interesting: 31 (total: 501)
+fuzz: elapsed: 4m15s, execs: 2111981 (7759/sec), new interesting: 31 (total: 501)
+fuzz: elapsed: 4m18s, execs: 2135635 (7886/sec), new interesting: 31 (total: 501)
+fuzz: elapsed: 4m21s, execs: 2157030 (7131/sec), new interesting: 31 (total: 501)
+fuzz: elapsed: 4m24s, execs: 2191670 (11548/sec), new interesting: 32 (total: 502)
+fuzz: elapsed: 4m27s, execs: 2235729 (14686/sec), new interesting: 33 (total: 503)
+fuzz: elapsed: 4m30s, execs: 2289062 (17778/sec), new interesting: 34 (total: 504)
+fuzz: elapsed: 4m33s, execs: 2348035 (19656/sec), new interesting: 34 (total: 504)
+fuzz: elapsed: 4m36s, execs: 2405241 (19070/sec), new interesting: 34 (total: 504)
+fuzz: elapsed: 4m39s, execs: 2458638 (17795/sec), new interesting: 34 (total: 504)
+fuzz: elapsed: 4m42s, execs: 2508644 (16670/sec), new interesting: 34 (total: 504)
+fuzz: elapsed: 4m45s, execs: 2573331 (21566/sec), new interesting: 35 (total: 505)
+fuzz: elapsed: 4m48s, execs: 2631616 (19429/sec), new interesting: 35 (total: 505)
+fuzz: elapsed: 4m51s, execs: 2683422 (17259/sec), new interesting: 35 (total: 505)
+fuzz: elapsed: 4m54s, execs: 2727193 (14593/sec), new interesting: 35 (total: 505)
+fuzz: elapsed: 4m57s, execs: 2769162 (13994/sec), new interesting: 35 (total: 505)
+fuzz: elapsed: 5m0s, execs: 2806265 (12366/sec), new interesting: 35 (total: 505)
+fuzz: elapsed: 5m1s, execs: 2806265 (0/sec), new interesting: 35 (total: 505)
+PASS
+ok  	github.com/lesismal/nbio/crypto/tls	301.778s
+
+== govulncheck (module + crypto/tls copy)
+== 1. govulncheck ./... (toolchain go1.27.3)
+=== Symbol Results ===
+
+No vulnerabilities found.
+
+Your code is affected by 0 vulnerabilities.
+This scan also found 0 vulnerabilities in packages you import and 1
+vulnerability in modules you require, but your code doesn't appear to call these
+vulnerabilities.
+Use '-show verbose' for more details.
+
+== 2. crypto/tls copy, imported from go1.27.3
+no known crypto/tls vulnerability in go1.27.3.
+
+all checks passed
