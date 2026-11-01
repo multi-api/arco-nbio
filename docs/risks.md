@@ -84,3 +84,43 @@ names the assumption.
 ## Fuzzing (longer run)
 
 `tools/tlssync/check.sh 10m` passed end to end (`docs/results/check-full.txt`): diff check, build/vet, Go suite + ours with `-race`, nbio tests, both fuzzers 10 minutes each with no failure (`FuzzNonBlockRecordStream` 53,264 executions, `FuzzNonBlockGarbage` 274,822), govulncheck clean on the module and the copy.
+
+# Third pass (2026-11-01): production readiness
+
+## 7. Second independent review (fresh reviewer, most capable model)
+
+| Finding | Severity | Status |
+|---|---|---|
+| **A panic in a handshake callback (`GetCertificate`, `GetConfigForClient`, `VerifyConnection`, …) crashed the whole process**: the handshake goroutine had no `recover` (llib ran the handshake under nbio's `recover` in `TLSDataHandler`) | **High** | **Fixed**: recovered in the goroutine, the connection fails with the panic and stack, the transport is closed. `TestNonBlockHandshakePanicRecovered` crashed the test binary before the fix |
+| The poller waits while the handshake goroutine runs (slow callbacks stall the poller; anything on the poller taking `handshakeMutex` mid-handshake would wait) | Medium | By design, same as llib; documented (`GetCertificate` must be cache-only). No call site takes `handshakeMutex` on the poller |
+| `extension/tls` `WrapData` dropped plaintext delivered with a close_notify | Low | **Fixed** |
+| After a failed handshake, `AppendAndRead(nil, …)` returned `(0, 0, nil)` | Low | **Fixed**: the error stays sticky (`TestNonBlockFailedHandshakeErrorSticky`) |
+| Misuse cases (write before first `AppendAndRead`, client renegotiation, `ResetConn` concurrent with the poller) | Low | Documented as unsupported |
+| GCM shim, buffer hand-off, error stickiness, Close vs coroutine, KeyUpdate vs Write | — | Checked, fine |
+
+`NonBlockingHandshakeTimeout` default lowered from 30 s to 10 s.
+
+## 8. Root cause of the 15k stall
+
+- Rebuilt the exact pre-fix code (`563bb44`) with diagnostics (`ARCO_DIAG=1`: close errors, handshakes in
+  flight, scheduling delay of a 10 ms ticker) and ran it twice: **no stall** at 15k (p99 243 / 232 ms, 100 %).
+  With the 6 runs of the second pass and 3 final runs, the stall has not reappeared in 11 runs. Run 1 of the
+  original pair overlapped a host-side `go test -race`; the cause of run 2's stall is most likely the same kind of
+  host interference. It is not reproducible with any version of the code.
+- During every broadcast phase the server's ticker stays within ~30 ms and GC pauses ≤ 3 ms, including final run 3,
+  whose 20k step had a p99 of 839 ms and 99.0 % delivery: **the server was not stalled**; the tail comes from the
+  load generator (Node decrypting TLS for 20k sockets on the same host). llib shows the same variance.
+- Real server stalls (1–17 s) appear only when the container is at 30–39k connections, at its 512 MiB limit
+  (memory reclaim; these runs then end by OOM or ramp timeout). A mass disconnect of 20,000 TLS clients at 20k
+  costs ≤ 50 ms with or without TLS. **Bound: keep ≥ 20 % memory headroom** (on a 512 MiB box, ~30k is the
+  edge; plan for ≤ 25k), which is a capacity rule, not a TLS issue.
+
+## 9. Final benchmark (3 runs, 512 MiB / 1 CPU, final code)
+
+| Run | KiB/conn | Max stable | p99 @10k | p99 @20k | Delivery |
+|---|---|---|---|---|---|
+| final-1 | 13.00 | 30,000 | 247 | 378 | 100 % every step |
+| final-2 | 12.21 | 30,000 | 263 | 334 | 100 % every step |
+| final-3 | 12.50 | 30,000 | 172 | 839 | 100 %, except 99.0 % at 20k (load-generator tail, see §8) |
+
+Mean 12.6 KiB/conn (all 7 full runs of the fork: 12.2–13.1). llib in the same harness: 19.2–20.0.
