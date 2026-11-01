@@ -1,13 +1,19 @@
+# nbio's original CI, adapted to arco-nbio (Go 1.27.3, branch arco).
+# Linux tests, -race and fuzzing are in arco-tls.yml (tools/tlssync/check.sh on amd64 and arm64), so
+# this workflow keeps only what that one does not cover: lint, macOS/Windows tests, Autobahn and CodeQL.
 name: CI
 
 on:
   push:
-    branches: [master, dev]
+    branches: [arco]
     tags: [v*]
   pull_request:
-    branches: [master, dev]
+    branches: [arco]
   schedule:
     - cron: "41 10 * * 3"
+
+permissions:
+  contents: read
 
 jobs:
   lint:
@@ -15,38 +21,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # golangci-lint v2.2.1 is built with go1.24 and can't load newer stdlib.
       - uses: actions/setup-go@v5
         with:
-          go-version: 1.24.x
+          go-version-file: go.mod
+      # Built from source with the go.mod toolchain: a prebuilt golangci-lint refuses a newer target
+      # Go version than the one it was built with. Config in .golangci.yml.
       - uses: golangci/golangci-lint-action@v8.0.0
         with:
-          version: v2.2.1
+          version: v2.15.0
+          install-mode: goinstall
 
   test:
     if: github.event_name != 'schedule'
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-14, windows-latest]
+        os: [macos-14, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: 1.22.x
+          go-version-file: go.mod
       - name: go test
         shell: bash
         run: |
           [ "$RUNNER_OS" = "Windows" ] || ulimit -n 30000
-          go test -covermode=atomic -timeout 60s -coverprofile=./coverage
-      - name: codecov
-        if: runner.os == 'Windows'
-        uses: codecov/codecov-action@v1.2.1
-        with:
-          files: ./coverage
-          flags: unittests
-          name: codecov-nbio
+          go test -count=1 -timeout 10m ./...
 
   autobahn:
     if: github.event_name != 'schedule'
@@ -55,10 +56,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: 1.18.x
+          go-version-file: go.mod
       - name: autobahn test
         run: bash ./autobahn/script/run.sh
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: autobahn-report
           path: autobahn/report
@@ -72,6 +74,9 @@ jobs:
       security-events: write
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
       - uses: github/codeql-action/init@v3
         with:
           languages: go

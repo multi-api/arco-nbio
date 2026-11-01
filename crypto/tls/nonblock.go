@@ -185,7 +185,7 @@ func (hs *handshaker) waitForInput(f *nbConn) error {
 	case <-f.closed:
 		return net.ErrClosed
 	case <-t.C:
-		f.Conn.Close()
+		_ = f.Conn.Close() // the timeout error is what matters
 		return errHandshakeTimeout
 	}
 }
@@ -213,7 +213,7 @@ func (c *Conn) stepHandshake(f *nbConn) (done bool, err error) {
 				// Go's handshakeContext releases its locks in defers.
 				if r := recover(); r != nil {
 					hs.err = fmt.Errorf("tls: panic during handshake: %v\n%s", r, debug.Stack())
-					f.Conn.Close()
+					_ = f.Conn.Close() // hs.err already says why
 				}
 			}()
 			hs.err = c.HandshakeContext(context.Background())

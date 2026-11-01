@@ -64,3 +64,13 @@ with `-bogo-local-dir` pointing to a BoringSSL checkout, against this package.
 `git fetch upstream && git merge upstream/master`. Conflicts can only be in the 11 files of `docs/design.md` §4,
 and they are one-line import changes except `extension/tls/tls.go` and the `OnClose` block in
 `nbhttp/engine.go`. If upstream ever moves to a newer llib, keep our import.
+
+## CI (GitHub Actions)
+
+| Workflow | Runs | What |
+|---|---|---|
+| `.github/workflows/arco-tls.yml` | push / PR to `arco`; daily | `check.sh 5m` on linux amd64 + arm64 (diff vs Go, build/vet, Go suite + ours with `-race`, nbio tests, fuzzing, govulncheck); daily `vulncheck.sh` + `latest.sh` (red when Go ships a newer crypto/tls fix) |
+| `.github/workflows/ci.yml` | push / PR to `arco`, tags `v*`; weekly CodeQL | nbio's original CI adapted: golangci-lint (`.golangci.yml`; Go's verbatim copy is excluded, our `nonblock*`/`arco_*` files and shims are linted), tests on macOS and Windows, Autobahn WebSocket conformance (ws and wss, so it exercises our TLS), CodeQL |
+
+Both must be green before tagging `v1.7.1-arco.N`. If Go adds a file to `crypto/tls` whose name starts with `n` or
+`ar`, add it to the exclusion regex in `.golangci.yml` (the lint job will flag it).
