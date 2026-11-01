@@ -11,7 +11,7 @@ no-goroutine-per-connection TLS (~19 KiB/conn) on top of a **current, patched** 
 
 | Path | What | Origin |
 |---|---|---|
-| `*.go`, `nbhttp/`, `extension/`, … | nbio | upstream, 13 files touched (+33/−29 lines, section 4) |
+| `*.go`, `nbhttp/`, `extension/`, … | nbio | upstream, 11 non-test files touched (+50/−42 lines, section 4) |
 | `crypto/tls/*.go` except below | Go's `crypto/tls` | **go1.27.3, unmodified except import lines** (section 3) |
 | `crypto/tls/nonblock.go` | the non-blocking layer (llib-compatible API) | ours, 390 lines with comments |
 | `crypto/tls/nonblock_test.go`, `arco_regress_test.go`, `arco_fuzz_test.go` | our tests | ours |
@@ -107,11 +107,13 @@ Consequences, stated plainly:
 
 ## 4. Diff against upstream nbio
 
-`git diff upstream/master` outside `crypto/`, `bench/`, `docs/`, `tools/`: 13 files, +33/−29.
+`git diff upstream/master` outside `crypto/`, `bench/`, `docs/`, `tools/` (and test files): 11 files, +50/−42, plus one new test file `nbhttp/arco_tls_test.go`.
 
 - 10 files: `github.com/lesismal/llib/std/crypto/tls` → `github.com/lesismal/nbio/crypto/tls` (one line each).
 - `extension/tls/tls.go`: `tls.Dial` loses the allocator argument (Go's `Dial` signature); `WrapData` reads with
   `AppendAndRead` instead of `Append` + `Read` (in non-blocking mode Go's `Read` reports would-block as an error).
+- `nbhttp/engine.go` and `nbhttp/websocket/upgrader.go`: use `nread` before `err` (plaintext delivered together
+  with a close_notify was dropped; the upgrader also closed with the wrong error variable, an upstream bug).
 - `nbhttp/engine.go` (`OnClose`): if a connection drops before its TLS handshake finished, close the TLS conn so
   its handshake goroutine exits immediately (otherwise it waits for `NonBlockingHandshakeTimeout`, 30 s).
 - `go.mod`: `go 1.27.3`; llib removed; `x/crypto` v0.58.0, `x/sys` v0.49.0.
@@ -127,6 +129,11 @@ Consequences, stated plainly:
 - Calling `Handshake`, `Read` or `Write` on a non-blocking conn **before** the first `AppendAndRead` fails the
   handshake (`errHandshakeNotDriven`) instead of blocking. A `Write` during a handshake waits for it to finish.
 - `ResetRawInput` never discards buffered input (llib's did).
+- `AppendAndRead(in, out)` copies `in` when it overlaps `out` (nbio passes the same buffer): one allocation per read
+  event in exchange for never overwriting unread ciphertext.
+- A non-blocking **client** cannot start a handshake (nbio's client handshakes in blocking mode and then calls
+  `ResetConn`, which is supported). `ResetConn` during a non-blocking handshake is unsupported.
+- A stalled handshake costs ~18.4 KiB (state + goroutine stack) until its deadline (`docs/risks.md` §3).
 - `ReleaseBuffers` frees memory to the GC; a burst of reads allocates again (≈ record size + 512 B per read event
   that ends on a record boundary). Pusher clients send little, so this is cheap.
 - Out of scope, unchanged from upstream nbio: `nbhttp/convert.go` stores connection pointers as `uintptr` map keys

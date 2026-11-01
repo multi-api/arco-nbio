@@ -103,17 +103,17 @@ func (f *nbConn) Read(p []byte) (int, error) {
 	if !f.nonBlock {
 		return f.Conn.Read(p)
 	}
+	if f.hs.Load() == nil && !f.handshakeDone() {
+		// Handshake, Read or Write was called directly before AppendAndRead
+		// started the handshake. Fail the handshake cleanly rather than
+		// block the caller, and before touching pending (the poller's).
+		return 0, errHandshakeNotDriven
+	}
 	for len(f.pending) == 0 {
 		hs := f.hs.Load()
 		if hs == nil {
-			if f.handshakeDone() {
-				// Post-handshake read on the poller: nothing more for now.
-				return 0, errWouldBlock
-			}
-			// Handshake, Read or Write was called directly before
-			// AppendAndRead started the handshake. Fail the handshake
-			// cleanly rather than block the caller forever.
-			return 0, errHandshakeNotDriven
+			// Post-handshake read on the poller: nothing more for now.
+			return 0, errWouldBlock
 		}
 		if err := hs.waitForInput(f); err != nil {
 			return 0, err
@@ -285,7 +285,12 @@ func (c *Conn) SetSession(session interface{}) {
 
 // ResetConn replaces the transport and selects blocking or non-blocking mode,
 // e.g. to move a connection that finished its handshake in blocking mode onto
-// a poller. It must not be called while a handshake is in progress.
+// a poller. It must not be called while a non-blocking handshake is in
+// progress (it would wait for the handshake, which waits for the poller).
+//
+// Only server connections and clients that finished their handshake in
+// blocking mode can be non-blocking: a non-blocking client cannot start a
+// handshake, since it has nothing to read first.
 func (c *Conn) ResetConn(conn net.Conn, nonBlock bool, v ...interface{}) {
 	f := c.nb()
 	f.keepPending()

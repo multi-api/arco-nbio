@@ -1,0 +1,86 @@
+# Risk investigation (2026-10-31, second pass)
+
+Follow-up to the "remaining risks" in `docs/results.md`. Each risk: what was done, what was found, what is left.
+
+## 1. Second review of `nonblock.go` and the GCM shim
+
+Done by an independent reviewer (a separate agent given only the code, not our conclusions), then each finding
+verified here.
+
+| # | Finding | Severity | Status |
+|---|---|---|---|
+| 1 | **nbio passes the poller's buffer as both input and output of `AppendAndRead`.** `feed` only borrowed the input, so decrypted plaintext written to `out[0:]` could overwrite ciphertext not yet consumed. Large uploads failed with `bad record MAC` and the connection dropped (no confidentiality loss: the AEAD caught it). Our tests missed it because they used a separate output buffer. | **High** | **Fixed** (`AppendAndRead` copies the input when it overlaps the output). Reproduced first: `TestNonBlockAliasedBuffers` failed at all 4 buffer sizes / both versions; a new end-to-end test through the real nbhttp engine (`nbhttp/arco_tls_test.go`, POST bodies up to 2 MiB over TLS 1.2/1.3) failed without the fix ("broken pipe" at 300 KB) and passes with it |
+| 2 | After a WebSocket upgrade in blocking mode, borrowed input could point into a pooled buffer that nbio frees | Medium | **Fixed**: `ResetRawInput` and `ResetConn` copy borrowed input first (and finding 1's fix removes most borrowing) |
+| 3 | nbio callers checked `err` before using `nread`; Go's `Read` returns `(n>0, io.EOF)` when a close_notify follows data, so the last plaintext was dropped | Medium | **Fixed** in `TLSDataHandler`, the blocking TLS reader and the WebSocket upgrader (which also closed with the wrong error variable — an upstream bug) |
+| 4 | `Handshake`/`Read`/`Write` called directly before the first `AppendAndRead` raced with the poller's input | Low (misuse) | **Fixed**: fails with `errHandshakeNotDriven` before touching poller state. `ResetConn` during a non-blocking handshake would wait for the handshake: documented as unsupported |
+| 5 | A non-blocking *client* cannot start a handshake; TLS 1.2 client renegotiation would run on the poller | Low | Documented. nbio's client handshakes in blocking mode and then switches (supported); renegotiation is off by default |
+| 6 | One goroutine per pending handshake; `GetCertificate` runs while the poller waits | Low | Quantified in §3 and §4 |
+| 7–8 | Nits in upstream code and shims (godebug reads only `GODEBUG`) | Nit | Upstream nit fixed with #3; shim behaviour documented in `design.md` |
+| — | **GCM shim**: matches Go 1.27.3 `gcm_nonces.go` line for line, checks always on; no way found for a nonce to repeat or a valid sequence to be rejected (TLS 1.2 explicit nonce, TLS 1.3 mask, new AEAD per KeyUpdate) | — | No change |
+
+Still open: the reviewer was another model instance, not a human. A human review of `nonblock.go` (≈220 lines of
+logic now) is still recommended before production.
+
+## 2. p99 tail (the 2-second stall at 15k)
+
+Observed before: both fork runs stalled at the 15,000 step (p99 1.6 s and 2.0 s; one run delivered 96.7 %),
+while llib and fork-without-buffer-release did not.
+
+What was measured (`bench/gc-matrix.sh`, `bench/results/gc-*`, `fixed-full-*`, all with `GODEBUG=gctrace=1`, after
+the fixes in §1):
+
+| Run | KiB/conn | p99 ms @10k / 15k / 20k / 25k / 30k | Delivered | GC cycles | max GC pause |
+|---|---|---|---|---|---|
+| fork, short ramp ×2 | 13.38 / 12.78 | 164–222 / 242–286 / 304–362 | 100 % | 41 | 1.2 ms |
+| fork without release ×2 | 19.17 / 19.68 | 158–171 / 224–265 / 326–385 | 100 % | 28 | 0.06 ms |
+| llib ×2 | 19.99 / 19.22 | 150–183 / 223–262 / 299–384 | 100 % | 19 | 0.16 ms |
+| fork, `GOGC=200 GOMEMLIMIT=450MiB` ×2 | 15.85 / 15.71 | 151–186 / 200–330 / 342–385 | 100 % | 21 | — |
+| **fork, full ramp ×2** | **12.80 / 12.66** | 146–159 / 208–214 / 293–369 / 547–678 / 455–619 | **100 % at every step** | 53 | 3.1 ms |
+
+Findings:
+- **No stall in 6 runs after the fixes.** p99 of the fork is now in the same range as llib and the no-release
+  variant at every step up to 20k; 30,000 connections stay stable in 512 MiB (llib: 25,000).
+- **GC is not the cause of second-long stalls.** The fork does run the GC about twice as often as llib (smaller
+  live heap, buffers re-allocated on read events), but stop-the-world pauses stay ≤ 3.1 ms and GC CPU rounds to
+  0 %. GC tuning brings nothing but more memory, so it is not recommended.
+- The earlier stall could not be attributed with certainty: those runs had no gctrace and the server does not log
+  TLS errors. The aliasing bug (§1 #1) is the most plausible cause — it corrupts the stream when a record spans
+  two poller reads, which happens more under load — but this is an inference, not a proof.
+
+## 3. Slowloris: cost of a stalled handshake
+
+`TestMeasureStalledHandshakeCost` (`ARCO_MEASURE=1`): 2,000 connections that send a ClientHello and stall cost
+**18.4 KiB each** (10.3 KiB heap of handshake state + 8.0 KiB goroutine stack), against ~12.7 KiB for an
+established connection. They are released by nbio's read deadline or `NonBlockingHandshakeTimeout` (30 s).
+llib kept the same handshake state on the heap without the stack, so this is ~8 KiB worse per *stalled* handshake.
+At the benchmark's 500 new connections/s and normal RTTs only a few hundred are in flight at once. Mitigation if
+needed: a 5–10 s handshake deadline, and `tls.HandshakesInFlight()` as a metric/alarm.
+
+## 4. Poller blocked by the handshake / slow `GetCertificate`
+
+`BenchmarkNonBlockHandshake` (TLS 1.3, ECDSA P-256, X25519MLKEM768, std client over `net.Pipe`, Apple M-series):
+non-blocking 491–509 µs per full handshake (client + server) against 485–491 µs for Go's standard server: the
+coroutine hand-offs cost **~1–2 %**. The server's share is what a poller spends per new connection, the same
+work llib did inline. Not measured on Graviton (expect several times slower per core).
+
+`GetCertificate` runs inside that window, so a slow callback (first-time ACME issuance) stalls the poller, as with
+llib. This stays a usage rule rather than a code change: keep `GetCertificate` cache-only and issue certificates
+in the background. Making the poller not wait would need a way to re-enter nbio's data handler when the handshake
+finishes, which is a larger change to nbio.
+
+## 5. Reliance on Go internals
+
+New canary test `arco_assumptions_test.go`: compile-time checks that `rawInput`/`hand` are `bytes.Buffer`,
+`input` a `bytes.Reader`, `in`/`out` lockable; and a runtime check that a temporary error in the middle of a
+record leaves the connection usable. A Go release that changes either fails this file first, with a message that
+names the assumption.
+
+## 6. Unchanged
+
+- FIPS 140-3 mode unsupported; go.mod `godebug` defaults not applied (only `GODEBUG`).
+- Go's `BenchmarkHandshakeServer` cannot run here: it replays recorded handshakes and needs a deterministic
+  `crypto/rand`, which code outside GOROOT cannot set.
+
+## Fuzzing (longer run)
+
+`tools/tlssync/check.sh 10m` passed end to end (`docs/results/check-full.txt`): diff check, build/vet, Go suite + ours with `-race`, nbio tests, both fuzzers 10 minutes each with no failure (`FuzzNonBlockRecordStream` 53,264 executions), govulncheck clean on the module and the copy.

@@ -1,0 +1,30 @@
+ Container arco-nbio-bench-loadgen-run-0d91e7653899 Creating 
+ Container arco-nbio-bench-loadgen-run-0d91e7653899 Created 
+01:06:57 gc-fork-2: idle mem 7.8 MiB (anon 4.7), cpu 0.0 %
+(node:21) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:15) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:26) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:17) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:25) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:42) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:18) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+01:07:07   ramp 4896/5000 live=4896 failed=0 pending=3
+(node:1) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+01:07:44 step 5000: live=5000 mem=80.7MiB (14.9 KiB/conn, marginal undefined) cpuIdle=0% cpuBc=4%/7% p50=42ms p99=127ms delivered=100.0% drops=0 procs={"server":64}
+01:07:54   ramp 9776/10000 live=9776 failed=0 pending=0
+01:08:30 step 10000: live=10000 mem=141.6MiB (13.7 KiB/conn, marginal 12.5) cpuIdle=12% cpuBc=10%/19% p50=73ms p99=222ms delivered=100.0% drops=0 procs={"server":105}
+01:08:40   ramp 14873/15000 live=14873 failed=0 pending=9
+01:09:16 step 15000: live=15000 mem=208.1MiB (13.7 KiB/conn, marginal 13.6) cpuIdle=10% cpuBc=14%/26% p50=109ms p99=286ms delivered=100.0% drops=0 procs={"server":157}
+01:09:27   ramp 19848/20000 live=19851 failed=0 pending=6
+01:10:03 step 20000: live=20000 mem=266.5MiB (13.2 KiB/conn, marginal 12.0) cpuIdle=10% cpuBc=19%/30% p50=146ms p99=304ms delivered=100.0% drops=0 procs={"server":195}
+01:10:03 done: all steps passed (harness ceiling)

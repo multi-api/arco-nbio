@@ -1,0 +1,122 @@
+{
+  "label": "gc-llib-1",
+  "server": "llib-tls",
+  "container": "arco-nbio-bench-llib-tls-1",
+  "extra": [],
+  "rate": 500,
+  "inflight": 200,
+  "started": "2026-11-01T01:03:24.557Z",
+  "steps": [
+    {
+      "step": 5000,
+      "live": 5000,
+      "rampSeconds": 11.125,
+      "acceptRate": 449.438202247191,
+      "memMiB": 107.89453125,
+      "anonMiB": 81.96875,
+      "kbPerConn": 19.8272,
+      "kbPerConnMarginal": null,
+      "procRssMiB": {
+        "server": 87.74609375
+      },
+      "cpuIdle": 0,
+      "cpuBroadcast": 5.028157092651311,
+      "cpuBroadcastMax": 11.68091719745223,
+      "p50": 40,
+      "p99": 140,
+      "max": 161,
+      "delivered": 1,
+      "publishP50": 64,
+      "publishErrors": 0,
+      "droppedDuringHold": 0,
+      "failed": 0,
+      "errors": {}
+    },
+    {
+      "step": 10000,
+      "live": 10000,
+      "rampSeconds": 11.069,
+      "acceptRate": 451.71198843617304,
+      "memMiB": 207.25390625,
+      "anonMiB": 162.14453125,
+      "kbPerConn": 20.088,
+      "kbPerConnMarginal": 20.3488,
+      "procRssMiB": {
+        "server": 167.94140625
+      },
+      "cpuIdle": 7.387988434531185,
+      "cpuBroadcast": 8.933365907760239,
+      "cpuBroadcastMax": 15.680791100123608,
+      "p50": 71,
+      "p99": 183,
+      "max": 201,
+      "delivered": 1,
+      "publishP50": 126,
+      "publishErrors": 0,
+      "droppedDuringHold": 0,
+      "failed": 0,
+      "errors": {}
+    },
+    {
+      "step": 15000,
+      "live": 15000,
+      "rampSeconds": 11.11,
+      "acceptRate": 450.0450045004501,
+      "memMiB": 292.8138020833333,
+      "anonMiB": 227.27604166666666,
+      "kbPerConn": 19.232888888888887,
+      "kbPerConnMarginal": 17.522666666666662,
+      "procRssMiB": {
+        "server": 234.0234375
+      },
+      "cpuIdle": 12.602775649212433,
+      "cpuBroadcast": 15.772242383062721,
+      "cpuBroadcastMax": 27.891788413098233,
+      "p50": 122,
+      "p99": 262,
+      "max": 277,
+      "delivered": 1,
+      "publishP50": 216,
+      "publishErrors": 0,
+      "droppedDuringHold": 0,
+      "failed": 0,
+      "errors": {}
+    },
+    {
+      "step": 20000,
+      "live": 20000,
+      "rampSeconds": 11.088,
+      "acceptRate": 450.937950937951,
+      "memMiB": 404.6640625,
+      "anonMiB": 316.64453125,
+      "kbPerConn": 20.1514,
+      "kbPerConnMarginal": 22.90693333333334,
+      "procRssMiB": {
+        "server": 323.4140625
+      },
+      "cpuIdle": 44.943191368540596,
+      "cpuBroadcast": 22.003348407625285,
+      "cpuBroadcastMax": 40.58249037227215,
+      "p50": 161,
+      "p99": 384,
+      "max": 469,
+      "delivered": 1,
+      "publishP50": 297,
+      "publishErrors": 0,
+      "droppedDuringHold": 0,
+      "failed": 0,
+      "errors": {}
+    }
+  ],
+  "idle": {
+    "cpu": 0,
+    "mem": 11.08203125,
+    "anon": 4.70703125,
+    "cpuMax": 0
+  },
+  "idleProcs": {
+    "server": 9.66796875
+  },
+  "stop": "all steps passed (harness ceiling)",
+  "finished": "2026-11-01T01:06:39.107Z"
+}

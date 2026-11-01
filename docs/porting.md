@@ -61,6 +61,6 @@ with `-bogo-local-dir` pointing to a BoringSSL checkout, against this package.
 
 ## Upstream nbio updates
 
-`git fetch upstream && git merge upstream/master`. Conflicts can only be in the 13 files of `docs/design.md` §4,
+`git fetch upstream && git merge upstream/master`. Conflicts can only be in the 11 files of `docs/design.md` §4,
 and they are one-line import changes except `extension/tls/tls.go` and the `OnClose` block in
 `nbhttp/engine.go`. If upstream ever moves to a newer llib, keep our import.

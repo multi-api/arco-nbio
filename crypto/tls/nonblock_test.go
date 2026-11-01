@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"os"
 	"runtime"
 	"sync"
 	"testing"
@@ -485,3 +486,94 @@ func TestNonBlockAliasedBuffers(t *testing.T) {
 		}
 	}
 }
+
+// TestMeasureStalledHandshakeCost measures the memory held by connections
+// that send a ClientHello and then stall (a slowloris): each one holds a
+// parked handshake goroutine and its handshake state until the deadline.
+// Run with ARCO_MEASURE=1.
+func TestMeasureStalledHandshakeCost(t *testing.T) {
+	if os.Getenv("ARCO_MEASURE") == "" {
+		t.Skip("set ARCO_MEASURE=1")
+	}
+	const n = 2000
+	hello := clientHelloBytes(t)
+	cfg := nbServerConfig(VersionTLS13)
+	var conns []*Conn
+	var peers []net.Conn
+	measure := func() (heap, stack uint64) {
+		runtime.GC()
+		var m runtime.MemStats
+		runtime.ReadMemStats(&m)
+		return m.HeapAlloc, m.StackInuse
+	}
+	// Transports and Conns first, so that only the handshakes are measured.
+	for i := 0; i < n; i++ {
+		a, b := net.Pipe()
+		go io.Copy(io.Discard, b) // swallow the server flight
+		conns, peers = append(conns, NewConn(a, cfg, false, true)), append(peers, b)
+	}
+	out := make([]byte, 64)
+	h0, s0 := measure()
+	for _, srv := range conns {
+		if _, _, err := srv.AppendAndRead(hello, out); err != nil {
+			t.Fatal(err)
+		}
+	}
+	waitHandshakesInFlight(t, n)
+	h1, s1 := measure()
+	t.Logf("%d stalled handshakes: heap %.1f KiB/conn, goroutine stacks %.1f KiB/conn, total %.1f KiB/conn",
+		n, float64(h1-h0)/1024/n, float64(s1-s0)/1024/n, float64(h1-h0+s1-s0)/1024/n)
+	for i := range conns {
+		conns[i].Close()
+		peers[i].Close()
+	}
+	waitHandshakesInFlight(t, 0)
+}
+
+// BenchmarkNonBlockHandshake measures a full TLS 1.3 handshake (ECDSA P-256,
+// X25519MLKEM768) against the non-blocking server driven like a poller, and
+// against Go's standard library server, both over net.Pipe with the standard
+// library client. The difference is the cost of the coroutine hand-offs; the
+// server's share of the time is how long a poller is busy per new connection.
+func BenchmarkNonBlockHandshake(b *testing.B) {
+	cert := testECDSAP256Cert
+	ourCfg := &Config{Certificates: []Certificate{cert}}
+	stdCfg := &stdtls.Config{Certificates: []stdtls.Certificate{{Certificate: cert.Certificate, PrivateKey: cert.PrivateKey}}}
+	cliCfg := &stdtls.Config{InsecureSkipVerify: true}
+	run := func(b *testing.B, server func(net.Conn) error) {
+		for i := 0; i < b.N; i++ {
+			a, s := net.Pipe()
+			errc := make(chan error, 1)
+			go func() { errc <- stdtls.Client(a, cliCfg).Handshake() }()
+			if err := server(s); err != nil {
+				b.Fatal(err)
+			}
+			if err := <-errc; err != nil {
+				b.Fatal(err)
+			}
+			a.Close()
+			s.Close()
+		}
+	}
+	b.Run("nonblock", func(b *testing.B) {
+		run(b, func(s net.Conn) error {
+			srv := NewConn(s, ourCfg, false, true)
+			buf := make([]byte, 4096)
+			out := make([]byte, 64)
+			for !srv.HandshakeComplete() {
+				n, err := s.Read(buf)
+				if err != nil {
+					return err
+				}
+				if _, _, err := srv.AppendAndRead(buf[:n], out); err != nil {
+					return err
+				}
+			}
+			return nil
+		})
+	})
+	b.Run("stdlib", func(b *testing.B) {
+		run(b, func(s net.Conn) error { return stdtls.Server(s, stdCfg).Handshake() })
+	})
+}
+

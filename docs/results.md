@@ -40,7 +40,7 @@ Toolchain go1.27.3. Raw outputs are in `docs/results/` and `bench/results/`.
 - Against Go 1.27.3 `crypto/tls`: **87 changed lines, all import lines except 2**; no hand patches
   (`results/diff-vs-go1.27.3.txt`). Our code: `nonblock.go` 390 lines (about half comments), shims 324 lines
   (+164 test-only).
-- Against upstream nbio: 13 files, +33/−29.
+- Against upstream nbio: 11 non-test files, +50/−42 (after the second-pass fixes), plus one test file.
 - Port drill (`results/port-drill.txt`): re-import of go1.27.0 → passes in 6 s with no manual work; go1.26.10
   (previous minor) → library compiles unchanged, one extra test-only shim needed.
 - `sync.sh` is idempotent: re-running it on go1.27.3 changes nothing.
@@ -73,10 +73,10 @@ What the numbers say:
 - **Where the saving comes from: releasing idle read buffers.** With release off, the same code costs 19.5
   KiB/conn — the same as llib. So "stock Go `crypto/tls` behind a non-blocking adapter" (no fork, the audit's
   path 2) would land at ~19.5 KiB/conn; the fork is what buys the other ~7 KiB/conn.
-- **Latency/CPU:** broadcast CPU is the same as llib. p50 is the same. p99 of the fork is in the same range but
-  noisier: one step in run 2 (15k) had a 2-second stall and missed 3.3 % of deliveries in the measurement window.
-  Likely cause: a smaller live heap makes the GC run more often under the same allocation rate, and releasing
-  buffers adds allocations on every read event. Not investigated further; see risks.
+- **Latency/CPU:** broadcast CPU and p50 are the same as llib. Runs 1–2 above had a 1.6–2 s stall at 15k; **after
+  the fixes of the second pass (`docs/risks.md`) 6 more runs show no stall and 100 % delivery at every step**:
+  full ramp ×2 → 12.80 / 12.66 KiB/conn, 30,000 stable, p99 146–159 ms @10k and 293–369 ms @20k (llib 177 /
+  507 here, 150–183 / 299–384 in the second-pass runs). GC pauses ≤ 3.1 ms.
 
 Projection (`(budget − idle) × 1024 / KiB-per-conn`): nano (400 MiB): fork 12.34 → **32,300**; llib 19.28 →
 20,700; no-release 19.50 → 20,400. Micro (900 MiB): fork → **73,800**; llib → 47,200.
@@ -118,9 +118,9 @@ days per release), because the design avoided touching Go's code:
 candidate to replace "kTLS later"**: it already delivers the memory kTLS hopes for (~5× better than std TLS,
 ~1.6× better than llib), with a maintenance cost of hours per Go release instead of weeks, and without kernel
 dependencies. Before adopting it in arco-ws:
-1. A second engineer reviews `crypto/tls/nonblock.go` and the GCM shim (half a day).
-2. Investigate the p99 tail (GOGC / GOMEMLIMIT tuning, or keep a small read buffer instead of releasing to zero)
-   and repeat the benchmark 3× per variant (only fork runs 1–2 and one run per other variant were done).
+1. A human engineer reviews `crypto/tls/nonblock.go` and the GCM shim (half a day). An independent automated
+   review was done and its findings fixed (`docs/risks.md`); one of them was a real bug.
+2. ~~Investigate the p99 tail~~ done (`docs/risks.md` §2): no stall in 6 runs after the fixes; GC tuning not needed.
 3. Run the fuzzers for hours, not minutes, and run BoGo once by hand.
 4. Wire `tools/tlssync/vulncheck.sh` into CI and name an owner for Go security releases.
 5. Accept nbio as the engine (arco-ws currently keeps its own epoll engine behind an interface); or port the same
@@ -128,6 +128,10 @@ dependencies. Before adopting it in arco-ws:
    run the handshake coroutine, so it is not nbio-specific.
 
 ## 6. Remaining risks
+
+Investigated in a second pass: see **`docs/risks.md`** (an independent review found and we fixed a buffer-aliasing
+bug that dropped connections on large uploads; the p99 stall did not reappear; stalled-handshake and handshake-CPU
+costs measured). The list below is the original one.
 
 - `nonblock.go` relies on Go behaviour that is not a documented API: temporary errors not being sticky in
   `readRecordOrCCS`, and the buffers being `bytes.Buffer` fields. A Go release could change either; the tests
