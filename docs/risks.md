@@ -201,3 +201,15 @@ The read-loop fixes that do not depend on the new TLS (close_notify after data, 
 were sent upstream on their own as https://github.com/lesismal/nbio/pull/515, against llib.
 
 CI: `macos-14` runners are retired on 2026-11-02; `ci.yml` now uses `macos-15`.
+
+## 14. Fourth independent review (2026-11-01)
+
+No memory-safety bug, plaintext or key leak, or cross-connection corruption. Findings and fixes:
+
+| # | Severity | Finding | Fix |
+|---|---|---|---|
+| R4-1 | Medium | After its handshake a server could keep a large unfinished post-handshake handshake message in `c.hand`, well above an idle connection's footprint | Hardening limit: a server connection fails once more than `maxPostHandshakeBuffered` (1 KiB) of handshake data is buffered after the handshake. A TLS 1.3 KeyUpdate is 5 bytes; nothing else is accepted. `TestReview4PostHandshakeBufferLimit`; the KeyUpdate tests still pass. |
+| R4-2 | Low | A record header makes Go's record layer reserve a full record buffer (~18 KiB) until the record completes | Not changed (Go's behaviour, bounded). Capacity planning: count ~31 KiB for a connection that holds a partial record. |
+| R4-3 | Low | `ResetConn` writes the transport while `Close`/`LocalAddr`/`RemoteAddr` read it without locks | Documented: `ResetConn` needs exclusive use of the Conn. nbhttp calls it only during an upgrade; arco-ws does not call it. |
+| R4-4 | Info | After a recovered handshake panic, `c.handshakeErr` stayed nil, so a later Read/Write could re-run the handshake outside the recover | The recover records the error under `handshakeMutex`. `TestReview4PanicRecordsHandshakeErr`. |
+| R4-5 | Info | On close, the resume step returned without `abandon()` | Uses `abandon(net.ErrClosed)`, like the other close path. |

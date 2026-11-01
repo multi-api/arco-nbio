@@ -72,6 +72,14 @@ var errHandshakeNotDriven = errors.New("tls: handshake started outside AppendAnd
 
 var errHandshakeTimeout = errors.New("tls: non-blocking handshake timed out waiting for the peer")
 
+// maxPostHandshakeBuffered bounds the handshake-message bytes a server buffers
+// after its handshake. The only post-handshake message a server accepts is a
+// TLS 1.3 KeyUpdate (5 bytes); anything larger is never legitimate, so a
+// connection is failed rather than kept with a large c.hand.
+const maxPostHandshakeBuffered = 1024
+
+var errPostHandshakeTooLarge = errors.New("tls: peer sent an oversized post-handshake handshake message")
+
 // handshakesInFlight counts handshake goroutines that exist right now.
 var handshakesInFlight atomic.Int64
 
@@ -107,6 +115,10 @@ type nbConn struct {
 }
 
 func (f *nbConn) Read(p []byte) (int, error) {
+	// Go's record layer calls Read with c.in held, so c.hand is safe to read.
+	if c := f.c; c != nil && !c.isClient && c.isHandshakeComplete.Load() && c.hand.Len() > maxPostHandshakeBuffered {
+		return 0, errPostHandshakeTooLarge // not temporary: Go makes it sticky
+	}
 	if !f.nonBlock {
 		return f.Conn.Read(p)
 	}
@@ -230,6 +242,15 @@ func (c *Conn) stepHandshake(f *nbConn) (done bool, err error) {
 				if r := recover(); r != nil {
 					hs.err = fmt.Errorf("tls: panic during handshake: %v\n%s", r, debug.Stack())
 					_ = f.Conn.Close() // hs.err already says why
+					// The panic skipped Go's c.handshakeErr assignment: record
+					// the error so a later Read/Write/Handshake on another
+					// goroutine fails instead of re-running the handshake
+					// outside this recover. Go's defers released the mutex.
+					c.handshakeMutex.Lock()
+					if c.handshakeErr == nil && !c.isHandshakeComplete.Load() {
+						c.handshakeErr = hs.err
+					}
+					c.handshakeMutex.Unlock()
 				}
 			}()
 			hs.err = c.HandshakeContext(context.Background())
@@ -239,7 +260,7 @@ func (c *Conn) stepHandshake(f *nbConn) (done bool, err error) {
 		case hs.resume <- struct{}{}:
 		case <-hs.done:
 		case <-f.closed:
-			return true, net.ErrClosed
+			return true, f.abandon(net.ErrClosed)
 		}
 	}
 	// The goroutine normally yields or finishes at once. It keeps the poller
@@ -349,7 +370,9 @@ func (c *Conn) SetSession(session interface{}) {
 // ResetConn replaces the transport and selects blocking or non-blocking mode,
 // e.g. to move a connection that finished its handshake in blocking mode onto
 // a poller. It must not be called while a non-blocking handshake is in
-// progress (it would wait for the handshake, which waits for the poller).
+// progress (it would wait for the handshake, which waits for the poller), and
+// it needs exclusive use of the Conn: Close, LocalAddr, RemoteAddr and the
+// deadline setters read the transport without c.in/c.out.
 //
 // Only server connections and clients that finished their handshake in
 // blocking mode can be non-blocking: a non-blocking client cannot start a
