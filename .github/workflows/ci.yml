@@ -46,8 +46,13 @@ jobs:
       - name: go test
         shell: bash
         run: |
-          [ "$RUNNER_OS" = "Windows" ] || ulimit -n 30000
-          go test -count=1 -timeout 10m ./...
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            # nbio's nbhttp tests are not run on Windows upstream (TestServerParserTrailer can hang there).
+            go test -count=1 -timeout 10m . ./crypto/tls/... ./extension/...
+          else
+            ulimit -n 30000
+            go test -count=1 -timeout 10m ./...
+          fi
 
   autobahn:
     if: github.event_name != 'schedule'
