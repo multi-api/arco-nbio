@@ -35,6 +35,7 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+	"unsafe"
 )
 
 // Allocator is accepted for API compatibility with llib and ignored: buffers
@@ -287,6 +288,7 @@ func (c *Conn) SetSession(session interface{}) {
 // a poller. It must not be called while a handshake is in progress.
 func (c *Conn) ResetConn(conn net.Conn, nonBlock bool, v ...interface{}) {
 	f := c.nb()
+	f.keepPending()
 	c.in.Lock()
 	defer c.in.Unlock()
 	c.out.Lock()
@@ -318,7 +320,15 @@ func (c *Conn) appendAndRead(in []byte, out []byte) (int, int, error) {
 	if !f.nonBlock {
 		return 0, 0, errors.New("tls: AppendAndRead on a blocking connection")
 	}
-	f.feed(in)
+	if overlaps(in, out) {
+		// nbio passes the poller's buffer as both in and out: plaintext
+		// written to out would overwrite ciphertext not yet consumed.
+		in = bytes.Clone(in)
+		f.feed(in)
+		f.owned = true
+	} else {
+		f.feed(in)
+	}
 	if !c.isHandshakeComplete.Load() {
 		if len(f.pending) == 0 && f.hs.Load() == nil {
 			return len(in), 0, nil
@@ -352,9 +362,21 @@ func (c *Conn) ResetOrFreeBuffer() {
 	c.ReleaseBuffers()
 }
 
-// ResetRawInput releases empty read buffers. Unlike llib, it never discards
+// ResetRawInput keeps unconsumed input (copying it out of the caller's
+// buffer) and releases empty read buffers. Unlike llib, it never discards
 // buffered input.
-func (c *Conn) ResetRawInput() { c.ReleaseBuffers() }
+func (c *Conn) ResetRawInput() { c.ResetOrFreeBuffer() }
+
+// overlaps reports whether a and b share any memory.
+func overlaps(a, b []byte) bool {
+	if len(a) == 0 || len(b) == 0 {
+		return false
+	}
+	a0, a1 := uintptr(unsafe.Pointer(&a[0])), uintptr(unsafe.Pointer(&a[len(a)-1]))
+	b0 := uintptr(unsafe.Pointer(&b[0]))
+	b1 := b0 + uintptr(cap(b)) - 1 // Read may write up to cap via out[:len]; be conservative
+	return a0 <= b1 && b0 <= a1
+}
 
 // ReleaseBuffers drops the read-side buffers (raw records, decrypted data,
 // handshake messages) when they hold no unread bytes, so that an idle

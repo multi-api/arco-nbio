@@ -409,17 +409,18 @@ func (u *Upgrader) Upgrade(w http.ResponseWriter, r *http.Request, responseHeade
 					for {
 						_, nread, errRead = vt.AppendAndRead(readed, buffer)
 						readed = nil
-						if errRead != nil {
-							_ = c.CloseWithError(err)
-							return
-						}
+						// arco-nbio: use the plaintext before the error, and
+						// check/close with errRead (upstream checked err).
 						if nread > 0 {
-							errRead = wsc.Parse(buffer[:nread])
-							if err != nil {
-								logging.Debug("websocket Conn Parse failed: %v", errRead)
-								_ = c.CloseWithError(errRead)
+							if errParse := wsc.Parse(buffer[:nread]); errParse != nil {
+								logging.Debug("websocket Conn Parse failed: %v", errParse)
+								_ = c.CloseWithError(errParse)
 								return
 							}
+						}
+						if errRead != nil {
+							_ = c.CloseWithError(errRead)
+							return
 						}
 						if nread == 0 {
 							return

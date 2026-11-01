@@ -417,3 +417,71 @@ func TestNonBlockLlibAPI(t *testing.T) {
 		t.Fatal("SetSession on plain conn")
 	}
 }
+
+// TestNonBlockAliasedBuffers: nbio passes the poller's buffer as both the
+// input and the output of AppendAndRead. Plaintext written to out must never
+// overwrite ciphertext not yet consumed (found by review; large uploads failed
+// with "bad record MAC").
+func TestNonBlockAliasedBuffers(t *testing.T) {
+	for _, vers := range []uint16{VersionTLS12, VersionTLS13} {
+		for _, size := range []int{3000, 17000, 40000} {
+			t.Run(fmt.Sprintf("%s/buf=%d", VersionName(vers), size), func(t *testing.T) {
+				ln, err := net.Listen("tcp", "127.0.0.1:0")
+				if err != nil {
+					t.Fatal(err)
+				}
+				defer ln.Close()
+				var got bytes.Buffer
+				done := make(chan error, 1)
+				go func() {
+					raw, err := ln.Accept()
+					if err != nil {
+						done <- err
+						return
+					}
+					srv := NewConn(raw, nbServerConfig(vers), false, true)
+					defer srv.Close()
+					buf := make([]byte, size)
+					for got.Len() < 256<<10 {
+						n, err := raw.Read(buf)
+						if err != nil {
+							done <- err
+							return
+						}
+						in := buf[:n]
+						for {
+							_, m, err := srv.AppendAndRead(in, buf) // aliased, like nbhttp
+							in = nil
+							if err != nil {
+								done <- err
+								return
+							}
+							if m == 0 {
+								break
+							}
+							got.Write(buf[:m])
+						}
+						srv.ResetOrFreeBuffer()
+					}
+					done <- nil
+				}()
+				c, err := stdtls.Dial("tcp", ln.Addr().String(), stdClientConfig())
+				if err != nil {
+					t.Fatal(err)
+				}
+				defer c.Close()
+				msg := make([]byte, 256<<10)
+				for i := range msg {
+					msg[i] = byte(i * 7)
+				}
+				go c.Write(msg)
+				if err := <-done; err != nil {
+					t.Fatalf("after %d bytes: %v", got.Len(), err)
+				}
+				if !bytes.Equal(got.Bytes(), msg) {
+					t.Fatal("plaintext mismatch")
+				}
+			})
+		}
+	}
+}

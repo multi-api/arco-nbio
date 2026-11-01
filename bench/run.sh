@@ -40,7 +40,7 @@ docker compose run --rm \
   -e SERVER="$service" -e LABEL="$label" -e STEPS="$STEPS" -e PORT=6001 -e TLS="$TLS" \
   -e PROJECT="$PROJECT" -e EXTRA_CONTAINERS="$EXTRA_CONTAINERS" \
   loadgen node bench.mjs 2>&1 | tee "results/$label.log"
-docker compose logs --no-log-prefix "$service" 2>&1 | tail -200 > "results/$label.server.log"
+docker compose logs --no-log-prefix "$service" > "results/$label.server.log" 2>&1
 docker inspect "$PROJECT-$service-1" --format '{{json .State}}' > "results/$label.state.json" 2>/dev/null
 for c in ${EXTRA_CONTAINERS//,/ }; do
   docker logs "$c" 2>&1 | tail -200 > "results/$label.$c.log"

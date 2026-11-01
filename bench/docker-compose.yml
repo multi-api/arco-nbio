@@ -16,6 +16,8 @@ x-app: &app
   APP_SECRET: bench-secret
   APP_MAX_MESSAGE_SIZE: 10000
   GOMEMLIMIT: ${GOMEMLIMIT:-}
+  GOGC: ${GOGC:-}
+  GODEBUG: ${SERVER_GODEBUG:-}
 
 services:
   # This fork: nbio + Go 1.27.3 crypto/tls with the non-blocking layer.
