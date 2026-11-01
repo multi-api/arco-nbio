@@ -27,7 +27,7 @@ go test -count=1 ./...
 
 step "fuzz the non-blocking record layer ($FUZZTIME each)"
 for f in FuzzNonBlockRecordStream FuzzNonBlockGarbage; do
-	go test -run '^$' -fuzz "^$f\$" -fuzztime "$FUZZTIME" ./crypto/tls/
+	go test -run '^$' -fuzz "^$f\$" -fuzztime "$FUZZTIME" -timeout 0 ./crypto/tls/
 done
 
 step "govulncheck (module + crypto/tls copy)"

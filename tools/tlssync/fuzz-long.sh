@@ -7,7 +7,7 @@ ROOT=$(cd "$(dirname "$0")/../.." && pwd)
 cd "$ROOT"
 T=${1:-2h}
 for f in FuzzNonBlockRecordStream FuzzNonBlockGarbage; do
-	go test -run '^$' -fuzz "^$f\$" -fuzztime "$T" -parallel 3 ./crypto/tls/ >"docs/results/fuzz-long-$f.txt" 2>&1 &
+	go test -run '^$' -fuzz "^$f\$" -fuzztime "$T" -timeout 0 -parallel 3 ./crypto/tls/ >"docs/results/fuzz-long-$f.txt" 2>&1 &
 done
 wait
 tail -n 4 docs/results/fuzz-long-*.txt
