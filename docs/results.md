@@ -60,7 +60,9 @@ latency on a 10 % sample; KiB/conn = least-squares slope of container memory ove
 | Reference from the spike: B plain (no TLS) | 7.37 | 5.4 | 50,000 | ceiling | 73 / 127 | 132 / 248 | 9 / 19 | 17 / 27 |
 
 Every completed step delivered 100 % of broadcasts, except fork run 2 at 15,000 (96.7 %, p99 1,977 ms) — see
-below. R3_NOTE
+below. A third fork run was not done: another session started its own benchmark in the same Docker VM right after
+run 2 (00:31 UTC; `run.sh` refuses to share the VM). None of the four runs above overlapped another benchmark
+(checked with `docker events`); run 1 overlapped a host-side `go test -race` run.
 
 What the numbers say:
 
