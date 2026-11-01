@@ -1,0 +1,124 @@
+
+== diff against Go go1.27.3: only import lines and the 2 NewGCMForTLS1x lines expected
+ok
+
+== build and vet
+
+== Go's crypto/tls test suite + non-blocking + audit regression tests, with -race
+ok  	github.com/lesismal/nbio/crypto/tls	26.721s
+?   	github.com/lesismal/nbio/crypto/tls/internal/boring	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/byteorder	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/cpu	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/cryptotest	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/aes/gcm	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/hkdf	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/hmac	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/sha256	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/sha512	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/tls12	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/tls13	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140tls	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/godebug	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/rand	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/testenv	[no test files]
+
+== nbio tests
+ok  	github.com/lesismal/nbio	2.830s
+?   	github.com/lesismal/nbio/autobahn/reporter	[no test files]
+?   	github.com/lesismal/nbio/autobahn/server	[no test files]
+ok  	github.com/lesismal/nbio/crypto/tls	7.393s
+?   	github.com/lesismal/nbio/crypto/tls/internal/boring	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/byteorder	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/cpu	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/cryptotest	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/aes/gcm	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/hkdf	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/hmac	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/sha256	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/sha512	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/tls12	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140/tls13	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/fips140tls	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/godebug	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/rand	[no test files]
+?   	github.com/lesismal/nbio/crypto/tls/internal/testenv	[no test files]
+?   	github.com/lesismal/nbio/extension/tls	[no test files]
+ok  	github.com/lesismal/nbio/lmux	2.460s
+ok  	github.com/lesismal/nbio/logging	0.659s
+ok  	github.com/lesismal/nbio/mempool	1.171s
+ok  	github.com/lesismal/nbio/nbhttp	3.620s
+ok  	github.com/lesismal/nbio/nbhttp/websocket	1.562s
+ok  	github.com/lesismal/nbio/taskpool	1.262s [no tests to run]
+ok  	github.com/lesismal/nbio/timer	4.523s
+?   	github.com/lesismal/nbio/tools/norace	[no test files]
+
+== fuzz the non-blocking record layer (1m each)
+fuzz: elapsed: 0s, gathering baseline coverage: 0/198 completed
+fuzz: elapsed: 3s, gathering baseline coverage: 104/198 completed
+fuzz: elapsed: 6s, gathering baseline coverage: 146/198 completed
+fuzz: elapsed: 8s, gathering baseline coverage: 198/198 completed, now fuzzing with 10 workers
+fuzz: elapsed: 9s, execs: 259 (38/sec), new interesting: 0 (total: 198)
+fuzz: elapsed: 12s, execs: 436 (59/sec), new interesting: 0 (total: 198)
+fuzz: elapsed: 15s, execs: 634 (66/sec), new interesting: 0 (total: 198)
+fuzz: elapsed: 18s, execs: 731 (32/sec), new interesting: 0 (total: 198)
+fuzz: elapsed: 21s, execs: 946 (72/sec), new interesting: 1 (total: 199)
+fuzz: elapsed: 24s, execs: 1069 (41/sec), new interesting: 1 (total: 199)
+fuzz: elapsed: 27s, execs: 1282 (71/sec), new interesting: 3 (total: 201)
+fuzz: elapsed: 30s, execs: 1424 (47/sec), new interesting: 3 (total: 201)
+fuzz: elapsed: 33s, execs: 1612 (63/sec), new interesting: 3 (total: 201)
+fuzz: elapsed: 36s, execs: 1801 (63/sec), new interesting: 4 (total: 202)
+fuzz: elapsed: 39s, execs: 1987 (62/sec), new interesting: 5 (total: 203)
+fuzz: elapsed: 42s, execs: 2026 (13/sec), new interesting: 5 (total: 203)
+fuzz: elapsed: 45s, execs: 2383 (119/sec), new interesting: 8 (total: 206)
+fuzz: elapsed: 48s, execs: 2518 (45/sec), new interesting: 8 (total: 206)
+fuzz: elapsed: 51s, execs: 2713 (65/sec), new interesting: 9 (total: 207)
+fuzz: elapsed: 54s, execs: 2789 (25/sec), new interesting: 9 (total: 207)
+fuzz: elapsed: 57s, execs: 2906 (39/sec), new interesting: 9 (total: 207)
+fuzz: elapsed: 1m0s, execs: 3056 (50/sec), new interesting: 9 (total: 207)
+fuzz: elapsed: 1m2s, execs: 3056 (0/sec), new interesting: 9 (total: 207)
+PASS
+ok  	github.com/lesismal/nbio/crypto/tls	62.502s
+fuzz: elapsed: 0s, gathering baseline coverage: 0/105 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 105/105 completed, now fuzzing with 10 workers
+fuzz: elapsed: 3s, execs: 5429 (1809/sec), new interesting: 0 (total: 105)
+fuzz: elapsed: 6s, execs: 5429 (0/sec), new interesting: 0 (total: 105)
+fuzz: elapsed: 9s, execs: 5429 (0/sec), new interesting: 0 (total: 105)
+fuzz: elapsed: 12s, execs: 5429 (0/sec), new interesting: 0 (total: 105)
+fuzz: elapsed: 15s, execs: 5429 (0/sec), new interesting: 0 (total: 105)
+fuzz: elapsed: 18s, execs: 5429 (0/sec), new interesting: 0 (total: 105)
+fuzz: elapsed: 21s, execs: 5429 (0/sec), new interesting: 0 (total: 105)
+fuzz: elapsed: 24s, execs: 5429 (0/sec), new interesting: 0 (total: 105)
+fuzz: elapsed: 27s, execs: 5429 (0/sec), new interesting: 0 (total: 105)
+fuzz: elapsed: 30s, execs: 5429 (0/sec), new interesting: 0 (total: 105)
+fuzz: elapsed: 33s, execs: 5429 (0/sec), new interesting: 0 (total: 105)
+fuzz: elapsed: 36s, execs: 5429 (0/sec), new interesting: 0 (total: 105)
+fuzz: elapsed: 39s, execs: 5429 (0/sec), new interesting: 0 (total: 105)
+fuzz: elapsed: 42s, execs: 5429 (0/sec), new interesting: 0 (total: 105)
+fuzz: elapsed: 45s, execs: 5429 (0/sec), new interesting: 0 (total: 105)
+fuzz: elapsed: 48s, execs: 5429 (0/sec), new interesting: 0 (total: 105)
+fuzz: elapsed: 51s, execs: 5429 (0/sec), new interesting: 0 (total: 105)
+fuzz: elapsed: 54s, execs: 5429 (0/sec), new interesting: 0 (total: 105)
+fuzz: elapsed: 57s, execs: 5429 (0/sec), new interesting: 0 (total: 105)
+fuzz: elapsed: 1m0s, execs: 5429 (0/sec), new interesting: 0 (total: 105)
+fuzz: elapsed: 1m1s, execs: 5429 (0/sec), new interesting: 0 (total: 105)
+PASS
+ok  	github.com/lesismal/nbio/crypto/tls	61.487s
+
+== govulncheck (module + crypto/tls copy)
+== 1. govulncheck ./... (toolchain go1.27.3)
+=== Symbol Results ===
+
+No vulnerabilities found.
+
+Your code is affected by 0 vulnerabilities.
+This scan also found 0 vulnerabilities in packages you import and 1
+vulnerability in modules you require, but your code doesn't appear to call these
+vulnerabilities.
+Use '-show verbose' for more details.
+
+== 2. crypto/tls copy, imported from go1.27.3
+no known crypto/tls vulnerability in go1.27.3.
+
+all checks passed
