@@ -1,0 +1,35 @@
+ Container arco-nbio-bench-loadgen-run-93c8ec9a28b3 Creating 
+ Container arco-nbio-bench-loadgen-run-93c8ec9a28b3 Created 
+00:15:34 fork-tls-norelease-512m-cpu1: idle mem 11.2 MiB (anon 4.7), cpu 0.0 %
+(node:32) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:25) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:18) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:30) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:17) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:31) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:15) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:1) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+00:16:12 step 1000: live=1000 mem=41.3MiB (30.8 KiB/conn, marginal undefined) cpuIdle=0% cpuBc=1%/2% p50=13ms p99=30ms delivered=100.0% drops=0 procs={"server":36}
+00:16:52 step 2500: live=2500 mem=68.1MiB (23.3 KiB/conn, marginal 18.3) cpuIdle=0% cpuBc=3%/6% p50=23ms p99=75ms delivered=100.0% drops=0 procs={"server":57}
+00:17:33 step 5000: live=5000 mem=113.5MiB (21.0 KiB/conn, marginal 18.6) cpuIdle=0% cpuBc=5%/11% p50=42ms p99=99ms delivered=100.0% drops=0 procs={"server":93}
+00:18:14 step 7500: live=7500 mem=162.7MiB (20.7 KiB/conn, marginal 20.1) cpuIdle=0% cpuBc=7%/11% p50=56ms p99=197ms delivered=100.0% drops=0 procs={"server":133}
+00:18:56 step 10000: live=10000 mem=211.5MiB (20.5 KiB/conn, marginal 20.0) cpuIdle=0% cpuBc=11%/20% p50=76ms p99=193ms delivered=100.0% drops=0 procs={"server":172}
+00:19:06   ramp 14817/15000 live=14819 failed=0 pending=15
+00:19:42 step 15000: live=15000 mem=291.1MiB (19.1 KiB/conn, marginal 16.3) cpuIdle=10% cpuBc=15%/23% p50=113ms p99=247ms delivered=100.0% drops=0 procs={"server":232}
+00:19:52   ramp 19848/20000 live=19848 failed=0 pending=6
+00:20:29 step 20000: live=20000 mem=403.5MiB (20.1 KiB/conn, marginal 23.0) cpuIdle=13% cpuBc=21%/33% p50=154ms p99=310ms delivered=100.0% drops=0 procs={"server":326}
+00:20:39   ramp 24801/25000 live=24801 failed=0 pending=0
+00:21:16 step 25000: live=25000 mem=500.0MiB (20.0 KiB/conn, marginal 19.8) cpuIdle=11% cpuBc=30%/49% p50=214ms p99=526ms delivered=100.0% drops=0 procs={"server":407}
+00:21:26   ramp 27242/30000 live=27242 failed=0 pending=200
+00:21:27 STOP at 30000: container exited (OOMKilled=true, exit=137)
+00:21:27 done: container exited (OOMKilled=true, exit=137)

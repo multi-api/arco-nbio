@@ -1,0 +1,56 @@
+ Container arco-nbio-bench-loadgen-run-1471c2f37877 Creating 
+ Container arco-nbio-bench-loadgen-run-1471c2f37877 Created 
+00:00:12 fork-tls-512m-cpu1: idle mem 7.5 MiB (anon 6.7), cpu 0.0 %
+(node:21) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:15) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:24) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:25) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:23) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:33) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:31) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:1) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+00:00:50 step 1000: live=1000 mem=29.0MiB (22.1 KiB/conn, marginal undefined) cpuIdle=0% cpuBc=1%/4% p50=19ms p99=256ms delivered=100.0% drops=0 procs={"server":31}
+00:01:30 step 2500: live=2500 mem=47.1MiB (16.2 KiB/conn, marginal 12.3) cpuIdle=0% cpuBc=3%/6% p50=32ms p99=502ms delivered=100.0% drops=0 procs={"server":43}
+00:02:12 step 5000: live=5000 mem=77.3MiB (14.3 KiB/conn, marginal 12.4) cpuIdle=0% cpuBc=11%/33% p50=72ms p99=323ms delivered=100.0% drops=0 procs={"server":64}
+00:02:54 step 7500: live=7500 mem=109.4MiB (13.9 KiB/conn, marginal 13.2) cpuIdle=0% cpuBc=11%/21% p50=79ms p99=529ms delivered=100.0% drops=0 procs={"server":86}
+00:03:36 step 10000: live=10000 mem=131.3MiB (12.7 KiB/conn, marginal 9.0) cpuIdle=0% cpuBc=26%/56% p50=175ms p99=1481ms delivered=100.0% drops=0 procs={"server":98}
+00:03:46   ramp 14612/15000 live=14612 failed=0 pending=3
+00:04:26 step 15000: live=15000 mem=194.6MiB (12.8 KiB/conn, marginal 13.0) cpuIdle=30% cpuBc=50%/167% p50=345ms p99=1639ms delivered=100.0% drops=0 procs={"server":143}
+00:04:36   ramp 18996/20000 live=18996 failed=0 pending=6
+00:05:14 step 20000: live=20000 mem=267.1MiB (13.3 KiB/conn, marginal 14.9) cpuIdle=0% cpuBc=19%/29% p50=145ms p99=323ms delivered=100.0% drops=0 procs={"server":196}
+00:05:25   ramp 24787/25000 live=24789 failed=0 pending=12
+00:06:01 step 25000: live=25000 mem=328.9MiB (13.2 KiB/conn, marginal 12.7) cpuIdle=11% cpuBc=26%/38% p50=197ms p99=509ms delivered=100.0% drops=0 procs={"server":245}
+00:06:11   ramp 29862/30000 live=29864 failed=0 pending=10
+00:06:48 step 30000: live=30000 mem=402.0MiB (13.5 KiB/conn, marginal 15.0) cpuIdle=28% cpuBc=34%/66% p50=260ms p99=894ms delivered=100.0% drops=0 procs={"server":298}
+00:07:09   ramp 31574/40000 live=31639 failed=0 pending=149
+00:08:49   ramp 31670/40000 live=29879 failed=88 pending=92
+00:09:08 STOP at 40000: ramp timeout (36030/40000 subscribed)
+00:09:08 done: ramp timeout (36030/40000 subscribed)
+node:events:497
+      throw er; // Unhandled 'error' event
+      ^
+
+Error [ERR_IPC_CHANNEL_CLOSED]: Channel closed
+    at target.send (node:internal/child_process:753:16)
+    at file:///bench/bench.mjs:238:26
+    at Array.forEach (<anonymous>)
+    at file:///bench/bench.mjs:238:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+Emitted 'error' event on ChildProcess instance at:
+    at node:internal/child_process:757:35
+    at process.processTicksAndRejections (node:internal/process/task_queues:84:11) {
+  code: 'ERR_IPC_CHANNEL_CLOSED'
+}
+
+Node.js v22.23.4
+

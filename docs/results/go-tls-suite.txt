@@ -1,3 +1,33 @@
+=== RUN   TestAuditKeyUpdateFlood
+--- PASS: TestAuditKeyUpdateFlood (0.00s)
+=== RUN   TestAuditKeyUpdateInterleavedAccepted
+--- PASS: TestAuditKeyUpdateInterleavedAccepted (0.01s)
+=== RUN   TestAuditKeyUpdateWriteRace
+=== RUN   TestAuditKeyUpdateWriteRace/TLS_AES_128_GCM_SHA256
+=== RUN   TestAuditKeyUpdateWriteRace/TLS_CHACHA20_POLY1305_SHA256
+--- PASS: TestAuditKeyUpdateWriteRace (0.03s)
+    --- PASS: TestAuditKeyUpdateWriteRace/TLS_AES_128_GCM_SHA256 (0.02s)
+    --- PASS: TestAuditKeyUpdateWriteRace/TLS_CHACHA20_POLY1305_SHA256 (0.02s)
+=== RUN   TestAuditCloseDuringBroadcast
+--- PASS: TestAuditCloseDuringBroadcast (0.02s)
+=== RUN   TestAuditTicketAgeAdd
+--- PASS: TestAuditTicketAgeAdd (0.00s)
+=== RUN   TestAuditDefaults
+=== RUN   TestAuditDefaults/no_TLS_1.1
+=== RUN   TestAuditDefaults/no_RSA_kex
+=== RUN   TestAuditDefaults/EMS_in_TLS_1.2
+=== RUN   TestAuditDefaults/X25519MLKEM768
+=== RUN   TestAuditDefaults/AES-GCM_preferred_with_AES_hardware
+--- PASS: TestAuditDefaults (0.00s)
+    --- PASS: TestAuditDefaults/no_TLS_1.1 (0.00s)
+    --- PASS: TestAuditDefaults/no_RSA_kex (0.00s)
+    --- PASS: TestAuditDefaults/EMS_in_TLS_1.2 (0.00s)
+    --- PASS: TestAuditDefaults/X25519MLKEM768 (0.00s)
+    --- PASS: TestAuditDefaults/AES-GCM_preferred_with_AES_hardware (0.00s)
+=== RUN   TestAuditEMSServerSide
+--- PASS: TestAuditEMSServerSide (0.00s)
+=== RUN   TestAuditKeyUpdateWithTrailingHandshakeData
+--- PASS: TestAuditKeyUpdateWithTrailingHandshakeData (0.00s)
 === RUN   TestSignatureSelection
 === RUN   TestSignatureSelection/0
 === PAUSE TestSignatureSelection/0
@@ -34,40 +64,40 @@
 === RUN   TestSignatureSelection/18
 === PAUSE TestSignatureSelection/18
 === CONT  TestSignatureSelection/0
+=== CONT  TestSignatureSelection/9
 === CONT  TestSignatureSelection/18
-=== CONT  TestSignatureSelection/15
+=== CONT  TestSignatureSelection/14
+=== CONT  TestSignatureSelection/12
+=== CONT  TestSignatureSelection/10
+=== CONT  TestSignatureSelection/11
 === CONT  TestSignatureSelection/7
 === CONT  TestSignatureSelection/6
 === CONT  TestSignatureSelection/5
 === CONT  TestSignatureSelection/4
 === CONT  TestSignatureSelection/3
 === CONT  TestSignatureSelection/2
-=== CONT  TestSignatureSelection/12
-=== CONT  TestSignatureSelection/14
-=== CONT  TestSignatureSelection/9
 === CONT  TestSignatureSelection/13
-=== CONT  TestSignatureSelection/11
-=== CONT  TestSignatureSelection/10
+=== CONT  TestSignatureSelection/15
 --- PASS: TestSignatureSelection (0.00s)
     --- PASS: TestSignatureSelection/1 (0.00s)
     --- PASS: TestSignatureSelection/8 (0.00s)
     --- PASS: TestSignatureSelection/16 (0.00s)
     --- PASS: TestSignatureSelection/17 (0.00s)
     --- PASS: TestSignatureSelection/0 (0.00s)
+    --- PASS: TestSignatureSelection/9 (0.00s)
     --- PASS: TestSignatureSelection/18 (0.00s)
-    --- PASS: TestSignatureSelection/15 (0.00s)
+    --- PASS: TestSignatureSelection/14 (0.00s)
+    --- PASS: TestSignatureSelection/12 (0.00s)
+    --- PASS: TestSignatureSelection/11 (0.00s)
+    --- PASS: TestSignatureSelection/10 (0.00s)
     --- PASS: TestSignatureSelection/7 (0.00s)
     --- PASS: TestSignatureSelection/6 (0.00s)
     --- PASS: TestSignatureSelection/5 (0.00s)
     --- PASS: TestSignatureSelection/4 (0.00s)
     --- PASS: TestSignatureSelection/3 (0.00s)
     --- PASS: TestSignatureSelection/2 (0.00s)
-    --- PASS: TestSignatureSelection/12 (0.00s)
-    --- PASS: TestSignatureSelection/14 (0.00s)
-    --- PASS: TestSignatureSelection/9 (0.00s)
     --- PASS: TestSignatureSelection/13 (0.00s)
-    --- PASS: TestSignatureSelection/11 (0.00s)
-    --- PASS: TestSignatureSelection/10 (0.00s)
+    --- PASS: TestSignatureSelection/15 (0.00s)
 === RUN   TestLegacyTypeAndHash
 --- PASS: TestLegacyTypeAndHash (0.00s)
 === RUN   TestSupportedSignatureAlgorithms
@@ -418,7 +448,7 @@
 === RUN   TestFIPSServerSignatureAndHash/ECDSAWithSHA1/fips140tls
 === NAME  TestFIPSServerSignatureAndHash
     fips140_test.go:324: skipping: fips140=only mode is not supported outside GOROOT
---- SKIP: TestFIPSServerSignatureAndHash (0.05s)
+--- SKIP: TestFIPSServerSignatureAndHash (0.04s)
     --- PASS: TestFIPSServerSignatureAndHash/MLDSA44 (0.00s)
         --- PASS: TestFIPSServerSignatureAndHash/MLDSA44/no-fips140tls (0.00s)
         --- PASS: TestFIPSServerSignatureAndHash/MLDSA44/fips140tls (0.00s)
@@ -2797,7 +2827,7 @@
 === RUN   TestFIPSCertAlgs/fips140tls#398
     fips140_test.go:437: L2_I,I_R1,I_R2,I_M1,I_M2,M1_R1,M2_R1->R1,R2 (fips): reject
     fips140_test.go:466: L2_I,I_R1,I_R2,I_M1,I_M2,M1_R1,M2_R1->R1,R2 (fips, client cert): reject
---- PASS: TestFIPSCertAlgs (4.86s)
+--- PASS: TestFIPSCertAlgs (4.83s)
     --- PASS: TestFIPSCertAlgs/fips140tls (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#01 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#02 (0.00s)
@@ -2833,23 +2863,23 @@
     --- PASS: TestFIPSCertAlgs/no-fips140tls#09 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#23 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#10 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#24 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#11 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#24 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#11 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#25 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#12 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#26 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#12 (0.01s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#26 (0.01s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#13 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#27 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#14 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#28 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#15 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#29 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#16 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#30 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#17 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#31 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#16 (0.01s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#30 (0.03s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#17 (0.02s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#31 (0.01s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#18 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#32 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#32 (0.01s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#19 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#33 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#20 (0.00s)
@@ -2872,7 +2902,7 @@
     --- PASS: TestFIPSCertAlgs/fips140tls#42 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#29 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#43 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#30 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#30 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#44 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#31 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#45 (0.00s)
@@ -2884,7 +2914,7 @@
     --- PASS: TestFIPSCertAlgs/fips140tls#48 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#35 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#49 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#36 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#36 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#50 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#37 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#51 (0.00s)
@@ -2910,7 +2940,7 @@
     --- PASS: TestFIPSCertAlgs/fips140tls#61 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#48 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#62 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#49 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#49 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#63 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#50 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#64 (0.00s)
@@ -2951,7 +2981,7 @@
     --- PASS: TestFIPSCertAlgs/no-fips140tls#68 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#82 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#69 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#83 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#83 (0.01s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#70 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#84 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#71 (0.00s)
@@ -2992,19 +3022,19 @@
     --- PASS: TestFIPSCertAlgs/fips140tls#102 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#89 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#103 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#90 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#90 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#104 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#91 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#105 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#92 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#92 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#106 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#93 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#93 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#107 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#94 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#108 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#108 (0.01s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#95 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#109 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#96 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#96 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#110 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#97 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#111 (0.00s)
@@ -3029,7 +3059,7 @@
     --- PASS: TestFIPSCertAlgs/no-fips140tls#107 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#121 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#108 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#122 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#122 (0.01s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#109 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#123 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#110 (0.00s)
@@ -3072,9 +3102,9 @@
     --- PASS: TestFIPSCertAlgs/fips140tls#142 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#129 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#143 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#130 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#130 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#144 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#131 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#131 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#145 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#132 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#146 (0.00s)
@@ -3088,17 +3118,17 @@
     --- PASS: TestFIPSCertAlgs/fips140tls#150 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#137 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#151 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#138 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#138 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#152 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#139 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#153 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#140 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#154 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#141 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#141 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#155 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#142 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#142 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#156 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#143 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#143 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#157 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#144 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#158 (0.00s)
@@ -3122,16 +3152,16 @@
     --- PASS: TestFIPSCertAlgs/fips140tls#167 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#154 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#168 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#155 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#155 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#169 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#156 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#170 (0.01s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#170 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#157 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#171 (0.01s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#171 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#158 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#172 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#159 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#173 (0.01s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#173 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#160 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#174 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#161 (0.00s)
@@ -3142,9 +3172,9 @@
     --- PASS: TestFIPSCertAlgs/fips140tls#177 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#164 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#178 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#165 (0.05s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#165 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#179 (0.01s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#166 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#166 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#180 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#167 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#181 (0.00s)
@@ -3166,9 +3196,9 @@
     --- PASS: TestFIPSCertAlgs/fips140tls#189 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#176 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#190 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#177 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#177 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#191 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#178 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#178 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#192 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#179 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#193 (0.00s)
@@ -3178,9 +3208,9 @@
     --- PASS: TestFIPSCertAlgs/fips140tls#195 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#182 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#196 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#183 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#183 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#197 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#184 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#184 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#198 (0.01s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#185 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#199 (0.00s)
@@ -3188,15 +3218,15 @@
     --- PASS: TestFIPSCertAlgs/fips140tls#200 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#187 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#201 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#188 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#188 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#202 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#189 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#203 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#203 (0.01s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#190 (0.01s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#204 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#191 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#204 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#191 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#205 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#192 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#192 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#206 (0.01s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#193 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#207 (0.00s)
@@ -3217,7 +3247,7 @@
     --- PASS: TestFIPSCertAlgs/no-fips140tls#201 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#215 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#202 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#216 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#216 (0.01s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#203 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#217 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#204 (0.00s)
@@ -3228,7 +3258,7 @@
     --- PASS: TestFIPSCertAlgs/fips140tls#220 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#207 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#221 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#208 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#208 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#222 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#209 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#223 (0.00s)
@@ -3273,57 +3303,57 @@
     --- PASS: TestFIPSCertAlgs/no-fips140tls#229 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#243 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#230 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#244 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#231 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#245 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#244 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#231 (0.01s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#245 (0.01s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#232 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#246 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#233 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#247 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#247 (0.01s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#234 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#248 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#235 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#249 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#236 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#250 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#237 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#248 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#235 (0.03s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#249 (0.02s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#236 (0.02s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#250 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#237 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#251 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#238 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#252 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#239 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#253 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#240 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#254 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#241 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#255 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#242 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#256 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#243 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#257 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#244 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#258 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#238 (0.01s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#252 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#239 (0.01s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#253 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#240 (0.01s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#254 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#241 (0.01s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#255 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#242 (0.02s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#256 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#243 (0.01s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#257 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#244 (0.01s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#258 (0.01s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#245 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#259 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#246 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#260 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#247 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#260 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#247 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#261 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#248 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#262 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#249 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#262 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#249 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#263 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#250 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#250 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#264 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#251 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#265 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#252 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#266 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#253 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#267 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#267 (0.01s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#254 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#268 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#255 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#269 (0.01s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#268 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#255 (0.01s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#269 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#256 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#270 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#257 (0.00s)
@@ -3331,10 +3361,10 @@
     --- PASS: TestFIPSCertAlgs/no-fips140tls#258 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#272 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#259 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#273 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#273 (0.01s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#260 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#274 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#261 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#261 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#275 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#262 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#276 (0.00s)
@@ -3343,9 +3373,9 @@
     --- PASS: TestFIPSCertAlgs/no-fips140tls#264 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#278 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#265 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#279 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#266 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#280 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#279 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#266 (0.01s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#280 (0.01s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#267 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#281 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#268 (0.00s)
@@ -3371,8 +3401,8 @@
     --- PASS: TestFIPSCertAlgs/no-fips140tls#278 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#292 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#279 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#293 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#280 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#293 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#280 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#294 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#281 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#295 (0.00s)
@@ -3384,8 +3414,8 @@
     --- PASS: TestFIPSCertAlgs/fips140tls#298 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#285 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#299 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#286 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#300 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#286 (0.01s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#300 (0.01s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#287 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#301 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#288 (0.00s)
@@ -3400,7 +3430,7 @@
     --- PASS: TestFIPSCertAlgs/fips140tls#306 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#293 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#307 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#294 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#294 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#308 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#295 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#309 (0.00s)
@@ -3435,7 +3465,7 @@
     --- PASS: TestFIPSCertAlgs/no-fips140tls#310 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#324 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#311 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#325 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#325 (0.01s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#312 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#326 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#313 (0.00s)
@@ -3449,8 +3479,8 @@
     --- PASS: TestFIPSCertAlgs/no-fips140tls#317 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#331 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#318 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#332 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#319 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#332 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#319 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#333 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#320 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#334 (0.00s)
@@ -3460,8 +3490,8 @@
     --- PASS: TestFIPSCertAlgs/fips140tls#336 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#323 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#337 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#324 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#338 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#324 (0.01s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#338 (0.01s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#325 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#339 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#326 (0.00s)
@@ -3471,16 +3501,16 @@
     --- PASS: TestFIPSCertAlgs/no-fips140tls#328 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#342 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#329 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#343 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#330 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#344 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#331 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#343 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#330 (0.01s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#344 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#331 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#345 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#332 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#346 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#333 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#346 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#333 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#347 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#334 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#334 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#348 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#335 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#349 (0.00s)
@@ -3490,8 +3520,8 @@
     --- PASS: TestFIPSCertAlgs/fips140tls#351 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#338 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#352 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#339 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#353 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#339 (0.01s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#353 (0.01s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#340 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#354 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#341 (0.00s)
@@ -3502,9 +3532,9 @@
     --- PASS: TestFIPSCertAlgs/fips140tls#357 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#344 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#358 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#345 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#359 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#346 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#345 (0.01s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#359 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#346 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#360 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#347 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#361 (0.00s)
@@ -3515,7 +3545,7 @@
     --- PASS: TestFIPSCertAlgs/no-fips140tls#350 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#364 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#351 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#365 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#365 (0.01s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#352 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#366 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#353 (0.00s)
@@ -3528,9 +3558,9 @@
     --- PASS: TestFIPSCertAlgs/fips140tls#370 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#357 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#371 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#358 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#358 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#372 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#359 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#359 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#373 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#360 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#374 (0.00s)
@@ -3540,8 +3570,8 @@
     --- PASS: TestFIPSCertAlgs/fips140tls#376 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#363 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#377 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#364 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#378 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#364 (0.01s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#378 (0.01s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#365 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#379 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#366 (0.00s)
@@ -3552,20 +3582,20 @@
     --- PASS: TestFIPSCertAlgs/fips140tls#382 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#369 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#383 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#370 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#370 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#384 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#371 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#385 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#372 (0.00s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#372 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#386 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#373 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#387 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#374 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#388 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#375 (0.01s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#389 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#375 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#389 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#376 (0.00s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#390 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#390 (0.01s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#377 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#391 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#378 (0.00s)
@@ -3574,14 +3604,14 @@
     --- PASS: TestFIPSCertAlgs/fips140tls#393 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#380 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#394 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#381 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#381 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#395 (0.01s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#382 (0.01s)
     --- PASS: TestFIPSCertAlgs/fips140tls#396 (0.00s)
     --- PASS: TestFIPSCertAlgs/no-fips140tls#383 (0.00s)
     --- PASS: TestFIPSCertAlgs/fips140tls#397 (0.00s)
-    --- PASS: TestFIPSCertAlgs/no-fips140tls#384 (0.01s)
-    --- PASS: TestFIPSCertAlgs/fips140tls#398 (0.01s)
+    --- PASS: TestFIPSCertAlgs/no-fips140tls#384 (0.00s)
+    --- PASS: TestFIPSCertAlgs/fips140tls#398 (0.00s)
 === RUN   TestHandshakeClientRSARC4
 === RUN   TestHandshakeClientRSARC4/TLSv10
 === RUN   TestHandshakeClientRSARC4/TLSv11
@@ -3690,7 +3720,7 @@
 === RUN   TestHandshakeClientCertEd25519/TLSv12#01
 === RUN   TestHandshakeClientCertEd25519/TLSv13#01
 === RUN   TestHandshakeClientCertEd25519/TLSv12#02
---- PASS: TestHandshakeClientCertEd25519 (0.00s)
+--- PASS: TestHandshakeClientCertEd25519 (0.01s)
     --- PASS: TestHandshakeClientCertEd25519/TLSv12 (0.00s)
     --- PASS: TestHandshakeClientCertEd25519/TLSv13 (0.00s)
     --- PASS: TestHandshakeClientCertEd25519/TLSv12#01 (0.00s)
@@ -3705,7 +3735,7 @@
 === RUN   TestHandshakeClientCertRSA/TLSv13#01
 === RUN   TestHandshakeClientCertRSA/TLSv10#02
 === RUN   TestHandshakeClientCertRSA/TLSv12#02
---- PASS: TestHandshakeClientCertRSA (0.01s)
+--- PASS: TestHandshakeClientCertRSA (0.02s)
     --- PASS: TestHandshakeClientCertRSA/TLSv10 (0.00s)
     --- PASS: TestHandshakeClientCertRSA/TLSv12 (0.00s)
     --- PASS: TestHandshakeClientCertRSA/TLSv13 (0.00s)
@@ -3735,8 +3765,8 @@
 === RUN   TestHandshakeClientCertRSAPSS
 === RUN   TestHandshakeClientCertRSAPSS/TLSv12
 === RUN   TestHandshakeClientCertRSAPSS/TLSv13
---- PASS: TestHandshakeClientCertRSAPSS (0.00s)
-    --- PASS: TestHandshakeClientCertRSAPSS/TLSv12 (0.00s)
+--- PASS: TestHandshakeClientCertRSAPSS (0.01s)
+    --- PASS: TestHandshakeClientCertRSAPSS/TLSv12 (0.01s)
     --- PASS: TestHandshakeClientCertRSAPSS/TLSv13 (0.00s)
 === RUN   TestHandshakeClientCertRSAPKCS1v15
 === RUN   TestHandshakeClientCertRSAPKCS1v15/TLSv12
@@ -3749,9 +3779,9 @@
 === RUN   TestResumption
 === RUN   TestResumption/TLSv12
 === RUN   TestResumption/TLSv13
---- PASS: TestResumption (0.08s)
+--- PASS: TestResumption (0.10s)
     --- PASS: TestResumption/TLSv12 (0.04s)
-    --- PASS: TestResumption/TLSv13 (0.05s)
+    --- PASS: TestResumption/TLSv13 (0.06s)
 === RUN   TestLRUClientSessionCache
 --- PASS: TestLRUClientSessionCache (0.00s)
 === RUN   TestKeyLogTLS12
@@ -3801,15 +3831,15 @@
 === RUN   TestVerifyConnection
 === RUN   TestVerifyConnection/TLSv12
 === RUN   TestVerifyConnection/TLSv13
---- PASS: TestVerifyConnection (0.03s)
+--- PASS: TestVerifyConnection (0.04s)
     --- PASS: TestVerifyConnection/TLSv12 (0.01s)
-    --- PASS: TestVerifyConnection/TLSv13 (0.02s)
+    --- PASS: TestVerifyConnection/TLSv13 (0.03s)
 === RUN   TestVerifyPeerCertificate
 === RUN   TestVerifyPeerCertificate/TLSv12
 === RUN   TestVerifyPeerCertificate/TLSv13
---- PASS: TestVerifyPeerCertificate (0.05s)
+--- PASS: TestVerifyPeerCertificate (0.06s)
     --- PASS: TestVerifyPeerCertificate/TLSv12 (0.02s)
-    --- PASS: TestVerifyPeerCertificate/TLSv13 (0.02s)
+    --- PASS: TestVerifyPeerCertificate/TLSv13 (0.04s)
 === RUN   TestFailedWrite
 --- PASS: TestFailedWrite (0.00s)
 === RUN   TestBuffering
@@ -3855,15 +3885,15 @@
 === PAUSE TestTLS13OnlyClientHelloCipherSuite/some_TLS_1.2_and_1.3_ciphers
 === CONT  TestTLS13OnlyClientHelloCipherSuite/nil
 === CONT  TestTLS13OnlyClientHelloCipherSuite/some_TLS_1.3_cipher
+=== CONT  TestTLS13OnlyClientHelloCipherSuite/some_TLS_1.2_and_1.3_ciphers
 === CONT  TestTLS13OnlyClientHelloCipherSuite/some_TLS_1.2_cipher
 === CONT  TestTLS13OnlyClientHelloCipherSuite/empty
-=== CONT  TestTLS13OnlyClientHelloCipherSuite/some_TLS_1.2_and_1.3_ciphers
 --- PASS: TestTLS13OnlyClientHelloCipherSuite (0.00s)
-    --- PASS: TestTLS13OnlyClientHelloCipherSuite/some_TLS_1.3_cipher (0.00s)
     --- PASS: TestTLS13OnlyClientHelloCipherSuite/nil (0.00s)
+    --- PASS: TestTLS13OnlyClientHelloCipherSuite/some_TLS_1.3_cipher (0.00s)
+    --- PASS: TestTLS13OnlyClientHelloCipherSuite/some_TLS_1.2_and_1.3_ciphers (0.00s)
     --- PASS: TestTLS13OnlyClientHelloCipherSuite/some_TLS_1.2_cipher (0.00s)
     --- PASS: TestTLS13OnlyClientHelloCipherSuite/empty (0.00s)
-    --- PASS: TestTLS13OnlyClientHelloCipherSuite/some_TLS_1.2_and_1.3_ciphers (0.00s)
 === RUN   TestHandshakeRSATooBig
 --- PASS: TestHandshakeRSATooBig (0.00s)
 === RUN   TestTLS13ECHRejectionCallbacks
@@ -3897,7 +3927,7 @@
 === RUN   TestMarshalUnmarshal/*tls.certificateRequestMsgTLS13
 === RUN   TestMarshalUnmarshal/*tls.certificateMsgTLS13
 === RUN   TestMarshalUnmarshal/*tls.SessionState
---- PASS: TestMarshalUnmarshal (0.03s)
+--- PASS: TestMarshalUnmarshal (0.04s)
     --- PASS: TestMarshalUnmarshal/*tls.clientHelloMsg (0.00s)
     --- PASS: TestMarshalUnmarshal/*tls.serverHelloMsg (0.00s)
     --- PASS: TestMarshalUnmarshal/*tls.finishedMsg (0.00s)
@@ -3913,7 +3943,7 @@
     --- PASS: TestMarshalUnmarshal/*tls.newSessionTicketMsgTLS13 (0.00s)
     --- PASS: TestMarshalUnmarshal/*tls.certificateRequestMsgTLS13 (0.00s)
     --- PASS: TestMarshalUnmarshal/*tls.certificateMsgTLS13 (0.00s)
-    --- PASS: TestMarshalUnmarshal/*tls.SessionState (0.02s)
+    --- PASS: TestMarshalUnmarshal/*tls.SessionState (0.03s)
 === RUN   TestFuzz
 --- PASS: TestFuzz (0.01s)
 === RUN   TestRejectEmptySCTList
@@ -3987,14 +4017,14 @@
 === RUN   TestCrossVersionResume
 === RUN   TestCrossVersionResume/TLSv12
 === RUN   TestCrossVersionResume/TLSv13
---- PASS: TestCrossVersionResume (0.01s)
+--- PASS: TestCrossVersionResume (0.02s)
     --- PASS: TestCrossVersionResume/TLSv12 (0.01s)
-    --- PASS: TestCrossVersionResume/TLSv13 (0.01s)
+    --- PASS: TestCrossVersionResume/TLSv13 (0.02s)
 === RUN   TestHandshakeServerRSARC4
 === RUN   TestHandshakeServerRSARC4/TLSv10
 === RUN   TestHandshakeServerRSARC4/TLSv11
 === RUN   TestHandshakeServerRSARC4/TLSv12
---- PASS: TestHandshakeServerRSARC4 (0.00s)
+--- PASS: TestHandshakeServerRSARC4 (0.01s)
     --- PASS: TestHandshakeServerRSARC4/TLSv10 (0.00s)
     --- PASS: TestHandshakeServerRSARC4/TLSv11 (0.00s)
     --- PASS: TestHandshakeServerRSARC4/TLSv12 (0.00s)
@@ -4172,7 +4202,7 @@
 === RUN   TestClientAuth/TLSv12#03
 === RUN   TestClientAuth/TLSv13#03
 === RUN   TestClientAuth/TLSv12#04
---- PASS: TestClientAuth (0.00s)
+--- PASS: TestClientAuth (0.01s)
     --- PASS: TestClientAuth/TLSv12 (0.00s)
     --- PASS: TestClientAuth/TLSv13 (0.00s)
     --- PASS: TestClientAuth/TLSv12#01 (0.00s)
@@ -4185,7 +4215,7 @@
 === RUN   TestSNIGivenOnFailure
 --- PASS: TestSNIGivenOnFailure (0.00s)
 === RUN   TestGetConfigForClient
---- PASS: TestGetConfigForClient (0.00s)
+--- PASS: TestGetConfigForClient (0.01s)
 === RUN   TestCloseServerConnectionOnIdleClient
 --- PASS: TestCloseServerConnectionOnIdleClient (0.00s)
 === RUN   TestCloneHash
@@ -4239,13 +4269,13 @@
 === RUN   TestHandshakeChainExpiryResumption/TLS1.3
 === RUN   TestHandshakeChainExpiryResumption/TLS1.3/LeafExpiresBeforeRoot
 === RUN   TestHandshakeChainExpiryResumption/TLS1.3/LeafExpiresAfterRoot
---- PASS: TestHandshakeChainExpiryResumption (0.10s)
+--- PASS: TestHandshakeChainExpiryResumption (0.15s)
     --- PASS: TestHandshakeChainExpiryResumption/TLS1.2 (0.05s)
-        --- PASS: TestHandshakeChainExpiryResumption/TLS1.2/LeafExpiresBeforeRoot (0.02s)
-        --- PASS: TestHandshakeChainExpiryResumption/TLS1.2/LeafExpiresAfterRoot (0.02s)
-    --- PASS: TestHandshakeChainExpiryResumption/TLS1.3 (0.05s)
-        --- PASS: TestHandshakeChainExpiryResumption/TLS1.3/LeafExpiresBeforeRoot (0.02s)
-        --- PASS: TestHandshakeChainExpiryResumption/TLS1.3/LeafExpiresAfterRoot (0.02s)
+        --- PASS: TestHandshakeChainExpiryResumption/TLS1.2/LeafExpiresBeforeRoot (0.03s)
+        --- PASS: TestHandshakeChainExpiryResumption/TLS1.2/LeafExpiresAfterRoot (0.03s)
+    --- PASS: TestHandshakeChainExpiryResumption/TLS1.3 (0.09s)
+        --- PASS: TestHandshakeChainExpiryResumption/TLS1.3/LeafExpiresBeforeRoot (0.05s)
+        --- PASS: TestHandshakeChainExpiryResumption/TLS1.3/LeafExpiresAfterRoot (0.05s)
 === RUN   TestHandshakeGetConfigForClientDifferentClientCAs
 === RUN   TestHandshakeGetConfigForClientDifferentClientCAs/TLS1.2
 === RUN   TestHandshakeGetConfigForClientDifferentClientCAs/TLS1.3
@@ -4276,6 +4306,52 @@
 --- PASS: TestTrafficKey (0.00s)
 === RUN   TestLinkerGC
 === PAUSE TestLinkerGC
+=== RUN   TestNonBlockEchoStdClient
+=== RUN   TestNonBlockEchoStdClient/TLS_1.2/chunk=1
+=== RUN   TestNonBlockEchoStdClient/TLS_1.2/chunk=7
+=== RUN   TestNonBlockEchoStdClient/TLS_1.2/chunk=100
+=== RUN   TestNonBlockEchoStdClient/TLS_1.2/chunk=512
+=== RUN   TestNonBlockEchoStdClient/TLS_1.2/chunk=4096
+=== RUN   TestNonBlockEchoStdClient/TLS_1.2/chunk=65536
+=== RUN   TestNonBlockEchoStdClient/TLS_1.3/chunk=1
+=== RUN   TestNonBlockEchoStdClient/TLS_1.3/chunk=7
+=== RUN   TestNonBlockEchoStdClient/TLS_1.3/chunk=100
+=== RUN   TestNonBlockEchoStdClient/TLS_1.3/chunk=512
+=== RUN   TestNonBlockEchoStdClient/TLS_1.3/chunk=4096
+=== RUN   TestNonBlockEchoStdClient/TLS_1.3/chunk=65536
+--- PASS: TestNonBlockEchoStdClient (0.09s)
+    --- PASS: TestNonBlockEchoStdClient/TLS_1.2/chunk=1 (0.03s)
+    --- PASS: TestNonBlockEchoStdClient/TLS_1.2/chunk=7 (0.01s)
+    --- PASS: TestNonBlockEchoStdClient/TLS_1.2/chunk=100 (0.00s)
+    --- PASS: TestNonBlockEchoStdClient/TLS_1.2/chunk=512 (0.00s)
+    --- PASS: TestNonBlockEchoStdClient/TLS_1.2/chunk=4096 (0.00s)
+    --- PASS: TestNonBlockEchoStdClient/TLS_1.2/chunk=65536 (0.00s)
+    --- PASS: TestNonBlockEchoStdClient/TLS_1.3/chunk=1 (0.03s)
+    --- PASS: TestNonBlockEchoStdClient/TLS_1.3/chunk=7 (0.01s)
+    --- PASS: TestNonBlockEchoStdClient/TLS_1.3/chunk=100 (0.00s)
+    --- PASS: TestNonBlockEchoStdClient/TLS_1.3/chunk=512 (0.00s)
+    --- PASS: TestNonBlockEchoStdClient/TLS_1.3/chunk=4096 (0.00s)
+    --- PASS: TestNonBlockEchoStdClient/TLS_1.3/chunk=65536 (0.00s)
+=== RUN   TestNonBlockFirstDataWithFinished
+--- PASS: TestNonBlockFirstDataWithFinished (0.01s)
+=== RUN   TestNonBlockOwnClient
+=== RUN   TestNonBlockOwnClient/TLS_1.2
+=== RUN   TestNonBlockOwnClient/TLS_1.3
+--- PASS: TestNonBlockOwnClient (0.00s)
+    --- PASS: TestNonBlockOwnClient/TLS_1.2 (0.00s)
+    --- PASS: TestNonBlockOwnClient/TLS_1.3 (0.00s)
+=== RUN   TestNonBlockBadClientHello
+--- PASS: TestNonBlockBadClientHello (0.00s)
+=== RUN   TestNonBlockAbandonedHandshakeNoLeak
+--- PASS: TestNonBlockAbandonedHandshakeNoLeak (0.14s)
+=== RUN   TestNonBlockHandshakeTimeout
+--- PASS: TestNonBlockHandshakeTimeout (0.21s)
+=== RUN   TestNonBlockDirectHandshakeFails
+--- PASS: TestNonBlockDirectHandshakeFails (0.00s)
+=== RUN   TestNonBlockReleaseBuffers
+--- PASS: TestNonBlockReleaseBuffers (0.03s)
+=== RUN   TestNonBlockLlibAPI
+--- PASS: TestNonBlockLlibAPI (0.00s)
 === RUN   TestSplitPreMasterSecret
 --- PASS: TestSplitPreMasterSecret (0.00s)
 === RUN   TestKeysFromPreMasterSecret
@@ -4336,8 +4412,7 @@
 === PAUSE TestX509KeyPair
 === RUN   TestDialTimeout
     tls_test.go:303: with timeout 100µs, DialWithDialer returned before listener accepted any connections; retrying
-    tls_test.go:303: with timeout 200µs, DialWithDialer returned before listener accepted any connections; retrying
-    tls_test.go:290: Listener accepted a connection from 127.0.0.1:52310
+    tls_test.go:290: Listener accepted a connection from 127.0.0.1:53374
 --- PASS: TestDialTimeout (0.00s)
 === RUN   TestDeadlineOnWrite
 --- PASS: TestDeadlineOnWrite (0.00s)
@@ -4435,12 +4510,12 @@
 === PAUSE TestVerifyCertificates/TLSv12/RequireAndVerifyClientCert
 === CONT  TestVerifyCertificates/TLSv12/defaults
 === CONT  TestVerifyCertificates/TLSv12/RequireAnyClientCert
-=== CONT  TestVerifyCertificates/TLSv12/RequireAndVerifyClientCert
-=== CONT  TestVerifyCertificates/TLSv12/VerifyClientCertIfGiven_with_certs
-=== CONT  TestVerifyCertificates/TLSv12/VerifyClientCertIfGiven_with_no_certs
 === CONT  TestVerifyCertificates/TLSv12/RequestClientCert_with_no_certs
-=== CONT  TestVerifyCertificates/TLSv12/RequestClientCert_with_certs
+=== CONT  TestVerifyCertificates/TLSv12/VerifyClientCertIfGiven_with_certs
+=== CONT  TestVerifyCertificates/TLSv12/RequireAndVerifyClientCert
 === CONT  TestVerifyCertificates/TLSv12/InsecureSkipVerify
+=== CONT  TestVerifyCertificates/TLSv12/VerifyClientCertIfGiven_with_no_certs
+=== CONT  TestVerifyCertificates/TLSv12/RequestClientCert_with_certs
 === RUN   TestVerifyCertificates/TLSv13
 === RUN   TestVerifyCertificates/TLSv13/defaults
 === PAUSE TestVerifyCertificates/TLSv13/defaults
@@ -4460,31 +4535,31 @@
 === PAUSE TestVerifyCertificates/TLSv13/RequireAndVerifyClientCert
 === CONT  TestVerifyCertificates/TLSv13/defaults
 === CONT  TestVerifyCertificates/TLSv13/RequireAnyClientCert
-=== CONT  TestVerifyCertificates/TLSv13/RequireAndVerifyClientCert
-=== CONT  TestVerifyCertificates/TLSv13/VerifyClientCertIfGiven_with_certs
 === CONT  TestVerifyCertificates/TLSv13/VerifyClientCertIfGiven_with_no_certs
 === CONT  TestVerifyCertificates/TLSv13/RequestClientCert_with_no_certs
-=== CONT  TestVerifyCertificates/TLSv13/RequestClientCert_with_certs
+=== CONT  TestVerifyCertificates/TLSv13/VerifyClientCertIfGiven_with_certs
+=== CONT  TestVerifyCertificates/TLSv13/RequireAndVerifyClientCert
 === CONT  TestVerifyCertificates/TLSv13/InsecureSkipVerify
+=== CONT  TestVerifyCertificates/TLSv13/RequestClientCert_with_certs
 --- PASS: TestVerifyCertificates (0.01s)
     --- PASS: TestVerifyCertificates/TLSv12 (0.00s)
         --- PASS: TestVerifyCertificates/TLSv12/defaults (0.00s)
-        --- PASS: TestVerifyCertificates/TLSv12/RequireAnyClientCert (0.00s)
         --- PASS: TestVerifyCertificates/TLSv12/RequestClientCert_with_no_certs (0.00s)
-        --- PASS: TestVerifyCertificates/TLSv12/RequireAndVerifyClientCert (0.00s)
+        --- PASS: TestVerifyCertificates/TLSv12/RequireAnyClientCert (0.00s)
         --- PASS: TestVerifyCertificates/TLSv12/VerifyClientCertIfGiven_with_certs (0.00s)
-        --- PASS: TestVerifyCertificates/TLSv12/VerifyClientCertIfGiven_with_no_certs (0.00s)
+        --- PASS: TestVerifyCertificates/TLSv12/RequireAndVerifyClientCert (0.00s)
         --- PASS: TestVerifyCertificates/TLSv12/InsecureSkipVerify (0.00s)
+        --- PASS: TestVerifyCertificates/TLSv12/VerifyClientCertIfGiven_with_no_certs (0.00s)
         --- PASS: TestVerifyCertificates/TLSv12/RequestClientCert_with_certs (0.00s)
     --- PASS: TestVerifyCertificates/TLSv13 (0.00s)
-        --- PASS: TestVerifyCertificates/TLSv13/RequireAnyClientCert (0.00s)
         --- PASS: TestVerifyCertificates/TLSv13/defaults (0.00s)
-        --- PASS: TestVerifyCertificates/TLSv13/RequireAndVerifyClientCert (0.00s)
-        --- PASS: TestVerifyCertificates/TLSv13/VerifyClientCertIfGiven_with_no_certs (0.01s)
-        --- PASS: TestVerifyCertificates/TLSv13/VerifyClientCertIfGiven_with_certs (0.01s)
-        --- PASS: TestVerifyCertificates/TLSv13/InsecureSkipVerify (0.01s)
-        --- PASS: TestVerifyCertificates/TLSv13/RequestClientCert_with_no_certs (0.01s)
+        --- PASS: TestVerifyCertificates/TLSv13/RequireAnyClientCert (0.00s)
+        --- PASS: TestVerifyCertificates/TLSv13/VerifyClientCertIfGiven_with_no_certs (0.00s)
+        --- PASS: TestVerifyCertificates/TLSv13/RequestClientCert_with_no_certs (0.00s)
+        --- PASS: TestVerifyCertificates/TLSv13/VerifyClientCertIfGiven_with_certs (0.00s)
+        --- PASS: TestVerifyCertificates/TLSv13/RequireAndVerifyClientCert (0.01s)
         --- PASS: TestVerifyCertificates/TLSv13/RequestClientCert_with_certs (0.01s)
+        --- PASS: TestVerifyCertificates/TLSv13/InsecureSkipVerify (0.01s)
 === RUN   TestHandshakeMLKEM
 === RUN   TestHandshakeMLKEM/Default
 === PAUSE TestHandshakeMLKEM/Default
@@ -4524,43 +4599,43 @@
 === RUN   TestHandshakeMLKEM/MLKEM1024PreferredOverECC
 === PAUSE TestHandshakeMLKEM/MLKEM1024PreferredOverECC
 === CONT  TestHandshakeMLKEM/Default
+=== CONT  TestHandshakeMLKEM/ClientTLSv12
+=== CONT  TestHandshakeMLKEM/SecP384r1MLKEM1024
+=== CONT  TestHandshakeMLKEM/ServerTLSv12
 === CONT  TestHandshakeMLKEM/ClientMLKEMOnly
 === CONT  TestHandshakeMLKEM/MLKEM1024PreferredOverECC
-=== CONT  TestHandshakeMLKEM/SecP256r1MLKEM768-HRR
 === CONT  TestHandshakeMLKEM/MLKEM1024NotPreferredOverHybrid
 === CONT  TestHandshakeMLKEM/ServerMLKEM1024Only
 === CONT  TestHandshakeMLKEM/ClientMLKEM1024Only
-=== CONT  TestHandshakeMLKEM/ServerTLSv12
-=== CONT  TestHandshakeMLKEM/ClientTLSv12
-=== CONT  TestHandshakeMLKEM/ClientSortedCurvePreferences
-=== CONT  TestHandshakeMLKEM/CurveP256NoHRR
 === CONT  TestHandshakeMLKEM/CurveP384HRR
-=== CONT  TestHandshakeMLKEM/SecP384r1MLKEM1024
+=== CONT  TestHandshakeMLKEM/CurveP256NoHRR
 === CONT  TestHandshakeMLKEM/ServerCurvePreferencesHRR
+=== CONT  TestHandshakeMLKEM/SecP256r1MLKEM768-HRR
 === CONT  TestHandshakeMLKEM/SecP256r1MLKEM768-Only
+=== CONT  TestHandshakeMLKEM/ClientSortedCurvePreferences
 === CONT  TestHandshakeMLKEM/ServerCurvePreferencesX25519
 === CONT  TestHandshakeMLKEM/ClientCurvePreferences
 --- PASS: TestHandshakeMLKEM (0.00s)
     --- PASS: TestHandshakeMLKEM/GODEBUG_tlsmlkem=0 (0.00s)
     --- PASS: TestHandshakeMLKEM/GODEBUG_tlssecpmlkem=0 (0.00s)
     --- PASS: TestHandshakeMLKEM/CurvePreferences_override_GODEBUG (0.00s)
-    --- PASS: TestHandshakeMLKEM/ClientMLKEMOnly (0.00s)
     --- PASS: TestHandshakeMLKEM/Default (0.00s)
-    --- PASS: TestHandshakeMLKEM/MLKEM1024PreferredOverECC (0.00s)
-    --- PASS: TestHandshakeMLKEM/SecP256r1MLKEM768-HRR (0.00s)
-    --- PASS: TestHandshakeMLKEM/MLKEM1024NotPreferredOverHybrid (0.00s)
-    --- PASS: TestHandshakeMLKEM/ServerMLKEM1024Only (0.00s)
-    --- PASS: TestHandshakeMLKEM/ClientMLKEM1024Only (0.00s)
-    --- PASS: TestHandshakeMLKEM/ServerTLSv12 (0.00s)
     --- PASS: TestHandshakeMLKEM/ClientTLSv12 (0.00s)
-    --- PASS: TestHandshakeMLKEM/CurveP256NoHRR (0.00s)
-    --- PASS: TestHandshakeMLKEM/ClientSortedCurvePreferences (0.00s)
-    --- PASS: TestHandshakeMLKEM/CurveP384HRR (0.00s)
-    --- PASS: TestHandshakeMLKEM/ServerCurvePreferencesHRR (0.00s)
+    --- PASS: TestHandshakeMLKEM/ServerTLSv12 (0.00s)
+    --- PASS: TestHandshakeMLKEM/MLKEM1024PreferredOverECC (0.01s)
+    --- PASS: TestHandshakeMLKEM/SecP384r1MLKEM1024 (0.01s)
+    --- PASS: TestHandshakeMLKEM/ClientMLKEMOnly (0.01s)
+    --- PASS: TestHandshakeMLKEM/MLKEM1024NotPreferredOverHybrid (0.01s)
+    --- PASS: TestHandshakeMLKEM/ClientMLKEM1024Only (0.01s)
+    --- PASS: TestHandshakeMLKEM/ServerMLKEM1024Only (0.01s)
+    --- PASS: TestHandshakeMLKEM/ServerCurvePreferencesHRR (0.01s)
+    --- PASS: TestHandshakeMLKEM/CurveP384HRR (0.01s)
+    --- PASS: TestHandshakeMLKEM/CurveP256NoHRR (0.01s)
+    --- PASS: TestHandshakeMLKEM/SecP256r1MLKEM768-HRR (0.01s)
     --- PASS: TestHandshakeMLKEM/SecP256r1MLKEM768-Only (0.00s)
-    --- PASS: TestHandshakeMLKEM/ServerCurvePreferencesX25519 (0.00s)
-    --- PASS: TestHandshakeMLKEM/ClientCurvePreferences (0.00s)
-    --- PASS: TestHandshakeMLKEM/SecP384r1MLKEM1024 (0.00s)
+    --- PASS: TestHandshakeMLKEM/ClientSortedCurvePreferences (0.01s)
+    --- PASS: TestHandshakeMLKEM/ServerCurvePreferencesX25519 (0.01s)
+    --- PASS: TestHandshakeMLKEM/ClientCurvePreferences (0.01s)
 === RUN   TestSupportedSignatureAlgorithmsMLDSAGating
 --- PASS: TestSupportedSignatureAlgorithmsMLDSAGating (0.00s)
 === RUN   TestHandshakeMLDSA
@@ -4620,59 +4695,59 @@
 === PAUSE TestHandshakeMLDSA/MLDSA87/CorruptedSignature/Client
 === CONT  TestHandshakeMLDSA/MLDSA44/ServerAuth
 === CONT  TestHandshakeMLDSA/MLDSA65/RejectedVersion/TLS_1.2/Server
-=== CONT  TestHandshakeMLDSA/MLDSA87/RejectedVersion/TLS_1.0/Server
 === CONT  TestHandshakeMLDSA/MLDSA44/CorruptedSignature/Server
-=== CONT  TestHandshakeMLDSA/MLDSA65/RejectedVersion/TLS_1.0/Client
-=== CONT  TestHandshakeMLDSA/MLDSA65/RejectedVersion/TLS_1.0/Server
+=== CONT  TestHandshakeMLDSA/MLDSA87/RejectedVersion/TLS_1.2/Server
 === CONT  TestHandshakeMLDSA/MLDSA65/MutualAuth
-=== CONT  TestHandshakeMLDSA/MLDSA65/ClientAuth
-=== CONT  TestHandshakeMLDSA/MLDSA65/ServerAuth
-=== CONT  TestHandshakeMLDSA/MLDSA44/CorruptedSignature/Client
-=== CONT  TestHandshakeMLDSA/MLDSA87/CorruptedSignature/Client
+=== CONT  TestHandshakeMLDSA/MLDSA87/RejectedVersion/TLS_1.0/Client
 === CONT  TestHandshakeMLDSA/MLDSA87/CorruptedSignature/Server
 === CONT  TestHandshakeMLDSA/MLDSA87/RejectedVersion/TLS_1.2/Client
-=== CONT  TestHandshakeMLDSA/MLDSA87/RejectedVersion/TLS_1.2/Server
-=== CONT  TestHandshakeMLDSA/MLDSA44/RejectedVersion/TLS_1.0/Client
-=== CONT  TestHandshakeMLDSA/MLDSA44/RejectedVersion/TLS_1.2/Client
-=== CONT  TestHandshakeMLDSA/MLDSA87/RejectedVersion/TLS_1.0/Client
-=== CONT  TestHandshakeMLDSA/MLDSA44/RejectedVersion/TLS_1.2/Server
-=== CONT  TestHandshakeMLDSA/MLDSA87/ServerAuth
+=== CONT  TestHandshakeMLDSA/MLDSA87/CorruptedSignature/Client
+=== CONT  TestHandshakeMLDSA/MLDSA65/ClientAuth
+=== CONT  TestHandshakeMLDSA/MLDSA87/RejectedVersion/TLS_1.0/Server
+=== CONT  TestHandshakeMLDSA/MLDSA65/ServerAuth
 === CONT  TestHandshakeMLDSA/MLDSA87/MutualAuth
 === CONT  TestHandshakeMLDSA/MLDSA87/ClientAuth
+=== CONT  TestHandshakeMLDSA/MLDSA44/CorruptedSignature/Client
+=== CONT  TestHandshakeMLDSA/MLDSA65/CorruptedSignature/Client
 === CONT  TestHandshakeMLDSA/MLDSA65/CorruptedSignature/Server
+=== CONT  TestHandshakeMLDSA/MLDSA87/ServerAuth
 === CONT  TestHandshakeMLDSA/MLDSA65/RejectedVersion/TLS_1.2/Client
+=== CONT  TestHandshakeMLDSA/MLDSA65/RejectedVersion/TLS_1.0/Client
+=== CONT  TestHandshakeMLDSA/MLDSA65/RejectedVersion/TLS_1.0/Server
+=== CONT  TestHandshakeMLDSA/MLDSA44/RejectedVersion/TLS_1.0/Client
+=== CONT  TestHandshakeMLDSA/MLDSA44/RejectedVersion/TLS_1.2/Client
+=== CONT  TestHandshakeMLDSA/MLDSA44/RejectedVersion/TLS_1.2/Server
+=== CONT  TestHandshakeMLDSA/MLDSA44/ClientAuth
 === CONT  TestHandshakeMLDSA/MLDSA44/MutualAuth
 === CONT  TestHandshakeMLDSA/MLDSA44/RejectedVersion/TLS_1.0/Server
-=== CONT  TestHandshakeMLDSA/MLDSA44/ClientAuth
-=== CONT  TestHandshakeMLDSA/MLDSA65/CorruptedSignature/Client
 --- PASS: TestHandshakeMLDSA (0.00s)
+    --- PASS: TestHandshakeMLDSA/MLDSA65/RejectedVersion/TLS_1.2/Server (0.00s)
     --- PASS: TestHandshakeMLDSA/MLDSA44/ServerAuth (0.00s)
     --- PASS: TestHandshakeMLDSA/MLDSA44/CorruptedSignature/Server (0.00s)
-    --- PASS: TestHandshakeMLDSA/MLDSA65/RejectedVersion/TLS_1.2/Server (0.00s)
-    --- PASS: TestHandshakeMLDSA/MLDSA65/MutualAuth (0.00s)
-    --- PASS: TestHandshakeMLDSA/MLDSA87/RejectedVersion/TLS_1.0/Server (0.00s)
-    --- PASS: TestHandshakeMLDSA/MLDSA65/RejectedVersion/TLS_1.0/Server (0.00s)
-    --- PASS: TestHandshakeMLDSA/MLDSA65/ClientAuth (0.00s)
-    --- PASS: TestHandshakeMLDSA/MLDSA65/ServerAuth (0.01s)
-    --- PASS: TestHandshakeMLDSA/MLDSA65/RejectedVersion/TLS_1.0/Client (0.01s)
-    --- PASS: TestHandshakeMLDSA/MLDSA87/CorruptedSignature/Client (0.00s)
-    --- PASS: TestHandshakeMLDSA/MLDSA44/CorruptedSignature/Client (0.01s)
     --- PASS: TestHandshakeMLDSA/MLDSA87/CorruptedSignature/Server (0.00s)
     --- PASS: TestHandshakeMLDSA/MLDSA87/RejectedVersion/TLS_1.2/Server (0.00s)
-    --- PASS: TestHandshakeMLDSA/MLDSA87/RejectedVersion/TLS_1.2/Client (0.00s)
-    --- PASS: TestHandshakeMLDSA/MLDSA44/RejectedVersion/TLS_1.2/Server (0.00s)
-    --- PASS: TestHandshakeMLDSA/MLDSA44/RejectedVersion/TLS_1.0/Client (0.00s)
-    --- PASS: TestHandshakeMLDSA/MLDSA65/CorruptedSignature/Server (0.00s)
-    --- PASS: TestHandshakeMLDSA/MLDSA44/RejectedVersion/TLS_1.0/Server (0.00s)
-    --- PASS: TestHandshakeMLDSA/MLDSA87/MutualAuth (0.00s)
-    --- PASS: TestHandshakeMLDSA/MLDSA87/ClientAuth (0.01s)
-    --- PASS: TestHandshakeMLDSA/MLDSA44/RejectedVersion/TLS_1.2/Client (0.01s)
+    --- PASS: TestHandshakeMLDSA/MLDSA65/MutualAuth (0.00s)
+    --- PASS: TestHandshakeMLDSA/MLDSA65/ClientAuth (0.01s)
     --- PASS: TestHandshakeMLDSA/MLDSA87/RejectedVersion/TLS_1.0/Client (0.01s)
-    --- PASS: TestHandshakeMLDSA/MLDSA44/ClientAuth (0.00s)
-    --- PASS: TestHandshakeMLDSA/MLDSA87/ServerAuth (0.01s)
-    --- PASS: TestHandshakeMLDSA/MLDSA65/RejectedVersion/TLS_1.2/Client (0.00s)
-    --- PASS: TestHandshakeMLDSA/MLDSA44/MutualAuth (0.00s)
-    --- PASS: TestHandshakeMLDSA/MLDSA65/CorruptedSignature/Client (0.00s)
+    --- PASS: TestHandshakeMLDSA/MLDSA87/RejectedVersion/TLS_1.2/Client (0.01s)
+    --- PASS: TestHandshakeMLDSA/MLDSA87/RejectedVersion/TLS_1.0/Server (0.01s)
+    --- PASS: TestHandshakeMLDSA/MLDSA44/CorruptedSignature/Client (0.00s)
+    --- PASS: TestHandshakeMLDSA/MLDSA87/MutualAuth (0.01s)
+    --- PASS: TestHandshakeMLDSA/MLDSA87/ClientAuth (0.00s)
+    --- PASS: TestHandshakeMLDSA/MLDSA87/CorruptedSignature/Client (0.01s)
+    --- PASS: TestHandshakeMLDSA/MLDSA65/ServerAuth (0.01s)
+    --- PASS: TestHandshakeMLDSA/MLDSA65/CorruptedSignature/Server (0.00s)
+    --- PASS: TestHandshakeMLDSA/MLDSA87/ServerAuth (0.00s)
+    --- PASS: TestHandshakeMLDSA/MLDSA65/CorruptedSignature/Client (0.01s)
+    --- PASS: TestHandshakeMLDSA/MLDSA65/RejectedVersion/TLS_1.0/Client (0.00s)
+    --- PASS: TestHandshakeMLDSA/MLDSA44/RejectedVersion/TLS_1.0/Server (0.00s)
+    --- PASS: TestHandshakeMLDSA/MLDSA44/RejectedVersion/TLS_1.2/Client (0.00s)
+    --- PASS: TestHandshakeMLDSA/MLDSA65/RejectedVersion/TLS_1.2/Client (0.01s)
+    --- PASS: TestHandshakeMLDSA/MLDSA65/RejectedVersion/TLS_1.0/Server (0.01s)
+    --- PASS: TestHandshakeMLDSA/MLDSA44/RejectedVersion/TLS_1.2/Server (0.01s)
+    --- PASS: TestHandshakeMLDSA/MLDSA44/RejectedVersion/TLS_1.0/Client (0.01s)
+    --- PASS: TestHandshakeMLDSA/MLDSA44/ClientAuth (0.01s)
+    --- PASS: TestHandshakeMLDSA/MLDSA44/MutualAuth (0.01s)
 === RUN   TestX509KeyPairPopulateCertificate
 --- PASS: TestX509KeyPairPopulateCertificate (0.00s)
 === RUN   TestEarlyLargeCertMsg
@@ -4702,7 +4777,7 @@
 === RUN   TestInvalidHandshakeSignature/TLSv13/ClientSignature
 === RUN   TestInvalidHandshakeSignature/TLSv13/ServerSignature
 === RUN   TestInvalidHandshakeSignature/TLSv13/ServerSignature/InsecureSkipVerify
---- PASS: TestInvalidHandshakeSignature (0.01s)
+--- PASS: TestInvalidHandshakeSignature (0.02s)
     --- PASS: TestInvalidHandshakeSignature/TLSv10 (0.00s)
         --- PASS: TestInvalidHandshakeSignature/TLSv10/ClientSignature (0.00s)
         --- PASS: TestInvalidHandshakeSignature/TLSv10/ServerSignature (0.00s)
@@ -4711,7 +4786,7 @@
         --- PASS: TestInvalidHandshakeSignature/TLSv12/ClientSignature (0.00s)
         --- PASS: TestInvalidHandshakeSignature/TLSv12/ServerSignature (0.00s)
         --- PASS: TestInvalidHandshakeSignature/TLSv12/ServerSignature/InsecureSkipVerify (0.00s)
-    --- PASS: TestInvalidHandshakeSignature/TLSv13 (0.00s)
+    --- PASS: TestInvalidHandshakeSignature/TLSv13 (0.01s)
         --- PASS: TestInvalidHandshakeSignature/TLSv13/ClientSignature (0.00s)
         --- PASS: TestInvalidHandshakeSignature/TLSv13/ServerSignature (0.00s)
         --- PASS: TestInvalidHandshakeSignature/TLSv13/ServerSignature/InsecureSkipVerify (0.00s)
@@ -4729,7 +4804,7 @@
 === RUN   TestLocalCertificate/UseCertificates/TLS_1.2
 === RUN   TestLocalCertificate/UseCertificates/TLS_1.3
 --- PASS: TestLocalCertificate (0.01s)
-    --- PASS: TestLocalCertificate/UseCallbacks (0.00s)
+    --- PASS: TestLocalCertificate/UseCallbacks (0.01s)
         --- PASS: TestLocalCertificate/UseCallbacks/TLS_1.0 (0.00s)
         --- PASS: TestLocalCertificate/UseCallbacks/TLS_1.1 (0.00s)
         --- PASS: TestLocalCertificate/UseCallbacks/TLS_1.2 (0.00s)
@@ -4750,7 +4825,7 @@
 === RUN   TestLocalCertificateResumption/UseCertificates/TLS_1.1
 === RUN   TestLocalCertificateResumption/UseCertificates/TLS_1.2
 === RUN   TestLocalCertificateResumption/UseCertificates/TLS_1.3
---- PASS: TestLocalCertificateResumption (0.01s)
+--- PASS: TestLocalCertificateResumption (0.02s)
     --- PASS: TestLocalCertificateResumption/UseCallbacks (0.01s)
         --- PASS: TestLocalCertificateResumption/UseCallbacks/TLS_1.0 (0.00s)
         --- PASS: TestLocalCertificateResumption/UseCallbacks/TLS_1.1 (0.00s)
@@ -4766,12 +4841,36 @@
 === CONT  TestLinkerGC
 === RUN   TestLinkerGC/empty_import
 --- PASS: TestX509KeyPair (0.00s)
---- PASS: TestHandshakeRace (0.04s)
+--- PASS: TestHandshakeRace (0.06s)
 === RUN   TestLinkerGC/client_and_server
 === RUN   TestLinkerGC/only_client
---- PASS: TestLinkerGC (1.10s)
-    --- PASS: TestLinkerGC/empty_import (0.39s)
-    --- PASS: TestLinkerGC/client_and_server (0.37s)
-    --- PASS: TestLinkerGC/only_client (0.35s)
+--- PASS: TestLinkerGC (1.40s)
+    --- PASS: TestLinkerGC/empty_import (0.53s)
+    --- PASS: TestLinkerGC/client_and_server (0.43s)
+    --- PASS: TestLinkerGC/only_client (0.44s)
+=== RUN   FuzzNonBlockRecordStream
+=== RUN   FuzzNonBlockRecordStream/seed#0
+=== RUN   FuzzNonBlockRecordStream/seed#1
+=== RUN   FuzzNonBlockRecordStream/seed#2
+=== RUN   FuzzNonBlockRecordStream/seed#3
+=== RUN   FuzzNonBlockRecordStream/seed#4
+--- PASS: FuzzNonBlockRecordStream (2.03s)
+    --- PASS: FuzzNonBlockRecordStream/seed#0 (0.02s)
+    --- PASS: FuzzNonBlockRecordStream/seed#1 (0.00s)
+    --- PASS: FuzzNonBlockRecordStream/seed#2 (2.00s)
+    --- PASS: FuzzNonBlockRecordStream/seed#3 (0.00s)
+    --- PASS: FuzzNonBlockRecordStream/seed#4 (0.00s)
+=== RUN   FuzzNonBlockGarbage
+=== RUN   FuzzNonBlockGarbage/seed#0
+=== RUN   FuzzNonBlockGarbage/seed#1
+=== RUN   FuzzNonBlockGarbage/seed#2
+=== RUN   FuzzNonBlockGarbage/seed#3
+=== RUN   FuzzNonBlockGarbage/seed#4
+--- PASS: FuzzNonBlockGarbage (0.00s)
+    --- PASS: FuzzNonBlockGarbage/seed#0 (0.00s)
+    --- PASS: FuzzNonBlockGarbage/seed#1 (0.00s)
+    --- PASS: FuzzNonBlockGarbage/seed#2 (0.00s)
+    --- PASS: FuzzNonBlockGarbage/seed#3 (0.00s)
+    --- PASS: FuzzNonBlockGarbage/seed#4 (0.00s)
 PASS
-ok  	github.com/lesismal/nbio/crypto/tls	7.088s
+ok  	github.com/lesismal/nbio/crypto/tls	10.224s

@@ -1,0 +1,11 @@
+PASS  public channel: HTTP publish reaches Echo listener
+PASS  private channel: signed auth + HTTP publish
+PASS  private channel: forged signature is rejected  (subscription_error 401)
+PASS  presence channel: here() lists 2 members, joining() fires  (here=[Alice,Bob])
+PASS  presence channel: HTTP API lists users  (users=1,2)
+PASS  presence channel: leaving() fires on unsubscribe
+PASS  client events: whisper on private channel
+PASS  client events: whisper on presence channel
+PASS  HTTP API: channel list and occupancy  (5 channels)
+PASS  HTTP API: forged publish signature is rejected  (status 401)
+{"server":"fork-tls","passed":10,"total":10,"results":[{"name":"public channel: HTTP publish reaches Echo listener","ok":true,"detail":""},{"name":"private channel: signed auth + HTTP publish","ok":true,"detail":""},{"name":"private channel: forged signature is rejected","ok":true,"detail":"subscription_error 401"},{"name":"presence channel: here() lists 2 members, joining() fires","ok":true,"detail":"here=[Alice,Bob]"},{"name":"presence channel: HTTP API lists users","ok":true,"detail":"users=1,2"},{"name":"presence channel: leaving() fires on unsubscribe","ok":true,"detail":""},{"name":"client events: whisper on private channel","ok":true,"detail":""},{"name":"client events: whisper on presence channel","ok":true,"detail":""},{"name":"HTTP API: channel list and occupancy","ok":true,"detail":"5 channels"},{"name":"HTTP API: forged publish signature is rejected","ok":true,"detail":"status 401"}]}

@@ -1,0 +1,34 @@
+ Container arco-nbio-bench-loadgen-run-d437fb47b7c1 Creating 
+ Container arco-nbio-bench-loadgen-run-d437fb47b7c1 Created 
+00:09:27 llib-tls-512m-cpu1: idle mem 11.1 MiB (anon 4.8), cpu 0.0 %
+(node:25) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:15) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:17) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:26) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:24) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:42) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:18) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:1) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+00:10:05 step 1000: live=1000 mem=39.8MiB (29.4 KiB/conn, marginal undefined) cpuIdle=0% cpuBc=1%/2% p50=14ms p99=37ms delivered=100.0% drops=0 procs={"server":35}
+00:10:45 step 2500: live=2500 mem=69.3MiB (23.8 KiB/conn, marginal 20.1) cpuIdle=0% cpuBc=2%/5% p50=24ms p99=111ms delivered=100.0% drops=0 procs={"server":59}
+00:11:26 step 5000: live=5000 mem=111.8MiB (20.6 KiB/conn, marginal 17.4) cpuIdle=0% cpuBc=8%/21% p50=59ms p99=402ms delivered=100.0% drops=0 procs={"server":92}
+00:12:08 step 7500: live=7500 mem=161.7MiB (20.6 KiB/conn, marginal 20.4) cpuIdle=0% cpuBc=7%/11% p50=56ms p99=149ms delivered=100.0% drops=0 procs={"server":132}
+00:12:49 step 10000: live=10000 mem=207.4MiB (20.1 KiB/conn, marginal 18.7) cpuIdle=0% cpuBc=10%/22% p50=72ms p99=177ms delivered=100.0% drops=0 procs={"server":168}
+00:13:00   ramp 14815/15000 live=14819 failed=0 pending=8
+00:13:36 step 15000: live=15000 mem=306.3MiB (20.2 KiB/conn, marginal 20.3) cpuIdle=12% cpuBc=15%/23% p50=114ms p99=280ms delivered=100.0% drops=0 procs={"server":253}
+00:13:46   ramp 19793/20000 live=19793 failed=0 pending=8
+00:14:22 step 20000: live=20000 mem=404.4MiB (20.1 KiB/conn, marginal 20.1) cpuIdle=11% cpuBc=20%/33% p50=177ms p99=507ms delivered=100.0% drops=0 procs={"server":329}
+00:14:33   ramp 24890/25000 live=24890 failed=0 pending=6
+00:15:09 step 25000: live=25000 mem=485.8MiB (19.4 KiB/conn, marginal 16.7) cpuIdle=16% cpuBc=27%/42% p50=207ms p99=568ms delivered=100.0% drops=0 procs={"server":397}
+00:15:15 STOP at 30000: container exited (OOMKilled=true, exit=137)
+00:15:15 done: container exited (OOMKilled=true, exit=137)

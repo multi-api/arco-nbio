@@ -410,3 +410,47 @@ Goroutine 31 (running) created at:
     testing.go:1867: race detected during execution of test
 FAIL
 FAIL	github.com/lesismal/nbio/lmux	3.311s
+ok  	github.com/lesismal/nbio/logging	2.475s
+panic: test timed out after 10m0s
+	running tests:
+		TestMemPool (10m0s)
+
+goroutine 33 [running]:
+testing.(*M).startAlarm.func1()
+	/Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2961 +0x490
+created by time.goFunc
+	/Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/time/sleep.go:182 +0x44
+
+goroutine 1 [chan receive, 10 minutes]:
+testing.(*T).Run(0xc000166008, {0x10482c73f, 0xb}, 0x104a290e0)
+	/Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2268 +0x7dc
+testing.runTests.func1(0xc000166008)
+	/Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2744 +0x78
+testing.tRunner(0xc000166008, 0xc000137a28)
+	/Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x168
+testing.runTests({0x104830a0e, 0x18}, {0x10483332f, 0x20}, 0xc00012c078, {0x104a50fb8, 0x4, 0x4}, {0x0?, 0xc0001419b8?, ...})
+	/Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2742 +0x7a4
+testing.(*M).Run(0xc000116140)
+	/Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2602 +0xb3c
+main.main()
+	_testmain.go:52 +0x104
+
+goroutine 19 [runnable]:
+github.com/lesismal/nbio/mempool.New.func1()
+	/Users/jgamboa/Herd/arco-nbio/mempool/mempool.go:39 +0x4c
+sync.(*Pool).Get(0xc00011e780)
+	/Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/sync/pool.go:156 +0xc4
+github.com/lesismal/nbio/mempool.(*MemPool).Malloc(0xc000078e78, 0x922a)
+	/Users/jgamboa/Herd/arco-nbio/mempool/mempool.go:53 +0x11c
+github.com/lesismal/nbio/mempool.TestMemPool(0xc000166248)
+	/Users/jgamboa/Herd/arco-nbio/mempool/mempool_test.go:10 +0x1b0
+testing.tRunner(0xc000166248, 0x104a290e0)
+	/Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x168
+created by testing.(*T).Run in goroutine 1
+	/Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2260 +0x7c0
+FAIL	github.com/lesismal/nbio/mempool	600.789s
+ok  	github.com/lesismal/nbio/nbhttp	9.668s
+ok  	github.com/lesismal/nbio/nbhttp/websocket	4.058s
+ok  	github.com/lesismal/nbio/taskpool	3.255s [no tests to run]
+ok  	github.com/lesismal/nbio/timer	4.198s
+FAIL

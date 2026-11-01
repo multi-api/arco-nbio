@@ -1,0 +1,4 @@
+2026/11/01 00:15:18.892 [INF] NBIO Engine[NB] start with [2 eventloop, MaxOpenFiles: 1048576]
+2026/11/01 00:15:18.892 [INF] NBHTTP Engine[NB] Start with "IOModNonBlocking"
+2026/11/01 00:15:18 arco-nbio bench server listening on :6001 tls=true pollers=2 (app bench)
+2026/11/01 00:15:18.899 [INF] NBHTTP Engine[NB] Serve HTTPS On: [tcp@[::]:6001]
