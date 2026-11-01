@@ -3,6 +3,8 @@ package tls
 // deprecated.
 
 import (
+	"net"
+
 	"github.com/lesismal/nbio"
 	"github.com/lesismal/nbio/crypto/tls"
 	"github.com/lesismal/nbio/mempool"
@@ -18,11 +20,29 @@ type Config = tls.Config
 //
 //go:norace
 func Dial(network, addr string, config *Config) (*tls.Conn, error) {
-	tlsConn, err := tls.Dial(network, addr, config)
+	// Built with NewConn rather than crypto/tls's Dial: a Conn not made by
+	// NewConn has its transport replaced by the first SetSession or
+	// ResetConn, which races with methods that read it without locks.
+	if config == nil {
+		config = &Config{}
+	}
+	if config.ServerName == "" { // as crypto/tls.Dial
+		host, _, err := net.SplitHostPort(addr)
+		if err != nil {
+			host = addr
+		}
+		config = config.Clone()
+		config.ServerName = host
+	}
+	conn, err := net.Dial(network, addr)
 	if err != nil {
 		return nil, err
 	}
-
+	tlsConn := tls.NewConn(conn, config, true, false)
+	if err := tlsConn.Handshake(); err != nil {
+		_ = conn.Close()
+		return nil, err
+	}
 	return tlsConn, nil
 }
 

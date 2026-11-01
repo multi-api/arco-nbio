@@ -183,3 +183,21 @@ Not fixed here: avoiding it means editing Go's `Write`/`Read` (or moving the slo
 own function), which breaks the "Go's code, imports only" rule that keeps porting scripted. The right fix is in Go
 (a small CL splitting `handshakeContext` into a fast check and a slow function), reported as
 https://github.com/golang/go/issues/82754. Low priority; it arrives here with the Go release that fixes it.
+
+## 13. Upstream review of the nbio PR (lesismal, 2026-11-01)
+
+The nbio maintainer reviewed https://github.com/lesismal/nbio/pull/514 and asked for a different shape (separate
+module or llib v2, no Go-version bump in nbio, compare against an adapter over std `crypto/tls`). Points that
+apply to this fork:
+
+| Point | Verdict here |
+|---|---|
+| `nb()` replaces `c.conn` while `Close`, `LocalAddr`, ... read it without locks, for a Conn not made by `NewConn` | **Real, fixed.** `extension/tls.Dial` used crypto/tls's `Dial`, so its first `SetSession`/`ResetConn` raced (`TestDialSetSessionNoRace` failed under `-race`). `Dial` now builds the Conn with `NewConn`; nbhttp already did. `nb()` documents that a Conn from `Server`/`Client`/crypto/tls `Dial` must get its first `SetSession`/`ResetConn` before it is shared. |
+| One goroutine per handshaking connection, up to 10 s | Known (§3, §11): ~18.4 KiB per stalled handshake against llib's heap-only state. Bounded by the 10 s whole-handshake timeout. |
+| `godebug` shim ignores go.mod `godebug` lines; `Value()` reads the environment each call | Known (`docs/design.md` §5). |
+| Adapter over std `crypto/tls` instead of a copy | Measured in `docs/results.md` §4: ~19.5 KiB/conn, the same as llib. The copy is what buys ~12.6 KiB/conn. |
+
+The read-loop fixes that do not depend on the new TLS (close_notify after data, the upgrader's `err`/`errRead`)
+were sent upstream on their own as https://github.com/lesismal/nbio/pull/515, against llib.
+
+CI: `macos-14` runners are retired on 2026-11-02; `ci.yml` now uses `macos-15`.

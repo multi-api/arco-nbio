@@ -299,7 +299,10 @@ func NewConn(conn net.Conn, config *Config, isClient bool, isNonBlock bool, v ..
 }
 
 // nb returns the wrapper of a connection made by NewConn, wrapping the
-// transport now if the connection was made by Server or Client.
+// transport now if the connection was made by Server, Client or Dial. That
+// replaces c.conn, which Close, LocalAddr and others read without locks, so
+// for such a connection the first SetSession or ResetConn must happen before
+// it is shared with other goroutines.
 func (c *Conn) nb() *nbConn {
 	if f, ok := c.conn.(*nbConn); ok {
 		return f
