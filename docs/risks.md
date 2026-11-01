@@ -83,4 +83,4 @@ names the assumption.
 
 ## Fuzzing (longer run)
 
-`tools/tlssync/check.sh 10m` passed end to end (`docs/results/check-full.txt`): diff check, build/vet, Go suite + ours with `-race`, nbio tests, both fuzzers 10 minutes each with no failure (`FuzzNonBlockRecordStream` 53,264 executions), govulncheck clean on the module and the copy.
+`tools/tlssync/check.sh 10m` passed end to end (`docs/results/check-full.txt`): diff check, build/vet, Go suite + ours with `-race`, nbio tests, both fuzzers 10 minutes each with no failure (`FuzzNonBlockRecordStream` 53,264 executions, `FuzzNonBlockGarbage` 274,822), govulncheck clean on the module and the copy.
