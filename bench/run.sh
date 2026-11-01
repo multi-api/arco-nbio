@@ -25,12 +25,12 @@ EXTRA_CONTAINERS=${EXTRA_CONTAINERS:-}
 TLS=0
 case "$service" in
   fork-plain) ;;
-  fork-tls|fork-tls-norelease|llib-tls) TLS=1 ;;
+  fork-tls|fork-tls-norelease|llib-tls|fork-prefix-tls) TLS=1 ;;
   *) echo "unknown service: $service" >&2; exit 2 ;;
 esac
 
 mkdir -p results
-cleanup() { docker compose rm -sf fork-tls fork-tls-norelease fork-plain llib-tls >/dev/null 2>&1; }
+cleanup() { docker compose rm -sf fork-tls fork-tls-norelease fork-plain llib-tls fork-prefix-tls >/dev/null 2>&1; }
 trap cleanup EXIT
 trap 'exit 130' INT TERM
 cleanup

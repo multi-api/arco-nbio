@@ -1,0 +1,64 @@
+# arco-nbio: checks for the crypto/tls copy (docs/porting.md).
+#  - on every push / PR to the arco branch: tools/tlssync/check.sh (diff vs Go,
+#    build, Go's crypto/tls suite + ours with -race, nbio tests, 5 min fuzzing,
+#    govulncheck incl. the copy), on amd64 and arm64 (Graviton is arm64).
+#  - daily: vulncheck.sh + latest.sh, so a Go security release that touches
+#    crypto/tls turns this workflow red within a day.
+name: arco-tls
+
+on:
+  push:
+    branches: [arco]
+  pull_request:
+    branches: [arco]
+  schedule:
+    - cron: "17 9 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    if: github.event_name != 'schedule'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Go source for diff-upstream.sh
+        run: git clone --filter=blob:none --no-checkout https://go.googlesource.com/go .src/go
+      - name: govulncheck
+        run: go install golang.org/x/vuln/cmd/govulncheck@latest
+      - name: check.sh
+        run: |
+          ulimit -n 30000
+          tools/tlssync/check.sh 5m
+      - name: keep fuzz crashers
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fuzz-crashers-${{ matrix.os }}
+          path: crypto/tls/testdata/fuzz
+          if-no-files-found: ignore
+
+  security:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: govulncheck
+        run: go install golang.org/x/vuln/cmd/govulncheck@latest
+      - name: vulncheck.sh (module + crypto/tls copy)
+        run: tools/tlssync/vulncheck.sh
+      - name: latest.sh (newer Go patch release?)
+        run: tools/tlssync/latest.sh

@@ -31,7 +31,9 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
 	"net"
+	"runtime/debug"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -52,7 +54,7 @@ type Allocator interface {
 // for the peer's next bytes. When it expires the handshake fails and the
 // transport is closed. It is a backstop: servers should also set a read
 // deadline on the transport.
-var NonBlockingHandshakeTimeout = 30 * time.Second
+var NonBlockingHandshakeTimeout = 10 * time.Second
 
 // errWouldBlock is returned by nbConn.Read when a non-blocking connection has
 // no more buffered input. It is temporary, so Go's record layer keeps its state.
@@ -83,6 +85,7 @@ type nbConn struct {
 
 	c        *Conn
 	nonBlock bool
+	hsErr    error // set by the poller when the handshake goroutine failed
 	session  any
 
 	// pending is input handed over by the poller and not yet read by Go's
@@ -203,6 +206,16 @@ func (c *Conn) stepHandshake(f *nbConn) (done bool, err error) {
 		go func() {
 			defer handshakesInFlight.Add(-1)
 			defer close(hs.done)
+			defer func() {
+				// A panicking callback (GetCertificate, GetConfigForClient,
+				// VerifyConnection, ...) must fail this connection only, as
+				// it did when llib ran the handshake under nbio's recover.
+				// Go's handshakeContext releases its locks in defers.
+				if r := recover(); r != nil {
+					hs.err = fmt.Errorf("tls: panic during handshake: %v\n%s", r, debug.Stack())
+					f.Conn.Close()
+				}
+			}()
 			hs.err = c.HandshakeContext(context.Background())
 		}()
 	} else {
@@ -218,6 +231,7 @@ func (c *Conn) stepHandshake(f *nbConn) (done bool, err error) {
 		return false, nil
 	case <-hs.done:
 		f.hs.Store(nil)
+		f.hsErr = hs.err
 		return true, hs.err
 	}
 }
@@ -333,6 +347,9 @@ func (c *Conn) appendAndRead(in []byte, out []byte) (int, int, error) {
 		f.owned = true
 	} else {
 		f.feed(in)
+	}
+	if f.hsErr != nil {
+		return len(in), 0, f.hsErr // the handshake failed: keep reporting it
 	}
 	if !c.isHandshakeComplete.Load() {
 		if len(f.pending) == 0 && f.hs.Load() == nil {

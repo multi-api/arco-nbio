@@ -18,6 +18,7 @@ x-app: &app
   GOMEMLIMIT: ${GOMEMLIMIT:-}
   GOGC: ${GOGC:-}
   GODEBUG: ${SERVER_GODEBUG:-}
+  ARCO_DIAG: ${ARCO_DIAG:-}
 
 services:
   # This fork: nbio + Go 1.27.3 crypto/tls with the non-blocking layer.
@@ -25,6 +26,13 @@ services:
     <<: *limits
     build: { context: server, dockerfile: Dockerfile.prebuilt, args: { BIN: server } }
     image: arco-nbio-bench/fork
+    environment: { <<: *app, TLS: "1" }
+
+  # Diagnosis only: the fork at 563bb44, before the AppendAndRead aliasing fix (docs/risks.md).
+  fork-prefix-tls:
+    <<: *limits
+    build: { context: server, dockerfile: Dockerfile.prebuilt, args: { BIN: server-prefix } }
+    image: arco-nbio-bench/fork-prefix
     environment: { <<: *app, TLS: "1" }
 
   # Same binary with idle-buffer release off: approximates the adapter over stock crypto/tls.

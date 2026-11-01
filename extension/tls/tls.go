@@ -81,12 +81,14 @@ func WrapData(h func(c *nbio.Conn, tlsConn *Conn, data []byte), args ...interfac
 				for {
 					_, n, err := tlsConn.AppendAndRead(data, buffer)
 					data = nil
+					// Use the plaintext before the error: Read returns
+					// (n > 0, io.EOF) when a close_notify follows the data.
+					if h != nil && n > 0 {
+						h(c, tlsConn, buffer[:n])
+					}
 					if err != nil {
 						_ = c.Close()
 						return
-					}
-					if h != nil && n > 0 {
-						h(c, tlsConn, buffer[:n])
 					}
 					if n == 0 {
 						return

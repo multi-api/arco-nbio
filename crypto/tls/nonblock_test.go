@@ -12,6 +12,7 @@ import (
 	"net"
 	"os"
 	"runtime"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -577,3 +578,41 @@ func BenchmarkNonBlockHandshake(b *testing.B) {
 	})
 }
 
+
+// TestNonBlockHandshakePanicRecovered: a panicking callback (here
+// GetConfigForClient) during a non-blocking handshake must fail that
+// connection only. Before the fix it crashed the process: the handshake
+// goroutine had no recover, unlike llib's handshake on nbio's poller.
+func TestNonBlockHandshakePanicRecovered(t *testing.T) {
+	a, b := net.Pipe()
+	defer b.Close()
+	go io.Copy(io.Discard, b)
+	cfg := testConfigServer.Clone()
+	cfg.GetConfigForClient = func(*ClientHelloInfo) (*Config, error) { panic("boom from callback") }
+	srv := NewConn(a, cfg, false, true)
+	_, _, err := srv.AppendAndRead(clientHelloBytes(t), make([]byte, 64))
+	if err == nil || !strings.Contains(err.Error(), "boom from callback") {
+		t.Fatalf("got %v, want the recovered panic", err)
+	}
+	waitHandshakesInFlight(t, 0)
+}
+
+// TestNonBlockFailedHandshakeErrorSticky: once the handshake failed, every
+// later AppendAndRead returns the error (it used to look like "need more
+// input" when called without new input).
+func TestNonBlockFailedHandshakeErrorSticky(t *testing.T) {
+	a, b := net.Pipe()
+	defer b.Close()
+	go io.Copy(io.Discard, b)
+	srv := NewConn(a, testConfigServer.Clone(), false, true)
+	out := make([]byte, 64)
+	if _, _, err := srv.AppendAndRead([]byte("GET / HTTP/1.1\r\n\r\n"), out); err == nil {
+		t.Fatal("garbage accepted")
+	}
+	for _, in := range [][]byte{nil, []byte("more")} {
+		if _, _, err := srv.AppendAndRead(in, out); err == nil {
+			t.Fatalf("AppendAndRead(%q) after a failed handshake returned nil", in)
+		}
+	}
+	waitHandshakesInFlight(t, 0)
+}

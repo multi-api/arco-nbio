@@ -13,6 +13,7 @@ import (
 	"encoding/json"
 	"io"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -89,7 +90,8 @@ func main() {
 			c.lastSeen.Store(time.Now().Unix())
 		}
 	})
-	u.OnClose(func(ws *websocket.Conn, _ error) {
+	u.OnClose(func(ws *websocket.Conn, err error) {
+		diagClose("ws", err)
 		if c, _ := ws.Session().(*Conn); c != nil {
 			s.conns.Delete(c)
 			c.cleanup()
@@ -127,7 +129,11 @@ func main() {
 		conf.Addrs = []string{addr}
 	}
 	engine := nbhttp.NewEngine(conf)
+	engine.OnClose(func(_ net.Conn, err error) { diagClose("conn", err) })
 	u.Engine = engine
+	if env("ARCO_DIAG", "") == "1" {
+		go diagLoop()
+	}
 	if err := engine.Start(); err != nil {
 		log.Fatal(err)
 	}
@@ -315,4 +321,46 @@ func (s *server) users(w http.ResponseWriter, r *http.Request, hub *Hub, _ []byt
 		users = append(users, map[string]string{"id": id})
 	}
 	json.NewEncoder(w).Encode(map[string]any{"users": users})
+}
+
+// Diagnostics (ARCO_DIAG=1): every 2 s, log close errors by message, TLS
+// handshakes in flight, goroutines and the longest scheduling delay seen by a
+// 10 ms ticker (a stalled process shows up as a large delay).
+var (
+	diagMu   sync.Mutex
+	diagErrs = map[string]int{}
+)
+
+func diagClose(kind string, err error) {
+	msg := "nil"
+	if err != nil {
+		msg = err.Error()
+	}
+	diagMu.Lock()
+	diagErrs[kind+": "+msg]++
+	diagMu.Unlock()
+}
+
+func diagLoop() {
+	tick := time.NewTicker(10 * time.Millisecond)
+	report := time.NewTicker(2 * time.Second)
+	last := time.Now()
+	var maxDelay time.Duration
+	for {
+		select {
+		case now := <-tick.C:
+			if d := now.Sub(last) - 10*time.Millisecond; d > maxDelay {
+				maxDelay = d
+			}
+			last = now
+		case <-report.C:
+			diagMu.Lock()
+			errs := diagErrs
+			diagErrs = map[string]int{}
+			diagMu.Unlock()
+			log.Printf("diag: handshakes=%d goroutines=%d maxTickDelay=%v closes=%v",
+				tls.HandshakesInFlight(), runtime.NumGoroutine(), maxDelay, errs)
+			maxDelay = 0
+		}
+	}
 }
