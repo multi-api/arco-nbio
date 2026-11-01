@@ -168,3 +168,17 @@ Not covered by tests (reviewer's list; a Go change here would show as a rare rac
 `handshakeContext` holding `c.in` for the whole handshake (`ReleaseBuffers` relies on it),
 `HandshakeContext(context.Background())` not starting an extra goroutine, `isHandshakeComplete` set only at the
 very end of the server handshake. `docs/porting.md` step 5 lists these among the things to re-read.
+
+## 12. Per-write defer cost in `handshakeContext` (reported by arco-ws, 2026-11-01)
+
+arco-ws's CPU profile of a broadcast to 20,000 connections shows ~2.7 % of CPU in
+`runtime.(*_panic).nextDefer` / `nextFrame` under `tls.(*Conn).handshakeContext`, reached from every `Conn.Write`
+(and `Read`). The source returns on `isHandshakeComplete` before any `defer` runs, but the compiler cannot open-code
+that function's four defers (`-gcflags=-d=defer` reports "stack-allocated defer" at conn.go:1530, 1540, 1549,
+1559), so each return still goes through `runtime.deferreturn`. **Go's standard `crypto/tls` compiles the same way**
+(checked with the same flag on go1.27.3's GOROOT copy): this is Go's cost, not the adapter's, and every
+`crypto/tls` user pays it.
+
+Not fixed here: avoiding it means editing Go's `Write`/`Read` (or moving the slow path of `handshakeContext` into its
+own function), which breaks the "Go's code, imports only" rule that keeps porting scripted. The right fix is in Go
+(a small CL splitting `handshakeContext` into a fast check and a slow function). Low priority.
