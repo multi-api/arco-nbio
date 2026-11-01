@@ -10,19 +10,19 @@
 2026/10/31 20:54:43.263 [ERR] Timer[NB] async call failed: invalid send size for sendfile: 73648472, 33554432
 goroutine 29 [running]:
 github.com/lesismal/nbio/timer.(*Timer).Async.func1.1.1()
-	/Users/jgamboa/Herd/arco-nbio/timer/timer.go:105 +0x64
+	<repo>/timer/timer.go:105 +0x64
 panic({0x100c637f0?, 0xc003212000?})
-	/Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/runtime/panic.go:859 +0x120
+	$GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/runtime/panic.go:859 +0x120
 github.com/lesismal/nbio.init.1.func4(0xc0021120d0, {0x100a53994?, 0xc0043a9eb8?})
-	/Users/jgamboa/Herd/arco-nbio/nbio_test.go:88 +0x184
+	<repo>/nbio_test.go:88 +0x184
 github.com/lesismal/nbio.(*Engine).OnClose.func1.1()
-	/Users/jgamboa/Herd/arco-nbio/engine.go:339 +0xa0
+	<repo>/engine.go:339 +0xa0
 github.com/lesismal/nbio/timer.(*Timer).Async.func1.1(0xc0000b6300, 0xc00430a000)
-	/Users/jgamboa/Herd/arco-nbio/timer/timer.go:109 +0x6c
+	<repo>/timer/timer.go:109 +0x6c
 github.com/lesismal/nbio/timer.(*Timer).Async.func1()
-	/Users/jgamboa/Herd/arco-nbio/timer/timer.go:110 +0x60
+	<repo>/timer/timer.go:110 +0x60
 created by github.com/lesismal/nbio/timer.(*Timer).Async in goroutine 7
-	/Users/jgamboa/Herd/arco-nbio/timer/timer.go:83 +0xf4
+	<repo>/timer/timer.go:83 +0xf4
 
 
 2026/10/31 20:54:43.266 [INF] NBIO Engine[NB] start with [2 eventloop, MaxOpenFiles: 2097152]
@@ -90,45 +90,45 @@ created by github.com/lesismal/nbio/timer.(*Timer).Async in goroutine 7
 WARNING: DATA RACE
 Read at 0x00c004282048 by goroutine 164:
   github.com/lesismal/nbio.TestUnix.func2()
-      /Users/jgamboa/Herd/arco-nbio/nbio_test.go:529 +0x34
+      <repo>/nbio_test.go:529 +0x34
   github.com/lesismal/nbio.(*Engine).OnOpen.func1()
-      /Users/jgamboa/Herd/arco-nbio/engine.go:325 +0x50
+      <repo>/engine.go:325 +0x50
   github.com/lesismal/nbio.(*poller).addConn()
-      /Users/jgamboa/Herd/arco-nbio/poller_kqueue.go:76 +0x74
+      <repo>/poller_kqueue.go:76 +0x74
   testing.tRunner()
-      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x164
+      $GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x164
   testing.(*T).Run.gowrap1()
-      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2260 +0x34
+      $GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2260 +0x34
 
 Previous write at 0x00c004282048 by goroutine 167:
   github.com/lesismal/nbio.TestUnix.func2()
-      /Users/jgamboa/Herd/arco-nbio/nbio_test.go:530 +0x4c
+      <repo>/nbio_test.go:530 +0x4c
   github.com/lesismal/nbio.(*Engine).OnOpen.func1()
-      /Users/jgamboa/Herd/arco-nbio/engine.go:325 +0x50
+      <repo>/engine.go:325 +0x50
   github.com/lesismal/nbio.(*poller).addConn()
-      /Users/jgamboa/Herd/arco-nbio/poller_kqueue.go:76 +0x74
+      <repo>/poller_kqueue.go:76 +0x74
 
 Goroutine 164 (running) created at:
   testing.(*T).Run()
-      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2260 +0x7bc
+      $GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2260 +0x7bc
   testing.runTests.func1()
-      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2744 +0x74
+      $GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2744 +0x74
   testing.tRunner()
-      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x164
+      $GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x164
   testing.runTests()
-      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2742 +0x7a0
+      $GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2742 +0x7a0
   testing.(*M).Run()
-      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2602 +0xb38
+      $GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2602 +0xb38
   main.main()
       _testmain.go:68 +0x100
 
 Goroutine 167 (running) created at:
   github.com/lesismal/nbio.(*Engine).Start()
-      /Users/jgamboa/Herd/arco-nbio/engine_unix.go:95 +0x388
+      <repo>/engine_unix.go:95 +0x388
   testing.tRunner()
-      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x164
+      $GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x164
   testing.(*T).Run.gowrap1()
-      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2260 +0x34
+      $GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2260 +0x34
 ==================
 2026/10/31 20:54:44 unix onOpen: , ./test.unix
 2026/10/31 20:54:44 unix onData: ./test.unix  hello
@@ -348,63 +348,63 @@ ok  	github.com/lesismal/nbio/crypto/tls	32.912s
 WARNING: DATA RACE
 Read at 0x00c0000101b0 by goroutine 30:
   github.com/lesismal/nbio/lmux.TestListenerMux.func3.1()
-      /Users/jgamboa/Herd/arco-nbio/lmux/lmux_test.go:65 +0xf0
+      <repo>/lmux/lmux_test.go:65 +0xf0
 
 Previous write at 0x00c0000101b0 by goroutine 31:
   github.com/lesismal/nbio/lmux.TestListenerMux.func3.1()
-      /Users/jgamboa/Herd/arco-nbio/lmux/lmux_test.go:65 +0x17c
+      <repo>/lmux/lmux_test.go:65 +0x17c
 
 Goroutine 30 (running) created at:
   github.com/lesismal/nbio/lmux.TestListenerMux.func3()
-      /Users/jgamboa/Herd/arco-nbio/lmux/lmux_test.go:57 +0x1b0
+      <repo>/lmux/lmux_test.go:57 +0x1b0
   github.com/lesismal/nbio/lmux.TestListenerMux()
-      /Users/jgamboa/Herd/arco-nbio/lmux/lmux_test.go:74 +0x6dc
+      <repo>/lmux/lmux_test.go:74 +0x6dc
   testing.tRunner()
-      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x164
+      $GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x164
   testing.(*T).Run.gowrap1()
-      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2260 +0x34
+      $GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2260 +0x34
 
 Goroutine 31 (running) created at:
   github.com/lesismal/nbio/lmux.TestListenerMux.func3()
-      /Users/jgamboa/Herd/arco-nbio/lmux/lmux_test.go:57 +0x1b0
+      <repo>/lmux/lmux_test.go:57 +0x1b0
   github.com/lesismal/nbio/lmux.TestListenerMux()
-      /Users/jgamboa/Herd/arco-nbio/lmux/lmux_test.go:75 +0x6fc
+      <repo>/lmux/lmux_test.go:75 +0x6fc
   testing.tRunner()
-      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x164
+      $GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x164
   testing.(*T).Run.gowrap1()
-      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2260 +0x34
+      $GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2260 +0x34
 ==================
 ==================
 WARNING: DATA RACE
 Read at 0x00c000036450 by goroutine 30:
   runtime.growslice()
-      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/runtime/slice.go:178 +0x0
+      $GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/runtime/slice.go:178 +0x0
   github.com/lesismal/nbio/lmux.TestListenerMux.func3.1()
-      /Users/jgamboa/Herd/arco-nbio/lmux/lmux_test.go:65 +0x120
+      <repo>/lmux/lmux_test.go:65 +0x120
 
 Previous write at 0x00c000036450 by goroutine 31:
   github.com/lesismal/nbio/lmux.TestListenerMux.func3.1()
-      /Users/jgamboa/Herd/arco-nbio/lmux/lmux_test.go:65 +0x140
+      <repo>/lmux/lmux_test.go:65 +0x140
 
 Goroutine 30 (running) created at:
   github.com/lesismal/nbio/lmux.TestListenerMux.func3()
-      /Users/jgamboa/Herd/arco-nbio/lmux/lmux_test.go:57 +0x1b0
+      <repo>/lmux/lmux_test.go:57 +0x1b0
   github.com/lesismal/nbio/lmux.TestListenerMux()
-      /Users/jgamboa/Herd/arco-nbio/lmux/lmux_test.go:74 +0x6dc
+      <repo>/lmux/lmux_test.go:74 +0x6dc
   testing.tRunner()
-      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x164
+      $GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x164
   testing.(*T).Run.gowrap1()
-      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2260 +0x34
+      $GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2260 +0x34
 
 Goroutine 31 (running) created at:
   github.com/lesismal/nbio/lmux.TestListenerMux.func3()
-      /Users/jgamboa/Herd/arco-nbio/lmux/lmux_test.go:57 +0x1b0
+      <repo>/lmux/lmux_test.go:57 +0x1b0
   github.com/lesismal/nbio/lmux.TestListenerMux()
-      /Users/jgamboa/Herd/arco-nbio/lmux/lmux_test.go:75 +0x6fc
+      <repo>/lmux/lmux_test.go:75 +0x6fc
   testing.tRunner()
-      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x164
+      $GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x164
   testing.(*T).Run.gowrap1()
-      /Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2260 +0x34
+      $GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2260 +0x34
 ==================
 --- FAIL: TestListenerMux (0.65s)
     testing.go:1867: race detected during execution of test
@@ -417,37 +417,37 @@ panic: test timed out after 10m0s
 
 goroutine 33 [running]:
 testing.(*M).startAlarm.func1()
-	/Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2961 +0x490
+	$GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2961 +0x490
 created by time.goFunc
-	/Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/time/sleep.go:182 +0x44
+	$GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/time/sleep.go:182 +0x44
 
 goroutine 1 [chan receive, 10 minutes]:
 testing.(*T).Run(0xc000166008, {0x10482c73f, 0xb}, 0x104a290e0)
-	/Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2268 +0x7dc
+	$GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2268 +0x7dc
 testing.runTests.func1(0xc000166008)
-	/Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2744 +0x78
+	$GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2744 +0x78
 testing.tRunner(0xc000166008, 0xc000137a28)
-	/Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x168
+	$GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x168
 testing.runTests({0x104830a0e, 0x18}, {0x10483332f, 0x20}, 0xc00012c078, {0x104a50fb8, 0x4, 0x4}, {0x0?, 0xc0001419b8?, ...})
-	/Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2742 +0x7a4
+	$GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2742 +0x7a4
 testing.(*M).Run(0xc000116140)
-	/Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2602 +0xb3c
+	$GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2602 +0xb3c
 main.main()
 	_testmain.go:52 +0x104
 
 goroutine 19 [runnable]:
 github.com/lesismal/nbio/mempool.New.func1()
-	/Users/jgamboa/Herd/arco-nbio/mempool/mempool.go:39 +0x4c
+	<repo>/mempool/mempool.go:39 +0x4c
 sync.(*Pool).Get(0xc00011e780)
-	/Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/sync/pool.go:156 +0xc4
+	$GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/sync/pool.go:156 +0xc4
 github.com/lesismal/nbio/mempool.(*MemPool).Malloc(0xc000078e78, 0x922a)
-	/Users/jgamboa/Herd/arco-nbio/mempool/mempool.go:53 +0x11c
+	<repo>/mempool/mempool.go:53 +0x11c
 github.com/lesismal/nbio/mempool.TestMemPool(0xc000166248)
-	/Users/jgamboa/Herd/arco-nbio/mempool/mempool_test.go:10 +0x1b0
+	<repo>/mempool/mempool_test.go:10 +0x1b0
 testing.tRunner(0xc000166248, 0x104a290e0)
-	/Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x168
+	$GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2195 +0x168
 created by testing.(*T).Run in goroutine 1
-	/Users/jgamboa/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2260 +0x7c0
+	$GOPATH/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.3.darwin-arm64/src/testing/testing.go:2260 +0x7c0
 FAIL	github.com/lesismal/nbio/mempool	600.789s
 ok  	github.com/lesismal/nbio/nbhttp	9.668s
 ok  	github.com/lesismal/nbio/nbhttp/websocket	4.058s
