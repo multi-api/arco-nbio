@@ -124,3 +124,15 @@ names the assumption.
 | final-3 | 12.50 | 30,000 | 172 | 839 | 100 %, except 99.0 % at 20k (load-generator tail, see §8) |
 
 Mean 12.6 KiB/conn (all 7 full runs of the fork: 12.2–13.1). llib in the same harness: 19.2–20.0.
+
+## 10. Long fuzzing (2 hours, final code)
+
+`tools/tlssync/fuzz-long.sh 2h` on the final code (Apple M-series, both fuzzers at the same time, `-timeout 0`),
+logs in `docs/results/fuzz-long-*.txt`: **no failure, no crasher written to `testdata/fuzz`**.
+
+| Fuzzer | Executions | New interesting inputs |
+|---|---|---|
+| `FuzzNonBlockRecordStream` (real handshake + records, split at fuzzed points) | 228,971 | 64 |
+| `FuzzNonBlockGarbage` (arbitrary bytes into a non-blocking server) | 5,827,654 | 361 |
+
+`FuzzNonBlockRecordStream` is slow per execution because each one runs a full TLS handshake.
