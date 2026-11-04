@@ -105,8 +105,13 @@ for (let i = 0; i < WORKERS; i++) {
     if (m.type === 'stats') wstats[i] = m.stats;
     if (m.type === 'latencies') latencyReplies.push(m.latencies);
   });
+  // A worker's IPC channel can close as it exits during teardown; a send to it then
+  // emits 'error' (ERR_IPC_CHANNEL_CLOSED). Swallow it so cleanup doesn't crash the run.
+  w.on('error', () => {});
   workers.push(w);
 }
+// Send a command only to workers whose channel is still open.
+const tell = (msg) => workers.forEach((w) => { if (w.connected) try { w.send(msg); } catch {} });
 
 function totals() {
   const t = { attempted: 0, subscribed: 0, samplers: 0, live: 0, failed: 0, dropped: 0, pending: 0, queued: 0, errors: {} };
@@ -122,7 +127,7 @@ const publisher = new PusherServer({ ...APP, host: SERVER, port: String(PORT), u
 
 async function broadcast() {
   latencyReplies = [];
-  workers.forEach((w) => w.send({ cmd: 'record' }));
+  tell({ cmd: 'record' });
   const cpuSamples = [];
   let sampling = true;
   const sampler = (async () => {
@@ -143,7 +148,7 @@ async function broadcast() {
   await sleep(5000);
   sampling = false;
   await sampler;
-  workers.forEach((w) => w.send({ cmd: 'dump' }));
+  tell({ cmd: 'dump' });
   while (latencyReplies.length < WORKERS) await sleep(100);
   const lat = latencyReplies.flat().sort((a, b) => a - b);
   const expected = totals().samplers * (BROADCASTS - publishErrors);
@@ -174,7 +179,7 @@ let requested = 0;
 let stop = null;
 for (const step of STEPS) {
   const n = step - requested;
-  workers.forEach((w, i) => w.send({ cmd: 'open', n: Math.floor(n / WORKERS) + (i < n % WORKERS ? 1 : 0), rate: RATE / WORKERS, maxInflight: Math.ceil(INFLIGHT / WORKERS) }));
+  workers.forEach((w, i) => { if (w.connected) try { w.send({ cmd: 'open', n: Math.floor(n / WORKERS) + (i < n % WORKERS ? 1 : 0), rate: RATE / WORKERS, maxInflight: Math.ceil(INFLIGHT / WORKERS) }); } catch {} });
   requested = step;
   const rampStart = Date.now();
   const deadline = rampStart + ((n / RATE) * 4 + 60) * 1000;
@@ -235,6 +240,6 @@ results.stop = stop ?? 'all steps passed (harness ceiling)';
 results.finished = new Date().toISOString();
 save();
 log(`done: ${results.stop}`);
-workers.forEach((w) => w.send({ cmd: 'close' }));
+tell({ cmd: 'close' });
 await sleep(2000);
 process.exit(0);
