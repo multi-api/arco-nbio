@@ -73,6 +73,44 @@ and they are one-line import changes except `extension/tls/tls.go` and the `OnCl
 |---|---|---|
 | `.github/workflows/arco-tls.yml` | push / PR to `arco`; daily | `check.sh 5m` on linux amd64 + arm64 (diff vs Go, build/vet, Go suite + ours with `-race`, nbio tests, fuzzing, govulncheck); daily `vulncheck.sh` + `latest.sh` (red when Go ships a newer crypto/tls fix) |
 | `.github/workflows/ci.yml` | push / PR to `arco`, tags `v*`; weekly CodeQL | nbio's original CI adapted: golangci-lint (`.golangci.yml`; Go's verbatim copy is excluded, our `nonblock*`/`arco_*` files and shims are linted), tests on macOS and Windows, Autobahn WebSocket conformance (ws and wss, so it exercises our TLS), CodeQL |
+| `.github/workflows/auto-sync.yml` | weekly (Mon) + `workflow_dispatch` | opens the sync work as a PR (or an issue) so a release can't be missed — see Automation below |
 
-Both must be green before tagging `v1.7.1-arco.N`. If Go adds a file to `crypto/tls` whose name starts with `n` or
-`ar`, add it to the exclusion regex in `.golangci.yml` (the lint job will flag it).
+Both `arco-tls` and `ci` must be green before tagging `v1.7.1-arco.N`. If Go adds a file to `crypto/tls` whose name
+starts with `n` or `ar`, add it to the exclusion regex in `.golangci.yml` (the lint job will flag it).
+
+## Automation (`auto-sync.yml`)
+
+`arco-tls.yml`'s daily `latest.sh`/`vulncheck.sh` only turns a dashboard **red**; a human still has to notice and
+do the port. `auto-sync.yml` does the mechanical part and hands back a reviewable PR. It runs weekly (and on demand
+via *Run workflow*), with logic in `tools/tlssync/auto/*.sh` so each half can be run and tested by hand.
+
+**What it automates**
+
+- **Go crypto/tls** (`tools/tlssync/auto/go-sync.sh`): finds the newest patch of our minor (`crypto/tls/UPSTREAM`)
+  from `go.dev/dl`. If `git diff <old> <new>` over `src/crypto/tls` + the two fips140 key-schedule packages shows a
+  change, it runs `sync.sh` then `check.sh` and opens a PR (branch `auto/tls-sync-<goX>`) with the diffstat and the
+  `check.sh` result. If crypto/tls did **not** change, it opens a PR that only bumps `crypto/tls/UPSTREAM` (so
+  `latest.sh` goes quiet) — no re-import. A newer Go **minor** is only mentioned in the log, never acted on (it is
+  the 1–3 day port above).
+- **nbio** (`tools/tlssync/auto/nbio-sync.sh`): finds the newest `lesismal/nbio` release tag not yet an ancestor of
+  `arco`, tries the merge on a branch and runs `check.sh`. Clean merge → PR (`auto/nbio-<tag>`); conflicts → an
+  **issue** listing the conflicting files and the manual steps. It never force-resolves a conflict.
+- **No duplicates**: it skips opening a second PR/issue when one for the same version is already open (it just
+  refreshes the branch).
+
+**What a human still does** (the PR body repeats this): review the diff/merge (read path, locks, buffers per
+step 5); fix `check.sh` if the PR shows it failed; then **tag** the next `v1.7.x-arco.N` and **bump** the
+`replace` in arco-ws. Tagging and the consumer bump are deliberately left manual.
+
+**Permissions / safety**: only the built-in `GITHUB_TOKEN` with `contents: write`, `pull-requests: write`,
+`issues: write` — no new secrets. PR/issue text is neutral (never names the post-handshake work). Assumes `arco`
+is the repo's default branch (scheduled runs use the default branch's workflow).
+
+**Run / test by hand**
+
+```
+# detection only, no changes committed (NO_COMMIT=1); override the "newest" version to simulate a release
+FORCE_GO_VERSION=go1.27.4 NO_COMMIT=1 tools/tlssync/auto/go-sync.sh
+FORCE_NBIO_TAG=v1.7.3   NO_COMMIT=1 tools/tlssync/auto/nbio-sync.sh
+# or from GitHub: Actions → auto-sync → Run workflow, with the force_* inputs
+```
