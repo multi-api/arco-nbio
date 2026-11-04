@@ -1,0 +1,123 @@
+# auto-sync — keep the fork current without a human remembering to (docs/porting.md).
+# Weekly (and on demand) it checks two upstreams and opens a PR (or an issue) with the
+# work already done and the checks already run, so a Go crypto/tls security release or a
+# new nbio release can't be missed.
+#   1. Go: a newer patch of our crypto/tls minor (crypto/tls/UPSTREAM). If crypto/tls
+#      changed, re-import with sync.sh + check.sh and open a PR; if not, a PR that only
+#      records the version.
+#   2. nbio: the newest lesismal/nbio release tag not yet in `arco`. Merge it on a branch
+#      and check.sh → PR; if it conflicts → an issue listing the conflicts.
+# Logic lives in tools/tlssync/auto/*.sh so it can be run and tested by hand.
+name: auto-sync
+
+on:
+  schedule:
+    - cron: "23 8 * * 1" # Mondays 08:23 UTC
+  workflow_dispatch:
+    inputs:
+      force_go_version:
+        description: "Pretend this is the newest Go patch (e.g. go1.27.4), for testing"
+        required: false
+        default: ""
+      force_nbio_tag:
+        description: "Try this nbio tag instead of auto-detecting (e.g. v1.7.3)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  go-sync:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: arco
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: govulncheck (for check.sh)
+        run: go install golang.org/x/vuln/cmd/govulncheck@latest
+      - name: detect + sync
+        id: sync
+        env:
+          FORCE_GO_VERSION: ${{ github.event.inputs.force_go_version }}
+          SUMMARY_FILE: ${{ github.workspace }}/tls-sync-summary.md
+        run: |
+          ulimit -n 30000
+          tools/tlssync/auto/go-sync.sh
+      - name: open PR
+        if: steps.sync.outputs.status == 'tls-changed' || steps.sync.outputs.status == 'recorded-only'
+        env:
+          TARGET: ${{ steps.sync.outputs.target }}
+        run: |
+          set -euo pipefail
+          branch="auto/tls-sync-$TARGET"
+          title="auto-sync: Go $TARGET crypto/tls"
+          if [ -n "$(gh pr list --head "$branch" --base arco --state open --json number --jq '.[].number')" ]; then
+            echo "a PR for $branch is already open — updating the branch only"; UPDATE=1
+          fi
+          git push -f origin "HEAD:refs/heads/$branch"
+          if [ "${UPDATE:-}" != 1 ]; then
+            gh pr create --base arco --head "$branch" --title "$title" \
+              --body-file "${{ github.workspace }}/tls-sync-summary.md" --label automated || true
+          fi
+
+  nbio-sync:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: arco
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: govulncheck (for check.sh)
+        run: go install golang.org/x/vuln/cmd/govulncheck@latest
+      - name: detect + merge
+        id: merge
+        env:
+          FORCE_NBIO_TAG: ${{ github.event.inputs.force_nbio_tag }}
+          SUMMARY_FILE: ${{ github.workspace }}/nbio-sync-summary.md
+        run: |
+          ulimit -n 30000
+          tools/tlssync/auto/nbio-sync.sh
+      - name: open PR (clean merge)
+        if: steps.merge.outputs.status == 'merged'
+        env:
+          TAG: ${{ steps.merge.outputs.tag }}
+        run: |
+          set -euo pipefail
+          branch="auto/nbio-$TAG"
+          title="auto-sync: merge nbio $TAG"
+          if [ -n "$(gh pr list --head "$branch" --base arco --state open --json number --jq '.[].number')" ]; then
+            echo "a PR for $branch is already open — updating the branch only"; UPDATE=1
+          fi
+          git push -f origin "HEAD:refs/heads/$branch"
+          if [ "${UPDATE:-}" != 1 ]; then
+            gh pr create --base arco --head "$branch" --title "$title" \
+              --body-file "${{ github.workspace }}/nbio-sync-summary.md" --label automated || true
+          fi
+      - name: open issue (merge conflict)
+        if: steps.merge.outputs.status == 'conflict'
+        env:
+          TAG: ${{ steps.merge.outputs.tag }}
+        run: |
+          set -euo pipefail
+          title="auto-sync: nbio $TAG needs a manual merge"
+          if [ -n "$(gh issue list --search "$title in:title" --state open --json number --jq '.[].number')" ]; then
+            echo "an issue for $TAG is already open — nothing to do"; exit 0
+          fi
+          gh issue create --title "$title" \
+            --body-file "${{ github.workspace }}/nbio-sync-summary.md" --label automated
